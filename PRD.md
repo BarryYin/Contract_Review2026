@@ -48,13 +48,13 @@
 
 ## Phase 6: 报告输出与完善
 - [x] 审查详情页 (风险仪表盘+问题列表+修改建议)
-- [ ] PDF 合规报告导出 [priority:high] [depends:phase5]
+- [x] PDF 合规报告导出 [priority:high] [depends:phase5]
 - [ ] DOCX 修订标记导出 [priority:normal] [depends:phase5]
 - [ ] 审计日志记录 [priority:low] [depends:phase5]
 - [ ] 批量合同处理 [priority:normal] [depends:phase5]
 - [ ] 合同对比功能 [priority:low] [depends:phase5]
 
 ## Phase 7: 端到端验证
-- [ ] 端到端验证：上传→列表→审查→报告 全流程跑通 [priority:high] [depends:phase6]
-- [ ] 4份测试合同全部通过审查 [priority:high] [depends:phase7]
+- [x] 端到端验证：上传→列表→审查→报告 全流程跑通 [priority:high] [depends:phase6]
+- [x] 4份测试合同全部通过审查 [priority:high] [depends:phase7]
 - [ ] README 更新最终状态 [priority:normal]
