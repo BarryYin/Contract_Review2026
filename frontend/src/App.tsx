@@ -13,7 +13,6 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="review/latest" element={<LatestReviewRedirect />} />
-          <Route path="review/:id" element={<ReviewDetail />} />
           <Route path="review/:fileId" element={<ReviewDetail />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="compare" element={<Compare />} />
