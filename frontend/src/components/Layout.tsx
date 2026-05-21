@@ -29,11 +29,20 @@ export default function Layout() {
                 <Home className="w-4 h-4" />
                 首页
               </NavLink>
-              <NavLink to="/" className={navLinkClass} end>
+              <NavLink
+                to="/"
+                className={navLinkClass}
+                onClick={() => {
+                  setTimeout(() => {
+                    document.getElementById('file-list')?.scrollIntoView({ behavior: 'smooth' });
+                  }, 100);
+                }}
+                end
+              >
                 <FileText className="w-4 h-4" />
                 合同列表
               </NavLink>
-              <NavLink to="/" className={navLinkClass} end>
+              <NavLink to="/review/latest" className={navLinkClass}>
                 <ClipboardCheck className="w-4 h-4" />
                 审查报告
               </NavLink>

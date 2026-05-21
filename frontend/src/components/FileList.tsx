@@ -10,6 +10,7 @@ import {
   Loader2,
   Inbox,
 } from 'lucide-react';
+import { getDownloadUrl } from '../api/client';
 import type { FileInfo } from '../types';
 
 interface FileListProps {
@@ -176,6 +177,9 @@ export default function FileList({ files, onDelete }: FileListProps) {
                     </button>
                   )}
                   <button
+                    onClick={() => {
+                      window.open(getDownloadUrl(file.id), '_blank');
+                    }}
                     className="p-2 text-[#64748d] hover:text-[#533afd] hover:bg-[rgba(83,58,253,0.06)] rounded-md transition-colors duration-150"
                     title="下载"
                   >

@@ -3,7 +3,7 @@ import { FileText, CheckCircle2, AlertTriangle, AlertOctagon } from 'lucide-reac
 import StatsCard from '../components/StatsCard';
 import FileUpload from '../components/FileUpload';
 import FileList from '../components/FileList';
-import { fetchFiles, deleteFile, getMockStats } from '../api/client';
+import { fetchFiles, deleteFile } from '../api/client';
 import type { FileInfo } from '../types';
 
 export default function Home() {
@@ -33,7 +33,8 @@ export default function Home() {
     []
   );
 
-  const stats = getMockStats();
+  const totalIssues = 0; // Will be computed when compliance-engine is built
+  const highRisk = files.filter((f) => f.risk_level === 'high').length;
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-10">
@@ -51,28 +52,28 @@ export default function Home() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
         <StatsCard
           icon={FileText}
-          value={stats.total}
+          value={files.length}
           label="总合同数"
           color="#533afd"
           bgColor="rgba(83,58,253,0.08)"
         />
         <StatsCard
           icon={CheckCircle2}
-          value={stats.completed}
+          value={files.filter((f) => f.status === 'completed').length}
           label="已完成审查"
           color="#15be53"
           bgColor="rgba(21,190,83,0.1)"
         />
         <StatsCard
           icon={AlertTriangle}
-          value={stats.totalIssues}
+          value={totalIssues}
           label="发现风险"
           color="#f59e0b"
           bgColor="rgba(245,158,11,0.1)"
         />
         <StatsCard
           icon={AlertOctagon}
-          value={stats.highRisk}
+          value={highRisk}
           label="高风险项"
           color="#ef4444"
           bgColor="rgba(239,68,68,0.1)"
@@ -82,11 +83,11 @@ export default function Home() {
       {/* Upload Section */}
       <div className="mb-10">
         <h2 className="text-lg font-semibold text-[#061b31] mb-4">上传合同</h2>
-        <FileUpload />
+        <FileUpload onUploadComplete={loadFiles} />
       </div>
 
       {/* File List Section */}
-      <div>
+      <div id="file-list">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-[#061b31]">合同列表</h2>
           <button
