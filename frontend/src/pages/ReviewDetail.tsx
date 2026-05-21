@@ -39,6 +39,44 @@ const ENTITY_COLORS: Record<string, string> = {
   CONTRACT_ID: 'bg-gray-100 text-gray-800',
 };
 
+// Utility: highlight entities in text
+function highlightEntities(text: string, entities: Entity[]): React.ReactNode {
+  if (!entities.length) return text;
+  
+  // Sort entities by position in text (earliest first)
+  const sorted = [...entities]
+    .map((e) => {
+      const idx = text.indexOf(e.text);
+      return { ...e, idx };
+    })
+    .filter((e) => e.idx >= 0)
+    .sort((a, b) => a.idx - b.idx);
+
+  if (!sorted.length) return text;
+
+  const parts: React.ReactNode[] = [];
+  let cursor = 0;
+  for (const entity of sorted) {
+    if (entity.idx < cursor) continue; // skip overlaps
+    if (entity.idx > cursor) {
+      parts.push(text.slice(cursor, entity.idx));
+    }
+    parts.push(
+      <span
+        key={`e-${entity.idx}-${entity.text}`}
+        className={`px-0.5 rounded-sm cursor-pointer text-xs ${ENTITY_COLORS[entity.type] || 'bg-gray-100'}`}
+        title={`${entity.type}: ${entity.text}`}
+      >
+        {entity.text}
+      </span>
+    );
+    cursor = entity.idx + entity.text.length;
+  }
+  if (cursor < text.length) parts.push(text.slice(cursor));
+  return <>{parts}</>;
+}
+
+
 export default function ReviewDetail() {
   const { fileId } = useParams<{ fileId: string }>();
   const navigate = useNavigate();
@@ -165,7 +203,7 @@ export default function ReviewDetail() {
         <div className="flex-1 min-w-[300px]">
           {scoring?.dimensions?.map((d) => (
             <div key={d.name} className="flex items-center gap-2 mb-1">
-              <span className="text-xs w-20 text-right text-gray-600 truncate">{d.name}</span>
+              <span className="text-xs w-20 text-right text-gray-600 truncate cursor-help" title={`权重: ${(d.weight * 100).toFixed(0)}% — ${d.description || '风险维度评分'}`}>{d.name}</span>
               <div className="flex-1 bg-gray-200 rounded-full h-2">
                 <div
                   className={`h-2 rounded-full ${d.score >= 80 ? 'bg-green-500' : d.score >= 60 ? 'bg-orange-400' : 'bg-red-500'}`}
@@ -176,6 +214,9 @@ export default function ReviewDetail() {
               <span className="text-xs text-gray-400 w-10">{(d.weight * 100).toFixed(0)}%</span>
             </div>
           ))}
+        </div>
+        <div className="text-xs text-gray-400 flex items-center gap-1">
+          <span>💡 悬停维度名称查看权重说明</span>
         </div>
         <div className="flex gap-2">
           <button
@@ -368,7 +409,7 @@ export default function ReviewDetail() {
                   >
                     {clause.number && <span className="text-xs text-gray-400 mr-2">#{clause.number}</span>}
                     {clause.title && <strong className="text-sm">{clause.title}</strong>}
-                    <p className="text-sm text-gray-700 mt-1">{clause.content}</p>
+                    <p className="text-sm text-gray-700 mt-1">{showEntities ? highlightEntities(clause.content, entities) : clause.content}</p>
                     {relatedIssues.length > 0 && (
                       <div className="mt-1 flex gap-1">
                         {relatedIssues.map((ri) => (
