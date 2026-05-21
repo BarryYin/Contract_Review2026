@@ -40,6 +40,12 @@ class FileListResponse(BaseModel):
     total: int
 
 
+class IssueStatus(str, Enum):
+    PENDING = "pending"
+    ADOPTED = "adopted"
+    REJECTED = "rejected"
+
+
 class RiskIssue(BaseModel):
     id: str
     clause: str
@@ -47,6 +53,7 @@ class RiskIssue(BaseModel):
     severity: RiskLevel
     description: str
     suggestion: str
+    status: IssueStatus = IssueStatus.PENDING
 
 
 class ReviewResult(BaseModel):
@@ -68,3 +75,23 @@ class HealthResponse(BaseModel):
     status: str = "ok"
     version: str = "1.0.0"
     uptime: Optional[str] = None
+
+
+class IssueActionResponse(BaseModel):
+    """采纳/拒绝操作的返回模型。"""
+    issue_id: str
+    status: str
+    message: str
+
+
+class AuditLogEntry(BaseModel):
+    timestamp: str
+    file_id: str
+    action: str
+    details: Optional[dict] = None
+    file_hash: Optional[str] = None
+
+
+class AuditLogResponse(BaseModel):
+    logs: list[AuditLogEntry]
+    total: int
