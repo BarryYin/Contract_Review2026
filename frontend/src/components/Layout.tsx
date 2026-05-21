@@ -29,6 +29,10 @@ export default function Layout() {
                 <Home className="w-4 h-4" />
                 首页
               </NavLink>
+              <NavLink to="/dashboard" className={navLinkClass}>
+                <ClipboardCheck className="w-4 h-4" />
+                批量审查
+              </NavLink>
               <NavLink
                 to="/"
                 className={navLinkClass}

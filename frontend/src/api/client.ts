@@ -1,4 +1,11 @@
-import type { FileInfo, ReviewResult } from '../types';
+import type {
+  FileInfo,
+  ReviewResult,
+  StructuredResponse,
+  BilingualResponse,
+  ScoringResponse,
+  IssueActionResponse,
+} from '../types';
 
 const API_BASE = '/api';
 
@@ -76,22 +83,94 @@ export function getDownloadUrl(fileId: string): string {
   return `${API_BASE}/files/${fileId}/download`;
 }
 
+// ── Structured Info ────────────────────────────────────
+
+export async function getStructuredInfo(
+  fileId: string
+): Promise<StructuredResponse | null> {
+  try {
+    const res = await fetch(`${API_BASE}/reviews/${fileId}/structured`);
+    if (res.status === 404) return null;
+    if (!res.ok) throw new Error(`获取结构化信息失败 (${res.status})`);
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+// ── Bilingual Analysis ─────────────────────────────────
+
+export async function getBilingualAnalysis(
+  fileId: string
+): Promise<BilingualResponse | null> {
+  try {
+    const res = await fetch(`${API_BASE}/reviews/${fileId}/bilingual`);
+    if (res.status === 404) return null;
+    if (!res.ok) throw new Error(`获取双语分析失败 (${res.status})`);
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+// ── Scoring Dimensions ─────────────────────────────────
+
+export async function getScoring(
+  fileId: string
+): Promise<ScoringResponse | null> {
+  try {
+    const res = await fetch(`${API_BASE}/reviews/${fileId}/scoring`);
+    if (res.status === 404) return null;
+    if (!res.ok) throw new Error(`获取评分详情失败 (${res.status})`);
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+// ── Issue Actions: Adopt / Reject ──────────────────────
+
+export async function adoptIssue(
+  fileId: string,
+  issueId: string
+): Promise<IssueActionResponse> {
+  const res = await fetch(
+    `${API_BASE}/reviews/${fileId}/issues/${issueId}/adopt`,
+    { method: 'POST' }
+  );
+  if (!res.ok) throw new Error(`采纳操作失败 (${res.status})`);
+  return await res.json();
+}
+
+export async function rejectIssue(
+  fileId: string,
+  issueId: string
+): Promise<IssueActionResponse> {
+  const res = await fetch(
+    `${API_BASE}/reviews/${fileId}/issues/${issueId}/reject`,
+    { method: 'POST' }
+  );
+  if (!res.ok) throw new Error(`拒绝操作失败 (${res.status})`);
+  return await res.json();
+}
+
 // ── PDF Report export ──────────────────────────────────
 
 export function getPdfExportUrl(fileId: string): string {
   return `${API_BASE}/reviews/${fileId}/export/pdf`;
 }
 
-export async function downloadPdfReport(fileId: string, filename?: string): Promise<void> {
+export async function downloadPdfReport(
+  fileId: string,
+  filename?: string
+): Promise<void> {
   const url = getPdfExportUrl(fileId);
   const res = await fetch(url);
   if (!res.ok) {
     throw new Error(`导出PDF报告失败 (${res.status})`);
   }
-
   const blob = await res.blob();
   const blobUrl = URL.createObjectURL(blob);
-
   const a = document.createElement('a');
   a.href = blobUrl;
   a.download = filename ? filename : '合规审查报告.pdf';
@@ -99,4 +178,60 @@ export async function downloadPdfReport(fileId: string, filename?: string): Prom
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(blobUrl);
+}
+
+// ── DOCX Track-Changes export ──────────────────────────
+
+export function getDocxExportUrl(fileId: string): string {
+  return `${API_BASE}/reviews/${fileId}/export/docx`;
+}
+
+export async function downloadDocxReport(
+  fileId: string,
+  filename?: string
+): Promise<void> {
+  const url = getDocxExportUrl(fileId);
+  const res = await fetch(url);
+  if (!res.ok) {
+    const data = await res.json().catch(() => null);
+    throw new Error(
+      data?.detail || `导出DOCX失败 (${res.status})`
+    );
+  }
+  const blob = await res.blob();
+  const blobUrl = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = blobUrl;
+  a.download = filename ? filename : '合规审查报告_TrackChanges.docx';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(blobUrl);
+}
+
+
+// ── Batch Upload ───────────────────────────────────────
+
+export async function batchUpload(files: File[]): Promise<{ results: any[]; total: number }> {
+  const formData = new FormData();
+  files.forEach((f) => formData.append('files', f));
+  const res = await fetch(`${API_BASE}/files/batch-upload`, { method: 'POST', body: formData });
+  if (!res.ok) throw new Error('批量上传失败');
+  return await res.json();
+}
+
+export async function listReviews(): Promise<{ reviews: any[]; total: number }> {
+  const res = await fetch(`${API_BASE}/reviews`);
+  if (!res.ok) throw new Error('获取列表失败');
+  return await res.json();
+}
+
+export async function compareReviews(fileIdA: string, fileIdB: string): Promise<any> {
+  const res = await fetch(`${API_BASE}/reviews/compare`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ file_id_a: fileIdA, file_id_b: fileIdB }),
+  });
+  if (!res.ok) throw new Error('对比分析失败');
+  return await res.json();
 }

@@ -425,3 +425,63 @@ def _dimension_description(dim_name: str) -> str:
         "其他": "其他未归类的风险项",
     }
     return descriptions.get(dim_name, "风险维度评估")
+
+
+# ---------------------------------------------------------------------------
+# List all reviews
+# ---------------------------------------------------------------------------
+
+@router.get("")
+async def list_reviews():
+    """List all review results."""
+    import json
+    from ..core.config import settings
+    
+    reviews_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "uploads", "reviews")
+    os.makedirs(reviews_dir, exist_ok=True)
+    
+    results = []
+    for fname in os.listdir(reviews_dir):
+        if not fname.endswith("_review.json"):
+            continue
+        fpath = os.path.join(reviews_dir, fname)
+        try:
+            with open(fpath, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            results.append({
+                "file_id": data.get("file_id", ""),
+                "filename": data.get("filename", ""),
+                "contract_type": data.get("contract_type", ""),
+                "risk_score": data.get("risk_score", 0),
+                "risk_level": data.get("risk_level", ""),
+                "review_time": data.get("review_time", ""),
+                "issues_count": len(data.get("issues", [])),
+            })
+        except Exception:
+            continue
+    
+    results.sort(key=lambda x: x.get("review_time", ""), reverse=True)
+    return {"reviews": results, "total": len(results)}
+
+
+# ---------------------------------------------------------------------------
+# Compare two reviews
+# ---------------------------------------------------------------------------
+
+@router.post("/compare")
+async def compare_reviews(body: dict):
+    """Compare two review results."""
+    import json
+    
+    file_id_a = body.get("file_id_a") or body.get("file_id_1")
+    file_id_b = body.get("file_id_b") or body.get("file_id_2")
+    
+    if not file_id_a or not file_id_b:
+        raise HTTPException(status_code=400, detail="需要提供 file_id_a 和 file_id_b")
+    
+    from ..services.compare_service import compare_reviews as do_compare
+    
+    review_a = _load_review_json(file_id_a)
+    review_b = _load_review_json(file_id_b)
+    
+    return do_compare(review_a, review_b)

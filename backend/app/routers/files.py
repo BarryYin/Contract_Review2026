@@ -112,3 +112,37 @@ async def delete_file(file_id: str):
     if not deleted:
         raise HTTPException(status_code=404, detail="文件未找到")
     return {"message": "文件删除成功", "id": file_id}
+
+
+@router.post("/batch-upload")
+async def batch_upload_files(files: List[UploadFile] = File(...)):
+    """Upload multiple files and trigger review for each."""
+    import uuid
+    results = []
+    for file in files:
+        try:
+            file_id = str(uuid.uuid4())
+            file_path = os.path.join(settings.UPLOAD_DIR, f"{file_id}_{file.filename}")
+            with open(file_path, "wb") as fout:
+                content = await file.read()
+                fout.write(content)
+            
+            file_service.register_file(file_id, file.filename, len(content), file_path)
+            
+            from ..services.review_service import review_file
+            asyncio.create_task(review_file(file_id))
+            
+            results.append({
+                "file_id": file_id,
+                "filename": file.filename,
+                "size": len(content),
+                "status": "processing",
+            })
+        except Exception as e:
+            results.append({
+                "filename": file.filename,
+                "status": "error",
+                "error": str(e),
+            })
+    
+    return {"results": results, "total": len(results)}
