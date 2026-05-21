@@ -48,22 +48,40 @@ class IssueStatus(str, Enum):
 
 class RiskIssue(BaseModel):
     id: str
-    clause: str
-    risk_type: str
-    severity: RiskLevel
-    description: str
-    suggestion: str
-    status: IssueStatus = IssueStatus.PENDING
+    title: Optional[str] = None
+    clause_reference: Optional[str] = None
+    severity: RiskLevel = RiskLevel.MEDIUM
+    risk_description: Optional[str] = None
+    legal_basis: Optional[str] = None
+    modification_example: Optional[dict] = None
+    # Legacy fields (kept for backward compatibility)
+    clause: Optional[str] = None
+    risk_type: Optional[str] = None
+    description: Optional[str] = None
+    suggestion: Optional[str] = None
+    status: Optional[str] = "pending"
 
 
 class ReviewResult(BaseModel):
     id: str
     file_id: str
-    risk_score: int
-    risk_level: RiskLevel
-    contract_type: str
-    issues: list[RiskIssue]
-    summary: str
+    risk_score: float = 0
+    risk_level: RiskLevel = RiskLevel.LOW
+    contract_type: str = "未识别"
+    issues: list[RiskIssue] = []
+    summary: str = ""
+    # New fields from integrated services
+    filename: Optional[str] = None
+    upload_time: Optional[str] = None
+    review_time: Optional[str] = None
+    ocr_used: Optional[bool] = None
+    rule_hits: Optional[list] = None
+    structured_info: Optional[dict] = None
+    entities: Optional[dict] = None
+    bilingual_analysis: Optional[dict] = None
+    scoring_dimensions: Optional[list] = None
+    scoring_explanation: Optional[str] = None
+    file_hash: Optional[str] = None
 
 
 class ErrorResponse(BaseModel):
