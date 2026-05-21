@@ -126,7 +126,7 @@ export default function FileUpload({ onUploadComplete }: FileUploadProps) {
               </span>
             </p>
             <p className="text-sm text-[#64748d] mt-1">
-              支持 PDF、DOCX、DOC 格式，单文件最大 20MB
+              支持 PDF、DOCX、DOC、JPG、PNG 等格式（含扫描件/图片版），单文件最大 20MB
             </p>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import os
+import asyncio
 from pathlib import Path
 
 from fastapi import APIRouter, UploadFile, File, HTTPException
@@ -11,9 +12,18 @@ from ..models.file import (
     FileListResponse,
     FileStatus,
 )
-from ..services import file_service
+from ..services import file_service, review_service
 
 router = APIRouter(prefix="/api/files", tags=["files"])
+
+
+async def _trigger_review(file_id: str, file_path: str):
+    """后台任务：解析并审查合同。"""
+    try:
+        await review_service.review_file(file_id, file_path)
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).error(f"Background review failed: {e}")
 
 
 @router.post("/upload", response_model=FileUploadResponse)
@@ -45,12 +55,19 @@ async def upload_file(file: UploadFile = File(...)):
     # Save via file service
     file_info = file_service.save_file(file.filename, content)
 
+    # Get file path for background review
+    file_path = file_service.get_file_path(file_info.id)
+
+    # Trigger background review
+    if file_path:
+        asyncio.create_task(_trigger_review(file_info.id, file_path))
+
     return FileUploadResponse(
         id=file_info.id,
         filename=file_info.filename,
         size=file_info.size,
-        status=FileStatus.COMPLETED,
-        message="文件上传成功",
+        status=FileStatus.PROCESSING,
+        message="文件上传成功，正在审查中",
     )
 
 

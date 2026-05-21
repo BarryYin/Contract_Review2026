@@ -149,3 +149,27 @@ def delete_file(file_id: str) -> bool:
 
     save_metadata(metadata)
     return True
+
+
+
+def update_file_status(
+    file_id: str,
+    status: str = None,
+    risk_level: str = None,
+    contract_type: str = None,
+    review_progress: int = None,
+):
+    """更新文件元数据的状态字段。"""
+    metadata = load_metadata()
+    entry = metadata.get(file_id)
+    if entry is None:
+        return
+    if status is not None:
+        entry["status"] = status
+    if risk_level is not None:
+        entry["risk_level"] = risk_level
+    if contract_type is not None:
+        entry["contract_type"] = contract_type
+    if review_progress is not None:
+        entry["review_progress"] = review_progress
+    save_metadata(metadata)
