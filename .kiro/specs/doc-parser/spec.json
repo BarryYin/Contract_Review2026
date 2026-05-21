@@ -1,5 +1,5 @@
 {
-  "name": "batch-compare",
+  "name": "doc-parser",
   "phase": "tasks-generated",
   "approvals": {
     "requirements": "auto",

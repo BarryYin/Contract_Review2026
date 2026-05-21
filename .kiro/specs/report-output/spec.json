@@ -1,5 +1,5 @@
 {
-  "name": "batch-compare",
+  "name": "report-output",
   "phase": "tasks-generated",
   "approvals": {
     "requirements": "auto",

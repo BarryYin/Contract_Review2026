@@ -1,5 +1,5 @@
 {
-  "name": "batch-compare",
+  "name": "compliance-engine",
   "phase": "tasks-generated",
   "approvals": {
     "requirements": "auto",
