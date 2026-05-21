@@ -1,37 +1,60 @@
-# PRD: project-setup — AI智能合同合规审查工具脚手架
+# PRD: ContractAI — AI智能合同合规审查工具
 
-## Phase 1: 项目初始化
+## 状态总览
+- project-setup: ✅ 完成
+- doc-parser: ✅ 完成（含OCR）
+- compliance-engine: ✅ 完成
+- report-output: ⚠️ 部分完成（缺导出和审计）
 
-- [x] 初始化 Git 仓库 + .gitignore（Python + Node.js） [priority:high]
-- [x] 初始化 backend: Python 虚拟环境 + requirements.txt + FastAPI 依赖 [priority:high]
-- [x] 初始化 frontend: Vite + React + TypeScript + TailwindCSS 项目 [priority:high]
+---
 
-## Phase 2: 后端 FastAPI 骨架
+## Phase 1: 项目初始化 ✅
+- [x] 初始化 Git 仓库 + .gitignore
+- [x] 初始化 backend: Python venv + FastAPI
+- [x] 初始化 frontend: Vite + React + TypeScript + TailwindCSS
 
-- [x] 创建 FastAPI 应用入口 app/main.py（CORS + 错误处理中间件 + 路由注册） [priority:high]
-- [x] 创建 Pydantic 数据模型 app/models/file.py（FileInfo, FileUploadResponse, FileListResponse, ErrorResponse） [priority:high]
-- [x] 创建配置模块 app/core/config.py（上传目录、文件大小限制、CORS 来源等） [priority:normal]
-- [x] 创建统一错误处理中间件 app/middleware/error_handler.py [priority:normal]
-- [x] 创建健康检查路由 app/routers/health.py（GET /api/health） [priority:normal]
-- [x] 创建文件服务 app/services/file_service.py（save/list/get/delete） [priority:high]
-- [x] 创建文件路由 app/routers/files.py（upload/list/download/delete 四个端点） [priority:high]
-- [x] 在 main.py 中挂载 health 和 files 路由 [priority:high]
+## Phase 2: 后端 FastAPI 骨架 ✅
+- [x] FastAPI 应用入口 (main.py + CORS + 错误处理)
+- [x] Pydantic 数据模型 (models/file.py)
+- [x] 配置模块 (config.py)
+- [x] 健康检查路由 (health.py)
+- [x] 文件服务 + 路由 (upload/list/download/delete)
+- [x] 路由注册
 
-## Phase 3: 前端 React 骨架
+## Phase 3: 前端 React 骨架 ✅
+- [x] API 客户端 (client.ts, 对接真实API)
+- [x] TypeScript 类型定义
+- [x] 主布局组件 (Layout.tsx)
+- [x] 文件上传组件 (拖拽+点击+进度条)
+- [x] 文件列表组件
+- [x] 首页 (上传+列表+统计)
+- [x] 审查详情页 (风险评分+问题列表)
+- [x] App.tsx 路由 + Vite 代理
 
-- [x] 创建 API 客户端 src/api/client.ts（axios 封装，含上传进度支持，mock 模式） [priority:high]
-- [x] 创建 TypeScript 类型定义 src/types/index.ts（与后端模型对齐） [priority:high]
-- [x] 创建主布局组件 src/components/Layout.tsx（导航栏 + 内容区域，响应式） [priority:high]
-- [x] 创建文件上传组件 src/components/FileUpload.tsx（拖拽 + 点击 + 进度条） [priority:high]
-- [x] 创建文件列表组件 src/components/FileList.tsx（表格 + 操作按钮 + 空状态） [priority:high]
-- [x] 创建首页 src/pages/Home.tsx（集成上传 + 列表 + 统计卡片） [priority:high]
-- [x] 创建审查详情页 src/pages/ReviewDetail.tsx（风险评分 + 问题列表） [priority:high]
-- [x] 配置 App.tsx 路由 + Vite 代理（/api → localhost:8000） [priority:high]
-- [x] 配置 TailwindCSS 样式和基础全局样式（Stripe 设计风格） [priority:normal]
+## Phase 4: 文档解析引擎 ✅
+- [x] DOCX 文本提取 (python-docx)
+- [x] PDF 文本提取 (PyPDF2)
+- [x] OCR 图片识别 (Step step-1v-8k 视觉模型)
+- [x] 扫描PDF自动检测 + OCR fallback
+- [x] 条款结构化拆分 (中英双语正则)
+- [x] 图片格式支持 (JPG/PNG/BMP/WebP/TIFF)
 
-## Phase 4: 集成与启动
+## Phase 5: 合规分析引擎 ✅
+- [x] LLM 合规分析 (Step 3.5 Flash)
+- [x] 风险评分模型 (0-100)
+- [x] 风险等级分类 (low/medium/high)
+- [x] 异步后台审查编排
+- [x] 审查结果存储 + API
 
-- [x] 创建一键启动脚本 start.sh（同时启动前后端 dev server） [priority:high]
-- [ ] 端到端验证：上传合同 → 列表显示 → 下载 → 删除 全流程跑通 [priority:high]
-- [x] 复制测试合同样本到 contracts/ 目录 [priority:normal]
-- [x] 编写 README.md（项目说明 + 启动指南） [priority:normal]
+## Phase 6: 报告输出与完善
+- [x] 审查详情页 (风险仪表盘+问题列表+修改建议)
+- [ ] PDF 合规报告导出 [priority:high] [depends:phase5]
+- [ ] DOCX 修订标记导出 [priority:normal] [depends:phase5]
+- [ ] 审计日志记录 [priority:low] [depends:phase5]
+- [ ] 批量合同处理 [priority:normal] [depends:phase5]
+- [ ] 合同对比功能 [priority:low] [depends:phase5]
+
+## Phase 7: 端到端验证
+- [ ] 端到端验证：上传→列表→审查→报告 全流程跑通 [priority:high] [depends:phase6]
+- [ ] 4份测试合同全部通过审查 [priority:high] [depends:phase7]
+- [ ] README 更新最终状态 [priority:normal]

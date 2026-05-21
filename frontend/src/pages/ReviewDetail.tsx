@@ -10,8 +10,9 @@ import {
   Info,
   CheckCircle2,
   ChevronRight,
+  FileDown,
 } from 'lucide-react';
-import { fetchReviewResult } from '../api/client';
+import { fetchReviewResult, downloadPdfReport } from '../api/client';
 import type { ReviewResult } from '../types';
 
 function RiskGauge({ score }: { score: number }) {
@@ -95,6 +96,7 @@ export default function ReviewDetail() {
   const navigate = useNavigate();
   const [result, setResult] = useState<ReviewResult | null>(null);
   const [loading, setLoading] = useState(true);
+  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -103,6 +105,18 @@ export default function ReviewDetail() {
       setLoading(false);
     });
   }, [id]);
+
+  const handleExportPdf = async () => {
+    if (!id) return;
+    setExporting(true);
+    try {
+      await downloadPdfReport(id);
+    } catch (err) {
+      alert('导出PDF报告失败，请稍后重试');
+    } finally {
+      setExporting(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -151,18 +165,28 @@ export default function ReviewDetail() {
       </button>
 
       {/* Header */}
-      <div className="flex items-center gap-3 mb-8">
-        <div className="w-10 h-10 rounded-lg bg-[rgba(83,58,253,0.08)] flex items-center justify-center">
-          <RiskIcon className="w-5 h-5 text-[#533afd]" />
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-[rgba(83,58,253,0.08)] flex items-center justify-center">
+            <RiskIcon className="w-5 h-5 text-[#533afd]" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-semibold text-[#061b31] tracking-tight">
+              合同审查报告
+            </h1>
+            <p className="text-sm text-[#64748d] mt-0.5">
+              合同类型：{result.contract_type}
+            </p>
+          </div>
         </div>
-        <div>
-          <h1 className="text-2xl font-semibold text-[#061b31] tracking-tight">
-            合同审查报告
-          </h1>
-          <p className="text-sm text-[#64748d] mt-0.5">
-            合同类型：{result.contract_type}
-          </p>
-        </div>
+        <button
+          onClick={handleExportPdf}
+          disabled={exporting}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white bg-[#533afd] hover:bg-[#4434d4] disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
+        >
+          <FileDown className="w-4 h-4" />
+          {exporting ? '导出中...' : '导出PDF报告'}
+        </button>
       </div>
 
       {/* Top cards */}

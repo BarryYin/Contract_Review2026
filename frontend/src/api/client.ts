@@ -75,3 +75,28 @@ export async function deleteFile(fileId: string): Promise<void> {
 export function getDownloadUrl(fileId: string): string {
   return `${API_BASE}/files/${fileId}/download`;
 }
+
+// ── PDF Report export ──────────────────────────────────
+
+export function getPdfExportUrl(fileId: string): string {
+  return `${API_BASE}/reviews/${fileId}/export/pdf`;
+}
+
+export async function downloadPdfReport(fileId: string, filename?: string): Promise<void> {
+  const url = getPdfExportUrl(fileId);
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`导出PDF报告失败 (${res.status})`);
+  }
+
+  const blob = await res.blob();
+  const blobUrl = URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.href = blobUrl;
+  a.download = filename ? filename : '合规审查报告.pdf';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(blobUrl);
+}

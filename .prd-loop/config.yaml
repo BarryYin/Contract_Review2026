@@ -1,0 +1,35 @@
+project:
+  name: "ContractAI"
+  root: "."
+  language: "Python/TypeScript"
+  framework: "FastAPI + React"
+
+prd:
+  path: "PRD.md"
+  format: "markdown"
+
+execution:
+  mode: "subagent"
+  parallel: false
+  max_concurrent: 2
+  auto_commit: true
+  commit_prefix: "feat"
+  subagent:
+    toolsets: ["terminal", "file"]
+    timeout: 300
+
+verification:
+  run_tests: false
+  run_lint: false
+  run_build: false
+
+rules:
+  - "Use Optional[X] from typing, NOT X | None (Python 3.9 compat)"
+  - "Follow existing code patterns in the project"
+  - "Chinese UI text where appropriate"
+
+boundaries:
+  never_touch:
+    - "node_modules/**"
+    - "venv/**"
+    - ".next/**"
