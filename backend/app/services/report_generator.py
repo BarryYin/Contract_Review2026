@@ -415,6 +415,120 @@ def generate_pdf_report(
                     spaceBefore=4 * mm,
                 ))
 
+    # ── 5. 附件：原合同风险标注版本 ─────────────────────
+    elements.append(PageBreak())
+    elements.append(Paragraph("附件：原合同风险标注版本", styles["h2"]))
+    elements.append(
+        Paragraph(
+            "以下为各风险条款的原文摘录，红色标注部分为存在风险的原始条款内容。",
+            styles["body"],
+        )
+    )
+    elements.append(Spacer(1, 4 * mm))
+
+    issues_with_original = [
+        issue for issue in issues
+        if issue.get("modification_example", {})
+        and isinstance(issue.get("modification_example"), dict)
+        and issue.get("modification_example", {}).get("original")
+    ]
+
+    if not issues_with_original:
+        elements.append(Paragraph("无风险标注内容。", styles["body"]))
+    else:
+        for idx, issue in enumerate(issues_with_original, start=1):
+            clause_ref = issue.get("clause_reference", "未标注条款")
+            mod_example = issue.get("modification_example", {})
+            original_text = mod_example.get("original", "")
+            severity = issue.get("severity", "low")
+            sev_color = _severity_color(severity)
+            sev_label = _severity_label(severity)
+
+            # Clause reference header with severity badge
+            ref_header_data = [
+                [
+                    Paragraph(
+                        f"<b>{idx}. {clause_ref}</b>",
+                        styles["body_bold"],
+                    ),
+                    Paragraph(
+                        f"<b>{sev_label}</b>",
+                        ParagraphStyle(
+                            f"appendix_sev_{idx}",
+                            fontName="STSong-Light",
+                            fontSize=9,
+                            leading=12,
+                            textColor=white,
+                            alignment=TA_CENTER,
+                        ),
+                    ),
+                ]
+            ]
+            ref_header_table = Table(ref_header_data, colWidths=[140 * mm, 20 * mm])
+            ref_header_table.setStyle(
+                TableStyle(
+                    [
+                        ("FONTNAME", (0, 0), (-1, -1), "STSong-Light"),
+                        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                        ("TOPPADDING", (0, 0), (-1, -1), 4),
+                        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+                        # Severity badge: colored background, white text
+                        ("BACKGROUND", (1, 0), (1, 0), sev_color),
+                        ("TOPPADDING", (1, 0), (1, 0), 2),
+                        ("BOTTOMPADDING", (1, 0), (1, 0), 2),
+                    ]
+                )
+            )
+            elements.append(ref_header_table)
+
+            # Red-highlighted original text box
+            if original_text:
+                orig_style = ParagraphStyle(
+                    f"appendix_orig_{idx}",
+                    fontName="STSong-Light",
+                    fontSize=9,
+                    leading=14,
+                    textColor=HexColor("#991b1b"),
+                    leftIndent=4 * mm,
+                    rightIndent=4 * mm,
+                )
+                orig_para = Paragraph(
+                    f'<b>【原文】</b> {original_text}',
+                    orig_style,
+                )
+
+                # Wrap in a table with red left border + light red background
+                orig_table_data = [[orig_para]]
+                orig_table = Table(orig_table_data, colWidths=[155 * mm])
+                orig_table.setStyle(
+                    TableStyle(
+                        [
+                            ("FONTNAME", (0, 0), (-1, -1), "STSong-Light"),
+                            ("BACKGROUND", (0, 0), (-1, -1), HexColor("#fef2f2")),
+                            ("LEFTPADDING", (0, 0), (-1, -1), 8),
+                            ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+                            ("TOPPADDING", (0, 0), (-1, -1), 6),
+                            ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+                            # Red left border as highlight marker
+                            ("LINEBEFORE", (0, 0), (0, -1), 3, COLOR_HIGH),
+                            ("BOX", (0, 0), (-1, -1), 0.5, HexColor("#fecaca")),
+                        ]
+                    )
+                )
+                elements.append(Spacer(1, 1 * mm))
+                elements.append(orig_table)
+
+            # Separator between issues
+            if idx < len(issues_with_original):
+                elements.append(Spacer(1, 3 * mm))
+                elements.append(HRFlowable(
+                    width="100%",
+                    thickness=0.3,
+                    color=COLOR_LIGHT_GRAY,
+                    spaceAfter=2 * mm,
+                    spaceBefore=2 * mm,
+                ))
+
     elements.append(Spacer(1, 10 * mm))
     elements.append(HRFlowable(width="100%", thickness=0.5, color=COLOR_LIGHT_GRAY))
     elements.append(Spacer(1, 2 * mm))

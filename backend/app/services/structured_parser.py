@@ -4,6 +4,7 @@ LLM 结构化合同信息提取服务：调用 Step 3.5 Flash 提取合同关键
 
 import os
 import re
+import asyncio
 import json
 import logging
 import httpx
@@ -306,35 +307,54 @@ async def extract_structured_info(raw_text: str) -> Dict[str, Any]:
     else:
         user_msg += raw_text
 
-    try:
-        async with httpx.AsyncClient(timeout=120.0) as client:
-            resp = await client.post(
-                f"{LLM_BASE_URL}/v1/chat/completions",
-                headers={"Authorization": f"Bearer {LLM_API_KEY}"},
-                json={
-                    "model": LLM_MODEL,
-                    "messages": [
-                        {"role": "system", "content": EXTRACTION_SYSTEM_PROMPT},
-                        {"role": "user", "content": user_msg},
-                    ],
-                    "temperature": 0.1,
-                    "max_tokens": 16384,
-                },
+    max_retries = 3
+    for attempt in range(max_retries):
+        try:
+            async with httpx.AsyncClient(timeout=120.0) as client:
+                resp = await client.post(
+                    f"{LLM_BASE_URL}/v1/chat/completions",
+                    headers={"Authorization": f"Bearer {LLM_API_KEY}"},
+                    json={
+                        "model": LLM_MODEL,
+                        "messages": [
+                            {"role": "system", "content": EXTRACTION_SYSTEM_PROMPT},
+                            {"role": "user", "content": user_msg},
+                        ],
+                        "temperature": 0.1,
+                        "max_tokens": 16384,
+                    },
+                )
+
+                if resp.status_code == 429 and attempt < max_retries - 1:
+                    wait = 5 * (attempt + 1)
+                    logger.warning(f"Rate limited (429), retrying in {wait}s... (attempt {attempt+1}/{max_retries})")
+                    await asyncio.sleep(wait)
+                    continue
+
+                resp.raise_for_status()
+                data = resp.json()
+
+            content = data["choices"][0]["message"]["content"].strip()
+            parsed = _parse_json_robust(content)
+            result = _normalize_structured(parsed)
+
+            logger.info(
+                f"Structured extraction complete: type={result['contract_type']}, "
+                f"parties={len(result['parties'])}, "
+                f"payment_terms={len(result['payment_terms'])}"
             )
-            resp.raise_for_status()
-            data = resp.json()
+            return result
 
-        content = data["choices"][0]["message"]["content"].strip()
-        parsed = _parse_json_robust(content)
-        result = _normalize_structured(parsed)
+        except httpx.HTTPStatusError as e:
+            if e.response.status_code == 429 and attempt < max_retries - 1:
+                wait = 5 * (attempt + 1)
+                logger.warning(f"Rate limited (429), retrying in {wait}s... (attempt {attempt+1}/{max_retries})")
+                await asyncio.sleep(wait)
+                continue
+            logger.error(f"Structured extraction failed: {e}")
+            return _fallback_structured_result(str(e))
+        except Exception as e:
+            logger.error(f"Structured extraction failed: {e}")
+            return _fallback_structured_result(str(e))
 
-        logger.info(
-            f"Structured extraction complete: type={result['contract_type']}, "
-            f"parties={len(result['parties'])}, "
-            f"payment_terms={len(result['payment_terms'])}"
-        )
-        return result
-
-    except Exception as e:
-        logger.error(f"Structured extraction failed: {e}")
-        return _fallback_structured_result(str(e))
+    return _fallback_structured_result("Max retries exceeded")

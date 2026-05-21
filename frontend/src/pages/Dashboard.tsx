@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const API_BASE = '/api';
@@ -17,6 +17,18 @@ const riskBadge = (l: string) =>
   l === 'high' ? 'bg-red-500 text-white' : l === 'medium' ? 'bg-orange-500 text-white' : 'bg-green-500 text-white';
 const riskLabel = (l: string) => (l === 'high' ? '高风险' : l === 'medium' ? '中风险' : '低风险');
 const scoreColor = (s: number) => (s >= 80 ? 'text-green-600' : s >= 60 ? 'text-orange-500' : 'text-red-600');
+
+function formatDate(iso: string | undefined | null): string {
+  if (!iso) return '-';
+  try {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return iso;
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  } catch {
+    return iso;
+  }
+}
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -150,8 +162,8 @@ export default function Dashboard() {
               </div>
             ))}
             {['评分', '风险', '问题数'].map((label) => (
-              <>
-                <div key={label} className="text-xs text-gray-500">{label}</div>
+              <Fragment key={label}>
+                <div className="text-xs text-gray-500">{label}</div>
                 {reviews.slice(0, 7).map((r) => {
                   const val = label === '评分' ? r.risk_score : label === '风险' ? (r.risk_level === 'high' ? 3 : r.risk_level === 'medium' ? 2 : 1) : r.issues_count;
                   const max = label === '评分' ? 100 : label === '风险' ? 3 : 15;
@@ -163,7 +175,7 @@ export default function Dashboard() {
                     </div>
                   );
                 })}
-              </>
+              </Fragment>
             ))}
           </div>
         </div>
@@ -204,7 +216,7 @@ export default function Dashboard() {
                 </div>
                 <div className="text-right">
                   <div className="text-sm text-gray-600">{r.issues_count} 个问题</div>
-                  <div className="text-xs text-gray-400">{r.review_time?.slice(0, 16) || '-'}</div>
+                  <div className="text-xs text-gray-400">{formatDate(r.review_time)}</div>
                 </div>
               </div>
             </div>

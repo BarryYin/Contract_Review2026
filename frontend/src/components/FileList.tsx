@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Eye,
@@ -23,6 +24,18 @@ function formatSize(bytes: number): string {
   if (bytes < 1024) return bytes + ' B';
   if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
   return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+}
+
+function formatDate(iso: string | undefined | null): string {
+  if (!iso) return '-';
+  try {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return iso;
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  } catch {
+    return iso;
+  }
 }
 
 function RiskBadge({ level }: { level: 'low' | 'medium' | 'high' }) {
@@ -89,6 +102,15 @@ function StatusBadge({ status, progress }: { status: FileInfo['status']; progres
 
 export default function FileList({ files, onDelete }: FileListProps) {
   const navigate = useNavigate();
+  const [selectedTemplates, setSelectedTemplates] = useState<Record<string, string>>({});
+
+  const TEMPLATES = [
+    { id: 'general', label: '通用模板' },
+    { id: 'procurement', label: '采购合同' },
+    { id: 'service', label: '服务合同' },
+    { id: 'nda', label: '保密协议' },
+    { id: 'labor', label: '劳动合同' },
+  ] as const;
 
   if (files.length === 0) {
     return (
@@ -153,7 +175,7 @@ export default function FileList({ files, onDelete }: FileListProps) {
                 {formatSize(file.size)}
               </td>
               <td className="py-3.5 px-4 text-sm text-[#64748d]">
-                {file.upload_time}
+                {formatDate(file.upload_time)}
               </td>
               <td className="py-3.5 px-4">
                 {file.risk_level ? (
@@ -168,13 +190,30 @@ export default function FileList({ files, onDelete }: FileListProps) {
               <td className="py-3.5 px-4">
                 <div className="flex items-center justify-end gap-1">
                   {file.status === 'completed' && (
-                    <button
-                      onClick={() => navigate(`/review/${file.id}`)}
-                      className="p-2 text-[#64748d] hover:text-[#533afd] hover:bg-[rgba(83,58,253,0.06)] rounded-md transition-colors duration-150"
-                      title="查看报告"
-                    >
-                      <Eye className="w-4 h-4" />
-                    </button>
+                    <div className="flex items-center gap-1 flex-wrap">
+                      <div className="flex gap-0.5 mr-1">
+                        {TEMPLATES.map((t) => (
+                          <button
+                            key={t.id}
+                            onClick={() => setSelectedTemplates((prev) => ({ ...prev, [file.id]: t.id }))}
+                            className={`px-1.5 py-0.5 rounded text-[10px] font-medium transition-colors ${
+                              (selectedTemplates[file.id] || 'general') === t.id
+                                ? 'bg-[#533afd] text-white'
+                                : 'bg-gray-100 text-[#64748d] hover:bg-gray-200'
+                            }`}
+                          >
+                            {t.label}
+                          </button>
+                        ))}
+                      </div>
+                      <button
+                        onClick={() => navigate(`/review/${file.id}`)}
+                        className="p-2 text-[#64748d] hover:text-[#533afd] hover:bg-[rgba(83,58,253,0.06)] rounded-md transition-colors duration-150"
+                        title="查看报告"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </button>
+                    </div>
                   )}
                   <button
                     onClick={() => {

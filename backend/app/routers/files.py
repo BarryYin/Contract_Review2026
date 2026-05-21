@@ -27,9 +27,13 @@ async def _trigger_review(file_id: str, file_path: str):
         logging.getLogger(__name__).error(f"Background review failed: {e}")
 
 
-@router.post("/upload", response_model=FileUploadResponse)
+@router.post(
+    "/upload",
+    response_model=FileUploadResponse,
+    summary="Upload a contract file",
+    description="Upload a contract file (PDF, DOCX, or DOC) for AI compliance review. Maximum file size is 20 MB. The file is automatically queued for background review after upload.",
+)
 async def upload_file(file: UploadFile = File(...)):
-    """Upload a contract file (.pdf, .docx, .doc). Max 20 MB."""
 
     # Validate extension
     if file.filename is None:
@@ -72,25 +76,36 @@ async def upload_file(file: UploadFile = File(...)):
     )
 
 
-@router.get("", response_model=FileListResponse)
+@router.get(
+    "",
+    response_model=FileListResponse,
+    summary="List all uploaded files",
+    description="Retrieve metadata for all uploaded contract files, including file ID, filename, size, upload time, and processing status.",
+)
 async def list_files():
-    """Return metadata for all uploaded files."""
     files = file_service.list_files()
     return FileListResponse(files=files, total=len(files))
 
 
-@router.get("/{file_id}", response_model=FileInfo)
+@router.get(
+    "/{file_id}",
+    response_model=FileInfo,
+    summary="Get file metadata",
+    description="Retrieve metadata for a single uploaded file by its unique file ID.",
+)
 async def get_file(file_id: str):
-    """Return metadata for a single file."""
     info = file_service.get_file(file_id)
     if info is None:
         raise HTTPException(status_code=404, detail="文件未找到")
     return info
 
 
-@router.get("/{file_id}/download")
+@router.get(
+    "/{file_id}/download",
+    summary="Download original file",
+    description="Download the original uploaded contract file by its file ID. Returns the file as a binary attachment.",
+)
 async def download_file(file_id: str):
-    """Download the original uploaded file."""
     info = file_service.get_file(file_id)
     if info is None:
         raise HTTPException(status_code=404, detail="文件未找到")
@@ -106,18 +121,24 @@ async def download_file(file_id: str):
     )
 
 
-@router.delete("/{file_id}")
+@router.delete(
+    "/{file_id}",
+    summary="Delete a file",
+    description="Delete an uploaded contract file and its associated metadata. This also removes any related review data.",
+)
 async def delete_file(file_id: str):
-    """Delete a file and its metadata."""
     deleted = file_service.delete_file(file_id)
     if not deleted:
         raise HTTPException(status_code=404, detail="文件未找到")
     return {"message": "文件删除成功", "id": file_id}
 
 
-@router.post("/batch-upload")
+@router.post(
+    "/batch-upload",
+    summary="Upload multiple contract files",
+    description="Upload multiple contract files at once. Each file is validated, saved, and queued for background AI review individually.",
+)
 async def batch_upload_files(files: List[UploadFile] = File(...)):
-    """Upload multiple files and trigger review for each."""
     import uuid
     results = []
     for file in files:

@@ -72,15 +72,58 @@ def _find_issue(issues: list, issue_id: str) -> Optional[dict]:
 # GET /api/reviews/{file_id}/structured — 结构化信息 + 实体
 # ---------------------------------------------------------------------------
 
-@router.get("/{file_id}/structured")
+@router.get(
+    "/{file_id}/structured",
+    summary="Get structured contract info",
+    description="Retrieve structured parsing results (parties, clauses, contract type) and named entity recognition (NER) data for a reviewed contract.",
+)
 async def get_structured_info(file_id: str):
-    """获取合同结构化信息（来自 structured_parser）与命名实体（来自 NER）。"""
     result = review_service.get_review_result(file_id)
     if result is None:
         raise HTTPException(status_code=404, detail="审查结果尚未就绪")
 
     structured_info = result.get("structured_info", {})
     entities = result.get("entities", {"entities": [], "total": 0, "type_counts": {}})
+
+    # Build clauses list from structured_info for frontend display
+    clauses = []
+    clause_fields = {
+        "payment_terms": "付款条款",
+        "breach_liability": "违约责任",
+        "dispute_resolution": "争议解决",
+        "confidentiality": "保密义务",
+        "intellectual_property": "知识产权",
+        "termination": "终止条款",
+    }
+    for field, title in clause_fields.items():
+        items = structured_info.get(field, [])
+        if items:
+            for i, item in enumerate(items):
+                text = item if isinstance(item, str) else json.dumps(item, ensure_ascii=False)
+                clauses.append({
+                    "number": f"{i+1}",
+                    "title": title,
+                    "content": text,
+                })
+
+    # Also add issues as risk-tagged clauses with full text
+    issues_list = result.get("issues", [])
+    for issue in issues_list:
+        clause_ref = issue.get("clause_reference", "")
+        # Get original text from modification_example or risk_description
+        orig_text = ""
+        mod_example = issue.get("modification_example", {})
+        if isinstance(mod_example, dict):
+            orig_text = mod_example.get("original", "")
+        if not orig_text:
+            orig_text = issue.get("risk_description", "")
+        clauses.append({
+            "number": clause_ref,
+            "title": issue.get("title", ""),
+            "content": orig_text,
+            "risk_level": issue.get("severity", ""),
+            "issue_id": issue.get("id", ""),
+        })
 
     return {
         "file_id": file_id,
@@ -94,6 +137,7 @@ async def get_structured_info(file_id: str):
         "intellectual_property": structured_info.get("intellectual_property", []),
         "termination": structured_info.get("termination", []),
         "entities": entities,
+        "clauses": clauses,
     }
 
 
@@ -101,9 +145,12 @@ async def get_structured_info(file_id: str):
 # GET /api/reviews/{file_id}/bilingual — 双语一致性分析
 # ---------------------------------------------------------------------------
 
-@router.get("/{file_id}/bilingual")
+@router.get(
+    "/{file_id}/bilingual",
+    summary="Get bilingual consistency analysis",
+    description="Retrieve bilingual (Chinese/English) consistency analysis for a contract. Returns consistency issues and score if the contract is bilingual.",
+)
 async def get_bilingual_analysis(file_id: str):
-    """获取双语合同一致性分析结果。"""
     result = review_service.get_review_result(file_id)
     if result is None:
         raise HTTPException(status_code=404, detail="审查结果尚未就绪")
@@ -134,9 +181,12 @@ async def get_bilingual_analysis(file_id: str):
 # GET /api/reviews/{file_id}/scoring — 多维度评分详情
 # ---------------------------------------------------------------------------
 
-@router.get("/{file_id}/scoring")
+@router.get(
+    "/{file_id}/scoring",
+    summary="Get multi-dimension scoring details",
+    description="Retrieve detailed scoring breakdown across multiple risk dimensions (payment terms, breach liability, confidentiality, etc.) with weight explanations.",
+)
 async def get_scoring_details(file_id: str):
-    """获取多维度评分详情，包含权重说明。"""
     result = review_service.get_review_result(file_id)
     if result is None:
         raise HTTPException(status_code=404, detail="审查结果尚未就绪")
@@ -171,9 +221,12 @@ async def get_scoring_details(file_id: str):
 # GET /api/reviews/{file_id}/export/pdf
 # ---------------------------------------------------------------------------
 
-@router.get("/{file_id}/export/pdf")
+@router.get(
+    "/{file_id}/export/pdf",
+    summary="Export PDF compliance report",
+    description="Generate and download a PDF compliance review report for the specified file. Includes risk scores, issues, and recommendations.",
+)
 async def export_pdf(file_id: str):
-    """导出指定文件的 PDF 合规审查报告。"""
     # 1. 获取审查结果
     result = review_service.get_review_result(file_id)
     if result is None:
@@ -222,9 +275,12 @@ async def export_pdf(file_id: str):
 # GET /api/reviews/{file_id}/export/docx — Track Changes DOCX 导出
 # ---------------------------------------------------------------------------
 
-@router.get("/{file_id}/export/docx")
+@router.get(
+    "/{file_id}/export/docx",
+    summary="Export DOCX with Track Changes",
+    description="Export a DOCX file with Track Changes markup for all adopted (accepted) review issues. Only available when the original file is DOCX format and at least one issue has been adopted.",
+)
 async def export_docx_track_changes(file_id: str):
-    """导出带有 Track Changes 标注的 DOCX 文件（仅采纳的建议）。"""
     # 1. 获取审查结果
     result = review_service.get_review_result(file_id)
     if result is None:
@@ -291,9 +347,10 @@ async def export_docx_track_changes(file_id: str):
 @router.post(
     "/{file_id}/issues/{issue_id}/adopt",
     response_model=IssueActionResponse,
+    summary="Adopt (accept) a review issue",
+    description="Mark a specific review issue as **adopted** (accepted). The issue will be included in Track Changes DOCX exports.",
 )
 async def adopt_issue(file_id: str, issue_id: str):
-    """将指定问题标记为「已采纳」。"""
     data = _load_review_json(file_id)
     issues = data.get("issues", [])
     issue = _find_issue(issues, issue_id)
@@ -329,9 +386,10 @@ async def adopt_issue(file_id: str, issue_id: str):
 @router.post(
     "/{file_id}/issues/{issue_id}/reject",
     response_model=IssueActionResponse,
+    summary="Reject a review issue",
+    description="Mark a specific review issue as **rejected**. Rejected issues will be excluded from Track Changes DOCX exports.",
 )
 async def reject_issue(file_id: str, issue_id: str):
-    """将指定问题标记为「已拒绝」。"""
     data = _load_review_json(file_id)
     issues = data.get("issues", [])
     issue = _find_issue(issues, issue_id)
@@ -364,9 +422,13 @@ async def reject_issue(file_id: str, issue_id: str):
 # GET /api/reviews/{file_id}  (generic — MUST be after specific sub-routes)
 # ---------------------------------------------------------------------------
 
-@router.get("/{file_id}", response_model=ReviewResult)
+@router.get(
+    "/{file_id}",
+    response_model=ReviewResult,
+    summary="Get review result for a file",
+    description="Retrieve the full compliance review result for a specific file, including risk score, risk level, issues list, and all analysis data.",
+)
 async def get_review(file_id: str):
-    """获取指定文件的审查结果。"""
     result = review_service.get_review_result(file_id)
     if result is None:
         raise HTTPException(status_code=404, detail="审查结果尚未就绪")
@@ -377,7 +439,12 @@ async def get_review(file_id: str):
 # GET /api/reviews/audit-log  (审计日志查询)
 # ---------------------------------------------------------------------------
 
-@router.get("/audit-log/log", response_model=AuditLogResponse)
+@router.get(
+    "/audit-log/log",
+    response_model=AuditLogResponse,
+    summary="Query audit log",
+    description="Query the audit log with optional filters for time range, action type, file ID, contract type, and risk level.",
+)
 async def query_audit_log(
     start_time: Optional[str] = Query(None, description="ISO 8601 起始时间"),
     end_time: Optional[str] = Query(None, description="ISO 8601 截止时间"),
@@ -386,7 +453,6 @@ async def query_audit_log(
     contract_type: Optional[str] = Query(None, description="合同类型过滤"),
     risk_level: Optional[str] = Query(None, description="风险等级过滤"),
 ):
-    """查询审计日志。"""
     entries = audit_service.get_audit_log(
         start_time=start_time,
         end_time=end_time,
@@ -431,9 +497,12 @@ def _dimension_description(dim_name: str) -> str:
 # List all reviews
 # ---------------------------------------------------------------------------
 
-@router.get("")
+@router.get(
+    "",
+    summary="List all review results",
+    description="Retrieve a summary list of all completed review results, sorted by review time (newest first). Each entry includes file_id, filename, contract type, risk score, and issue count.",
+)
 async def list_reviews():
-    """List all review results."""
     import json
     from ..core.config import UPLOAD_DIR
     
@@ -468,9 +537,12 @@ async def list_reviews():
 # Compare two reviews
 # ---------------------------------------------------------------------------
 
-@router.post("/compare")
+@router.post(
+    "/compare",
+    summary="Compare two review results",
+    description="Compare the review results of two contracts. Provide `file_id_a` and `file_id_b` in the request body. Returns a diff of risk scores, issues, and clause differences.",
+)
 async def compare_reviews(body: dict):
-    """Compare two review results."""
     import json
     
     file_id_a = body.get("file_id_a") or body.get("file_id_1")
