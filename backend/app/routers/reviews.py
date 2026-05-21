@@ -435,14 +435,14 @@ def _dimension_description(dim_name: str) -> str:
 async def list_reviews():
     """List all review results."""
     import json
-    from ..core.config import settings
+    from ..core.config import UPLOAD_DIR
     
-    reviews_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "uploads", "reviews")
+    reviews_dir = os.path.join(UPLOAD_DIR, 'reviews')
     os.makedirs(reviews_dir, exist_ok=True)
     
     results = []
     for fname in os.listdir(reviews_dir):
-        if not fname.endswith("_review.json"):
+        if not fname.endswith(".json"):
             continue
         fpath = os.path.join(reviews_dir, fname)
         try:
