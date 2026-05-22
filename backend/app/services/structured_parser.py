@@ -13,10 +13,7 @@ from typing import Optional, List, Dict, Any
 logger = logging.getLogger(__name__)
 
 # API 配置（同 compliance_engine.py）
-LLM_API_KEY = os.environ.get(
-    "DEEPSEEK_API_KEY",
-    os.environ.get("OPENAI_API_KEY", ""),
-)
+LLM_API_KEY = os.environ.get("LLM_API_KEY") or os.environ.get("DEEPSEEK_API_KEY") or os.environ.get("OPENAI_API_KEY") or ""
 LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "https://api.stepfun.com")
 LLM_MODEL = os.environ.get("LLM_MODEL", "step-3.5-flash")
 
@@ -308,6 +305,7 @@ async def extract_structured_info(raw_text: str) -> Dict[str, Any]:
         user_msg += raw_text
 
     max_retries = 3
+    backoff_delays = [2, 4, 8]
     for attempt in range(max_retries):
         try:
             async with httpx.AsyncClient(timeout=120.0) as client:
@@ -326,7 +324,7 @@ async def extract_structured_info(raw_text: str) -> Dict[str, Any]:
                 )
 
                 if resp.status_code == 429 and attempt < max_retries - 1:
-                    wait = 5 * (attempt + 1)
+                    wait = backoff_delays[attempt]
                     logger.warning(f"Rate limited (429), retrying in {wait}s... (attempt {attempt+1}/{max_retries})")
                     await asyncio.sleep(wait)
                     continue
@@ -347,7 +345,7 @@ async def extract_structured_info(raw_text: str) -> Dict[str, Any]:
 
         except httpx.HTTPStatusError as e:
             if e.response.status_code == 429 and attempt < max_retries - 1:
-                wait = 5 * (attempt + 1)
+                wait = backoff_delays[attempt]
                 logger.warning(f"Rate limited (429), retrying in {wait}s... (attempt {attempt+1}/{max_retries})")
                 await asyncio.sleep(wait)
                 continue

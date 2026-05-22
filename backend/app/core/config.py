@@ -1,4 +1,8 @@
 import os
+from dotenv import load_dotenv
+
+# Load .env from backend/ directory (config.py = backend/app/core/config.py → 2x dirname = backend/)
+load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), ".env"))
 
 # ── 文件上传 ────────────────────────────────────────────
 UPLOAD_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "uploads")

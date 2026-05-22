@@ -128,6 +128,7 @@ export interface StructuredResponse {
 export interface Entity {
   text: string;
   type: string;
+  context?: string;
   start?: number;
   end?: number;
 }

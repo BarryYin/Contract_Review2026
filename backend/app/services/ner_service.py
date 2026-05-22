@@ -6,16 +6,14 @@ import os
 import re
 import json
 import logging
+import asyncio
 import httpx
 from typing import Optional, List, Dict, Any
 
 logger = logging.getLogger(__name__)
 
 # API 配置（同 compliance_engine.py）
-LLM_API_KEY = os.environ.get(
-    "DEEPSEEK_API_KEY",
-    os.environ.get("OPENAI_API_KEY", ""),
-)
+LLM_API_KEY = os.environ.get("LLM_API_KEY") or os.environ.get("DEEPSEEK_API_KEY") or os.environ.get("OPENAI_API_KEY") or ""
 LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "https://api.stepfun.com")
 LLM_MODEL = os.environ.get("LLM_MODEL", "step-3.5-flash")
 
@@ -226,31 +224,57 @@ async def extract_entities(raw_text: str) -> Dict[str, Any]:
     else:
         user_msg += raw_text
 
-    try:
-        async with httpx.AsyncClient(timeout=120.0) as client:
-            resp = await client.post(
-                f"{LLM_BASE_URL}/v1/chat/completions",
-                headers={"Authorization": f"Bearer {LLM_API_KEY}"},
-                json={
-                    "model": LLM_MODEL,
-                    "messages": [
-                        {"role": "system", "content": NER_SYSTEM_PROMPT},
-                        {"role": "user", "content": user_msg},
-                    ],
-                    "temperature": 0.1,
-                    "max_tokens": 16384,
-                },
-            )
-            resp.raise_for_status()
-            data = resp.json()
+    max_retries = 3
+    backoff_delays = [2, 4, 8]
 
-        content = data["choices"][0]["message"]["content"].strip()
-        parsed = _parse_json_robust(content)
-        result = _normalize_ner_result(parsed)
+    for attempt in range(max_retries):
+        try:
+            async with httpx.AsyncClient(timeout=120.0) as client:
+                resp = await client.post(
+                    f"{LLM_BASE_URL}/v1/chat/completions",
+                    headers={"Authorization": f"Bearer {LLM_API_KEY}"},
+                    json={
+                        "model": LLM_MODEL,
+                        "messages": [
+                            {"role": "system", "content": NER_SYSTEM_PROMPT},
+                            {"role": "user", "content": user_msg},
+                        ],
+                        "temperature": 0.1,
+                        "max_tokens": 16384,
+                    },
+                )
 
-        logger.info(f"NER extraction complete: {result['total']} entities")
-        return result
+                if resp.status_code == 429 and attempt < max_retries - 1:
+                    wait = backoff_delays[attempt]
+                    logger.warning(f"NER rate limited (429), retrying in {wait}s... (attempt {attempt+1}/{max_retries})")
+                    await asyncio.sleep(wait)
+                    continue
 
-    except Exception as e:
-        logger.error(f"NER extraction failed: {e}")
-        return _fallback_ner_result(str(e))
+                resp.raise_for_status()
+                data = resp.json()
+
+            content = data["choices"][0]["message"]["content"].strip()
+            parsed = _parse_json_robust(content)
+            result = _normalize_ner_result(parsed)
+
+            logger.info(f"NER extraction complete: {result['total']} entities")
+            return result
+
+        except httpx.HTTPStatusError as e:
+            if e.response.status_code == 429 and attempt < max_retries - 1:
+                wait = backoff_delays[attempt]
+                logger.warning(f"NER rate limited (429), retrying in {wait}s... (attempt {attempt+1}/{max_retries})")
+                await asyncio.sleep(wait)
+                continue
+            logger.error(f"NER extraction failed: {e}")
+            return _fallback_ner_result(str(e))
+        except Exception as e:
+            if attempt < max_retries - 1:
+                wait = backoff_delays[attempt]
+                logger.warning(f"NER extraction error, retrying in {wait}s... (attempt {attempt+1}/{max_retries}): {e}")
+                await asyncio.sleep(wait)
+                continue
+            logger.error(f"NER extraction failed after {max_retries} retries: {e}")
+            return _fallback_ner_result(str(e))
+
+    return _fallback_ner_result("Max retries exceeded")

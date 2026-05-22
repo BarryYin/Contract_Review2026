@@ -227,8 +227,8 @@ def _compute_consistency_score(items: List[Dict[str, Any]]) -> int:
 
     weight_map = {
         "consistent": 0,
-        "inconsistent": -15,
-        "missing": -8,
+        "inconsistent": -12,
+        "missing": -3,
     }
 
     penalty = 0

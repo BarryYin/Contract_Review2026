@@ -293,8 +293,11 @@ export default function ReviewDetail() {
             {entities.map((e, i) => (
               <span
                 key={i}
-                className={`px-2 py-0.5 rounded text-xs cursor-pointer ${ENTITY_COLORS[e.type] || 'bg-gray-100'}`}
-                onClick={() => setActiveEntity(activeEntity === e ? null : e)}
+                className={`px-2 py-0.5 rounded text-xs cursor-pointer transition-all ${ENTITY_COLORS[e.type] || 'bg-gray-100'} ${activeEntity === e ? 'ring-2 ring-offset-1 ring-blue-400' : ''}`}
+                onClick={() => {
+                  setActiveEntity(activeEntity === e ? null : e);
+                  scrollToEntity(e, entities);
+                }}
               >
                 {e.text}
                 <span className="ml-1 opacity-60">{e.type}</span>
@@ -302,8 +305,15 @@ export default function ReviewDetail() {
             ))}
           </div>
           {activeEntity && (
-            <div className="mt-2 p-2 bg-gray-50 rounded text-sm">
-              <strong>{activeEntity.text}</strong> ({activeEntity.type})
+            <div className="mt-2 p-2 bg-gray-50 rounded text-sm border-l-3 border-blue-400">
+              <div className="font-medium">
+                {activeEntity.text} <span className="opacity-60 text-xs">({activeEntity.type})</span>
+              </div>
+              {activeEntity.context && (
+                <div className="mt-1 text-xs text-gray-500 italic">
+                  ...{activeEntity.context}...
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -409,7 +419,7 @@ export default function ReviewDetail() {
                   >
                     {clause.number && <span className="text-xs text-gray-400 mr-2">#{clause.number}</span>}
                     {clause.title && <strong className="text-sm">{clause.title}</strong>}
-                    <p className="text-sm text-gray-700 mt-1">{showEntities ? highlightEntities(clause.content, entities) : clause.content}</p>
+                    <p className="text-sm text-gray-700 mt-1">{showEntities ? highlightEntities(clause.content, entities, (e) => { setActiveEntity(e); scrollToEntity(e, entities); }) : clause.content}</p>
                     {relatedIssues.length > 0 && (
                       <div className="mt-1 flex gap-1">
                         {relatedIssues.map((ri) => (

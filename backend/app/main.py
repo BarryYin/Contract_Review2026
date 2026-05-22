@@ -1,4 +1,10 @@
 import os
+from dotenv import load_dotenv
+
+# Load .env before any other imports that read env vars
+# __file__ = backend/app/main.py → 2x dirname = backend/
+_env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
+load_dotenv(_env_path)
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware

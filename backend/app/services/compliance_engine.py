@@ -6,16 +6,14 @@ T-RO-01: 输出三要素格式（风险描述 + 法律依据 + 修改示例）
 import os
 import json
 import logging
+import asyncio
 import httpx
 from typing import Optional
 
 logger = logging.getLogger(__name__)
 
 # Step 3.5 Flash API 配置（兼容 OpenAI 格式）
-LLM_API_KEY = os.environ.get(
-    "DEEPSEEK_API_KEY",
-    os.environ.get("OPENAI_API_KEY", ""),
-)
+LLM_API_KEY = os.environ.get("LLM_API_KEY") or os.environ.get("DEEPSEEK_API_KEY") or os.environ.get("OPENAI_API_KEY") or ""
 LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "https://api.stepfun.com")
 LLM_MODEL = os.environ.get("LLM_MODEL", "step-3.5-flash")
 
@@ -113,108 +111,134 @@ async def analyze_contract(raw_text: str, clauses: list[dict] = None) -> dict:
         else:
             user_msg += raw_text
 
-    try:
-        async with httpx.AsyncClient(timeout=120.0) as client:
-            resp = await client.post(
-                f"{LLM_BASE_URL}/v1/chat/completions",
-                headers={"Authorization": f"Bearer {LLM_API_KEY}"},
-                json={
-                    "model": LLM_MODEL,
-                    "messages": [
-                        {"role": "system", "content": SYSTEM_PROMPT},
-                        {"role": "user", "content": user_msg},
-                    ],
-                    "temperature": 0.1,
-                    "max_tokens": 16384,
-                },
-            )
-            resp.raise_for_status()
-            data = resp.json()
+    max_retries = 3
+    backoff_delays = [2, 4, 8]
 
-        content = data["choices"][0]["message"]["content"].strip()
-
-        # 清理 markdown 代码块包裹
-        if content.startswith("```"):
-            content = content.split("\n", 1)[1] if "\n" in content else content[3:]
-        if content.endswith("```"):
-            content = content[:-3]
-        content = content.strip()
-
-        # 尝试直接解析，失败则用正则提取
+    for attempt in range(max_retries):
         try:
-            result = json.loads(content)
-        except json.JSONDecodeError:
-            import re
-            match = re.search(r'\{[\s\S]*\}', content)
-            if match:
-                result = json.loads(match.group())
+            async with httpx.AsyncClient(timeout=120.0) as client:
+                resp = await client.post(
+                    f"{LLM_BASE_URL}/v1/chat/completions",
+                    headers={"Authorization": f"Bearer {LLM_API_KEY}"},
+                    json={
+                        "model": LLM_MODEL,
+                        "messages": [
+                            {"role": "system", "content": SYSTEM_PROMPT},
+                            {"role": "user", "content": user_msg},
+                        ],
+                        "temperature": 0.1,
+                        "max_tokens": 16384,
+                    },
+                )
+
+                if resp.status_code == 429 and attempt < max_retries - 1:
+                    wait = backoff_delays[attempt]
+                    logger.warning(f"Compliance rate limited (429), retrying in {wait}s... (attempt {attempt+1}/{max_retries})")
+                    await asyncio.sleep(wait)
+                    continue
+
+                resp.raise_for_status()
+                data = resp.json()
+
+            content = data["choices"][0]["message"]["content"].strip()
+
+            # 清理 markdown 代码块包裹
+            if content.startswith("```"):
+                content = content.split("\n", 1)[1] if "\n" in content else content[3:]
+            if content.endswith("```"):
+                content = content[:-3]
+            content = content.strip()
+
+            # 尝试直接解析，失败则用正则提取
+            try:
+                result = json.loads(content)
+            except json.JSONDecodeError:
+                import re
+                match = re.search(r'\{[\s\S]*\}', content)
+                if match:
+                    result = json.loads(match.group())
+                else:
+                    raise
+
+            # 校验必要字段
+            assert "contract_type" in result, "Missing contract_type"
+            assert "summary" in result, "Missing summary"
+            assert "risk_score" in result, "Missing risk_score"
+            assert "issues" in result, "Missing issues"
+
+            # 确保 risk_score 在 0-100 范围
+            result["risk_score"] = max(0, min(100, int(result["risk_score"])))
+
+            # 推断 risk_level
+            score = result["risk_score"]
+            if score >= 70:
+                result["risk_level"] = "high"
+            elif score >= 40:
+                result["risk_level"] = "medium"
             else:
-                raise
+                result["risk_level"] = "low"
 
-        # 校验必要字段
-        assert "contract_type" in result, "Missing contract_type"
-        assert "summary" in result, "Missing summary"
-        assert "risk_score" in result, "Missing risk_score"
-        assert "issues" in result, "Missing issues"
+            # 规范化每个 issue 的字段（三要素结构）
+            for i, issue in enumerate(result["issues"], 1):
+                issue["id"] = f"issue_{i}"
 
-        # 确保 risk_score 在 0-100 范围
-        result["risk_score"] = max(0, min(100, int(result["risk_score"])))
+                # 兼容旧格式：如果 LLM 仍返回 description/suggestion，做迁移
+                if "risk_description" not in issue and "description" in issue:
+                    issue["risk_description"] = issue.pop("description", "")
+                if "legal_basis" not in issue:
+                    issue["legal_basis"] = ""
+                if "modification_example" not in issue and "suggestion" in issue:
+                    issue["modification_example"] = {
+                        "original": "",
+                        "suggested": issue.pop("suggestion", ""),
+                    }
 
-        # 推断 risk_level
-        score = result["risk_score"]
-        if score >= 70:
-            result["risk_level"] = "high"
-        elif score >= 40:
-            result["risk_level"] = "medium"
-        else:
-            result["risk_level"] = "low"
+                # 确保三要素字段存在
+                issue.setdefault("title", f"问题 {i}")
+                issue.setdefault("clause_reference", "")
+                issue.setdefault("page_location", "")
+                issue.setdefault("severity", "medium")
+                issue.setdefault("risk_description", "")
+                issue.setdefault("legal_basis", "")
 
-        # 规范化每个 issue 的字段（三要素结构）
-        for i, issue in enumerate(result["issues"], 1):
-            issue["id"] = f"issue_{i}"
+                # 确保 modification_example 结构正确
+                if not isinstance(issue.get("modification_example"), dict):
+                    issue["modification_example"] = {
+                        "original": "",
+                        "suggested": "",
+                    }
+                else:
+                    me = issue["modification_example"]
+                    me.setdefault("original", "")
+                    me.setdefault("suggested", "")
 
-            # 兼容旧格式：如果 LLM 仍返回 description/suggestion，做迁移
-            if "risk_description" not in issue and "description" in issue:
-                issue["risk_description"] = issue.pop("description", "")
-            if "legal_basis" not in issue:
-                issue["legal_basis"] = ""
-            if "modification_example" not in issue and "suggestion" in issue:
-                issue["modification_example"] = {
-                    "original": "",
-                    "suggested": issue.pop("suggestion", ""),
-                }
+                # 移除旧字段避免混淆
+                issue.pop("description", None)
+                issue.pop("suggestion", None)
+                issue.pop("clause", None)
+                issue.pop("risk_type", None)
 
-            # 确保三要素字段存在
-            issue.setdefault("title", f"问题 {i}")
-            issue.setdefault("clause_reference", "")
-            issue.setdefault("page_location", "")
-            issue.setdefault("severity", "medium")
-            issue.setdefault("risk_description", "")
-            issue.setdefault("legal_basis", "")
+            logger.info(f"LLM analysis complete: score={result['risk_score']}, issues={len(result['issues'])}")
+            return result
 
-            # 确保 modification_example 结构正确
-            if not isinstance(issue.get("modification_example"), dict):
-                issue["modification_example"] = {
-                    "original": "",
-                    "suggested": "",
-                }
-            else:
-                me = issue["modification_example"]
-                me.setdefault("original", "")
-                me.setdefault("suggested", "")
+        except httpx.HTTPStatusError as e:
+            if e.response.status_code == 429 and attempt < max_retries - 1:
+                wait = backoff_delays[attempt]
+                logger.warning(f"Compliance rate limited (429), retrying in {wait}s... (attempt {attempt+1}/{max_retries})")
+                await asyncio.sleep(wait)
+                continue
+            logger.error(f"LLM analysis failed: {e}")
+            return _fallback_result(raw_text, error=str(e))
+        except Exception as e:
+            if attempt < max_retries - 1:
+                wait = backoff_delays[attempt]
+                logger.warning(f"LLM analysis error, retrying in {wait}s... (attempt {attempt+1}/{max_retries}): {e}")
+                await asyncio.sleep(wait)
+                continue
+            logger.error(f"LLM analysis failed after {max_retries} retries: {e}")
+            return _fallback_result(raw_text, error=str(e))
 
-            # 移除旧字段避免混淆
-            issue.pop("description", None)
-            issue.pop("suggestion", None)
-            issue.pop("clause", None)
-            issue.pop("risk_type", None)
-
-        logger.info(f"LLM analysis complete: score={result['risk_score']}, issues={len(result['issues'])}")
-        return result
-
-    except Exception as e:
-        logger.error(f"LLM analysis failed: {e}")
-        return _fallback_result(raw_text, error=str(e))
+    return _fallback_result(raw_text, error="Max retries exceeded")
 
 
 def _fallback_result(raw_text: str, error: str = None) -> dict:
