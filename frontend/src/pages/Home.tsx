@@ -118,9 +118,13 @@ export default function Home() {
     if (!selectedTemplate || pendingFiles.length === 0) return;
     setStarting(true);
     try {
-      // Trigger review for each pending file
+      // Trigger review for each pending file (skip 409 = already reviewing)
       for (const f of pendingFiles) {
-        await startReview(f.id, selectedTemplate);
+        try {
+          await startReview(f.id, selectedTemplate);
+        } catch (err: any) {
+          if (!err?.message?.includes('409')) throw err;
+        }
       }
       // Brief delay then navigate to dashboard
       setTimeout(() => {

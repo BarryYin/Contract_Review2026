@@ -33,7 +33,7 @@ export default function FileUpload({ onUploadComplete, onFileUploaded }: FileUpl
             f.id === uploadId ? { ...f, progress } : f
           )
         );
-      }, false);  // autoReview=false — don't auto-trigger review
+      }, true);  // autoReview=true — auto-trigger review on upload
       onFileUploaded?.(fileInfo);
       onUploadComplete?.();
     } catch {
