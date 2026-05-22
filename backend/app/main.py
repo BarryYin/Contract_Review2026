@@ -62,15 +62,8 @@ app.include_router(webhooks.router)
 app.include_router(rules.router)
 
 
-@app.get("/")
-async def root():
-    return {"message": "ContractAI API", "docs": "/docs"}
-
-
-# ── 生产模式：serve 前端静态文件 ──────────────────────────
-# 如果 frontend/dist 目录存在，挂载为静态文件服务
 _dist_dir = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))),
+    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
     "frontend", "dist",
 )
 if os.path.isdir(_dist_dir):
