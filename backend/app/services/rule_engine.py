@@ -219,8 +219,14 @@ class RuleEngine:
         # --- 语义检查标记 ---
         sem_config = config.get("semantic")
         if sem_config:
-            # 语义检查需要 LLM，此处仅做标记
-            evidences.append("[语义检查待LLM分析]")
+            # 语义检查的 description 会被收集，传给 LLM 做深度分析
+            # 此处标记命中，让 review_service 知道需要 LLM 语义审查
+            matched = True
+            sem_desc = sem_config.get("description", "") if isinstance(sem_config, dict) else ""
+            if sem_desc:
+                evidences.append(f"[语义检查]: {sem_desc[:100]}")
+            else:
+                evidences.append("[语义检查待LLM分析]")
 
         # 构造风险描述
         risk_description = risk_template
@@ -320,6 +326,29 @@ class RuleEngine:
             f"RuleEngine.evaluate_all: {len(applicable)} rules -> {matched_count} matched"
         )
         return hits
+
+
+    # ---- 语义检查辅助 ----
+
+    def get_semantic_prompts(self, contract_type: str) -> list[dict]:
+        """
+        获取指定合同类型的所有含 semantic 配置的规则，用于传给 LLM 做深度语义检查。
+        返回 [{rule_name, severity, semantic_description}, ...]
+        """
+        applicable = self._applicable_rules(contract_type)
+        prompts = []
+        for rule in applicable:
+            config = rule.get("check_config", {})
+            sem = config.get("semantic")
+            if sem and isinstance(sem, dict):
+                desc = sem.get("description", "")
+                if desc:
+                    prompts.append({
+                        "rule_name": rule["name"],
+                        "severity": rule.get("severity", "medium"),
+                        "semantic_description": desc,
+                    })
+        return prompts
 
 
 # ---------------------------------------------------------------------------

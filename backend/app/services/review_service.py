@@ -18,6 +18,7 @@ from .ner_service import extract_entities
 from .bilingual_analyzer import analyze_bilingual_consistency, split_bilingual_text
 from .rule_engine import get_rule_engine, RuleHit
 from .scorer import compute_score, DEFAULT_WEIGHTS
+from .cross_clause_analyzer import analyze_cross_clause_risks
 from . import audit_service
 from ..core.config import UPLOAD_DIR
 from . import webhook_service
@@ -73,6 +74,7 @@ def _build_final_result(
     scored: dict,
     ocr_flag: bool,
     file_hash: Optional[str],
+    cross_clause_risks: list = None,
 ) -> dict:
     """将所有分析结果合并为最终审查 JSON。"""
 
@@ -135,6 +137,9 @@ def _build_final_result(
 
         # 原始 LLM risk_score 保留
         "llm_risk_score": llm_result.get("risk_score", 0),
+
+        # 跨条款连锁风险（来自 cross_clause_analyzer）
+        "cross_clause_risks": cross_clause_risks,
 
         # 文件哈希
         "file_hash": file_hash,
@@ -215,6 +220,15 @@ async def review_file(file_id: str, file_path: str):
             f"bilingual={'yes' if bilingual_analysis else 'no'}"
         )
 
+        # ---- 3.5 跨条款连锁风险分析（程序化校验，不依赖 LLM）----
+        cross_clause_risks = []
+        try:
+            cross_clause_risks = analyze_cross_clause_risks(structured_info, raw_text)
+            if cross_clause_risks:
+                logger.info(f"Cross-clause analysis: {len(cross_clause_risks)} issues found")
+        except Exception as e:
+            logger.warning(f"Cross-clause analysis failed (non-fatal): {e}")
+
         # ---- 4. LLM 合规分析 ----
         logger.info(f"Starting LLM compliance analysis for file {file_id}")
         llm_result = await analyze_contract(raw_text, clauses)
@@ -273,6 +287,7 @@ async def review_file(file_id: str, file_path: str):
             scored=scored,
             ocr_flag=ocr_flag,
             file_hash=file_hash,
+            cross_clause_risks=cross_clause_risks,
         )
 
         # ---- 10. 保存结果 ----
