@@ -413,6 +413,98 @@ def generate_pdf_report(
     elements.append(Paragraph(stat_text, styles["body"]))
     elements.append(Spacer(1, 4 * mm))
 
+    # ── 2.5 风险条款汇总表 ──────────────────────────────
+    if issues:
+        elements.append(Paragraph("风险条款汇总", styles["h3"]))
+        elements.append(Spacer(1, 2 * mm))
+
+        # Table header
+        summary_header = [
+            Paragraph("<b>序号</b>", styles["table_header"]),
+            Paragraph("<b>条款</b>", styles["table_header"]),
+            Paragraph("<b>风险等级</b>", styles["table_header"]),
+            Paragraph("<b>风险类型</b>", styles["table_header"]),
+            Paragraph("<b>问题简述</b>", styles["table_header"]),
+        ]
+        summary_rows = [summary_header]
+
+        for idx, issue in enumerate(issues, start=1):
+            clause_ref = issue.get("clause_reference", issue.get("title", f"问题{idx}"))
+            if len(clause_ref) > 20:
+                clause_ref = clause_ref[:20] + "..."
+            sev = issue.get("severity", "low")
+            sev_label = _severity_label(sev)
+            sev_color = _severity_color(sev)
+            risk_cat = issue.get("risk_category", "")
+            cat_map = {
+                "vague_wording": "措辞模糊",
+                "rights_imbalance": "权利不对等",
+                "cross_clause_conflict": "跨条款冲突",
+                "compliance": "合规",
+            }
+            risk_cat_cn = cat_map.get(risk_cat, risk_cat)
+            desc = issue.get("description", issue.get("risk_description", ""))
+            if len(desc) > 40:
+                desc = desc[:40] + "..."
+
+            # Severity badge with colored background
+            sev_style = ParagraphStyle(
+                f"sev_badge_{idx}",
+                fontName="STSong-Light",
+                fontSize=8,
+                leading=11,
+                textColor=white,
+                alignment=TA_CENTER,
+            )
+
+            row = [
+                Paragraph(str(idx), styles["table_cell"]),
+                Paragraph(clause_ref, styles["table_cell"]),
+                Paragraph(f"<b>{sev_label}</b>", sev_style),
+                Paragraph(risk_cat_cn, styles["table_cell"]),
+                Paragraph(desc, styles["table_cell"]),
+            ]
+            summary_rows.append(row)
+
+        col_widths = [10 * mm, 35 * mm, 20 * mm, 25 * mm, 70 * mm]
+        summary_table = Table(summary_rows, colWidths=col_widths, repeatRows=1)
+        summary_table.setStyle(
+            TableStyle(
+                [
+                    # Header row
+                    ("FONTNAME", (0, 0), (-1, 0), "STSong-Light"),
+                    ("BACKGROUND", (0, 0), (-1, 0), HexColor("#1e293b")),
+                    ("TEXTCOLOR", (0, 0), (-1, 0), white),
+                    ("FONTSIZE", (0, 0), (-1, 0), 9),
+                    ("ALIGN", (0, 0), (-1, 0), "CENTER"),
+                    # All cells
+                    ("FONTNAME", (0, 1), (-1, -1), "STSong-Light"),
+                    ("FONTSIZE", (0, 1), (-1, -1), 8),
+                    ("ALIGN", (0, 1), (0, -1), "CENTER"),      # 序号居中
+                    ("ALIGN", (2, 1), (2, -1), "CENTER"),       # 风险等级居中
+                    ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                    # Alternating row background
+                    *[("BACKGROUND", (0, r), (-1, r), HexColor("#f8fafc"))
+                      for r in range(2, len(summary_rows), 2)],
+                    # Severity badge backgrounds
+                    *[
+                        ("BACKGROUND", (2, r), (2, r), _severity_color(issues[r-1].get("severity", "low")))
+                        for r in range(1, len(summary_rows))
+                    ],
+                    # Grid
+                    ("GRID", (0, 0), (-1, -1), 0.3, COLOR_LIGHT_GRAY),
+                    ("BOX", (0, 0), (-1, -1), 0.5, HexColor("#cbd5e1")),
+                    # Padding
+                    ("TOPPADDING", (0, 0), (-1, -1), 4),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 4),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+                ]
+            )
+        )
+        elements.append(summary_table)
+        elements.append(Spacer(1, 4 * mm))
+
     # ── 3. 合规分析摘要 ────────────────────────────────
     elements.append(Paragraph("三、合规分析摘要", styles["h2"]))
     summary = review_data.get("summary", "暂无摘要")

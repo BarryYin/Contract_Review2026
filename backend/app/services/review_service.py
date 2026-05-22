@@ -238,6 +238,36 @@ async def review_file(file_id: str, file_path: str):
             f"issues={len(llm_result.get('issues', []))}"
         )
 
+        # ---- 4.5 程序化填充 page_location ----
+        # clauses 来自 doc_parser，含 page_start/page_end（仅 PDF 有）
+        llm_issues = llm_result.get("issues", [])
+        clause_pages = {c["title"]: c for c in clauses if "page_start" in c}
+        if clause_pages:
+            for issue in llm_issues:
+                if issue.get("page_location"):
+                    continue  # LLM 已填，保留
+                clause_ref = issue.get("clause_reference", "") or issue.get("title", "")
+                if not clause_ref:
+                    continue
+                # Try exact match first, then substring match
+                matched_clause = clause_pages.get(clause_ref)
+                if not matched_clause:
+                    for ct, cv in clause_pages.items():
+                        if clause_ref in ct or ct in clause_ref:
+                            matched_clause = cv
+                            break
+                if matched_clause:
+                    ps = matched_clause["page_start"]
+                    pe = matched_clause["page_end"]
+                    if ps == pe:
+                        issue["page_location"] = f"第{ps}页"
+                    else:
+                        issue["page_location"] = f"第{ps}-{pe}页"
+            logger.info(
+                f"Page location filled: "
+                f"{sum(1 for iss in llm_issues if iss.get('page_location'))}/{len(llm_issues)} issues"
+            )
+
         # ---- 5. 规则引擎评估 ----
         _ct_structured = structured_info.get("contract_type")
         _ct_llm = llm_result.get("contract_type", "")

@@ -87,15 +87,15 @@ def extract_text_from_docx(file_path: str) -> str:
 
 
 def extract_text_from_pdf(file_path: str) -> str:
-    """从 PDF 文件提取纯文本。"""
+    """从 PDF 文件提取纯文本，保留页码标记。"""
     from PyPDF2 import PdfReader
 
     reader = PdfReader(file_path)
     pages = []
-    for page in reader.pages:
+    for i, page in enumerate(reader.pages, start=1):
         text = page.extract_text()
         if text:
-            pages.append(text.strip())
+            pages.append(f"--- PAGE {i} ---\n{text.strip()}")
     return "\n\n".join(pages)
 
 
@@ -113,11 +113,51 @@ def extract_text(file_path: str) -> str:
         raise ValueError(f"不支持的文件格式: {ext}")
 
 
+def _page_at_offset(offset: int, page_map: list[tuple[int, int, int]]) -> int:
+    """
+    根据 page_map 找到给定字符偏移量所在的页码。
+    page_map: [(page_num, start_offset, end_offset), ...]
+    """
+    for page_num, start, end in page_map:
+        if start <= offset < end:
+            return page_num
+    # 超出范围则返回最后一页
+    return page_map[-1][0] if page_map else 0
+
+
+def _build_page_map(text: str) -> list[tuple[int, int, int]]:
+    """
+    扫描文本中的 --- PAGE N --- 标记，构建 (页码, 起始偏移, 结束偏移) 映射。
+    返回 [(page_num, start_offset, end_offset), ...]
+    """
+    page_marker_re = re.compile(r'---\s*PAGE\s+(\d+)\s*---')
+    page_positions = []
+    for m in page_marker_re.finditer(text):
+        page_num = int(m.group(1))
+        page_positions.append((page_num, m.start()))
+
+    if not page_positions:
+        return []
+
+    page_map = []
+    for i, (page_num, start) in enumerate(page_positions):
+        end = page_positions[i + 1][1] if i + 1 < len(page_positions) else len(text)
+        page_map.append((page_num, start, end))
+    return page_map
+
+
 def split_into_clauses(text: str) -> list[dict]:
     """
     将合同文本拆分为条款列表。
-    返回 [{"title": "...", "content": "..."}]
+    返回 [{"title": "...", "content": "...", "page_start": N, "page_end": N}]
+    如果文本中包含 --- PAGE N --- 标记（由 extract_text_from_pdf 插入），
+    会自动标注每个条款的页码范围。
     """
+    # Build page map from markers
+    page_map = _build_page_map(text)
+
+    # Strip page markers for clause splitting (but keep text positions accurate)
+    # We'll work on original text so offsets are correct
     clauses = []
 
     # 常见的中文合同条款编号模式
@@ -132,29 +172,49 @@ def split_into_clauses(text: str) -> list[dict]:
     combined = '|'.join(f'({p})' for p in patterns)
     matches = list(re.finditer(combined, text, re.MULTILINE | re.IGNORECASE))
 
+    # Filter out matches that are inside page markers
+    page_marker_re = re.compile(r'---\s*PAGE\s+\d+\s*---')
+    page_marker_spans = [m.span() for m in page_marker_re.finditer(text)]
+    def _is_page_marker(match):
+        return any(ms <= match.start() < me for ms, me in page_marker_spans)
+    matches = [m for m in matches if not _is_page_marker(m)]
+
     if len(matches) >= 2:
         for i, match in enumerate(matches):
             start = match.start()
             end = matches[i + 1].start() if i + 1 < len(matches) else len(text)
             clause_text = text[start:end].strip()
+            # Remove any page markers within clause text
+            clause_text = page_marker_re.sub('', clause_text).strip()
             lines = clause_text.split('\n', 1)
             title = lines[0].strip()[:100]
-            content = lines[1].strip() if len(lines) > 1 else ""
-            if content or title:
-                clauses.append({"title": title, "content": content})
+            c = lines[1].strip() if len(lines) > 1 else ""
+            if c or title:
+                entry = {"title": title, "content": c}
+                if page_map:
+                    entry["page_start"] = _page_at_offset(start, page_map)
+                    entry["page_end"] = _page_at_offset(end - 1, page_map)
+                clauses.append(entry)
     else:
+        # Fallback: split by double newlines
         paragraphs = re.split(r'\n\s*\n', text)
         for i, para in enumerate(paragraphs):
             para = para.strip()
+            # Skip page markers
+            if page_marker_re.match(para):
+                continue
+            para = page_marker_re.sub('', para).strip()
             if not para:
                 continue
             lines = para.split('\n', 1)
             title = lines[0].strip()[:100]
-            content = lines[1].strip() if len(lines) > 1 else ""
-            clauses.append({
+            c = lines[1].strip() if len(lines) > 1 else ""
+            entry = {
                 "title": title if len(paragraphs) > 1 else f"段落 {i + 1}",
-                "content": content if content else title,
-            })
+                "content": c if c else title,
+            }
+            # We don't have reliable offsets in fallback mode, skip page annotation
+            clauses.append(entry)
 
     return clauses
 
