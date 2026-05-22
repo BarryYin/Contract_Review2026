@@ -241,8 +241,22 @@ export default function ReviewDetail() {
             </div>
           ))}
         </div>
-        <div className="text-xs text-gray-400 flex items-center gap-1">
-          <span>💡 悬停维度名称查看权重说明</span>
+        <div className="bg-gray-50 rounded-lg p-3 text-xs border">
+          <div className="font-medium text-gray-600 mb-2">📊 评分权重说明</div>
+          <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+            {scoring?.weight_explanation?.map((w) => (
+              <div key={w.dimension} className="flex items-center gap-1">
+                <span className="text-gray-500">{w.dimension}</span>
+                <span className="font-medium text-gray-700">{w.weight_percentage}</span>
+                <span className="text-gray-400 truncate" title={w.description}>— {w.description}</span>
+              </div>
+            ))}
+          </div>
+          {scoring?.scoring_explanation && (
+            <div className="mt-2 pt-2 border-t border-gray-200 text-gray-500">
+              {scoring.scoring_explanation}
+            </div>
+          )}
         </div>
         <div className="flex gap-2">
           <button

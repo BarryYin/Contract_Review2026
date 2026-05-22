@@ -252,7 +252,7 @@ async def review_file(file_id: str, file_path: str):
         )
 
         # ---- 6. 多维度评分 ----
-        scored = compute_score(rule_hits, llm_result.get("issues", []))
+        scored = compute_score(rule_hits, llm_result.get("issues", []), cross_clause_risks)
         logger.info(
             f"Scoring: overall={scored['overall_score']}, "
             f"risk_level={scored['risk_level']}"

@@ -24,13 +24,25 @@ RULE_DIMENSION_MAP: Dict[str, str] = {
 
 # 维度 -> 默认权重（总和 = 100%）
 DEFAULT_WEIGHTS: Dict[str, float] = {
-    "违约责任": 0.20,
-    "付款条款": 0.15,
-    "保密义务": 0.15,
-    "知识产权": 0.15,
-    "争议解决": 0.10,
-    "免责条款": 0.15,
-    "终止条款": 0.10,
+    "违约责任": 0.15,
+    "付款条款": 0.10,
+    "保密义务": 0.10,
+    "知识产权": 0.10,
+    "争议解决": 0.08,
+    "免责条款": 0.10,
+    "终止条款": 0.07,
+    # 语义级风险维度（新增）
+    "措辞模糊": 0.10,
+    "权利不对等": 0.12,
+    "跨条款冲突": 0.08,
+}
+
+# risk_category（compliance_engine 新增字段） -> 维度映射
+RISK_CATEGORY_DIMENSION_MAP: Dict[str, str] = {
+    "vague_wording": "措辞模糊",
+    "rights_imbalance": "权利不对等",
+    "cross_clause_conflict": "跨条款冲突",
+    "compliance": "",  # 按关键词启发式映射
 }
 
 # LLM issue 标题关键词 -> 维度映射（启发式）
@@ -87,8 +99,15 @@ def _map_rule_to_dimension(rule_name: str) -> str:
 
 
 def _map_llm_issue_to_dimension(issue: Dict[str, Any]) -> str:
-    """通过关键词启发式将 LLM issue 映射到维度。"""
-    # 优先按 title 匹配
+    """将 LLM issue 映射到维度。优先使用 risk_category，回退到关键词启发式。"""
+    # 优先按 risk_category 映射
+    risk_category = issue.get("risk_category", "")
+    if risk_category:
+        cat_dim = RISK_CATEGORY_DIMENSION_MAP.get(risk_category, "")
+        if cat_dim:
+            return cat_dim
+
+    # 回退：按关键词启发式映射
     title = issue.get("title", "")
     risk_desc = issue.get("risk_description", "")
     combined = f"{title} {risk_desc}"
@@ -103,6 +122,7 @@ def _map_llm_issue_to_dimension(issue: Dict[str, Any]) -> str:
 def compute_score(
     rule_hits: List[Any],
     llm_issues: Optional[List[Dict[str, Any]]] = None,
+    cross_clause_risks: Optional[List[Dict[str, Any]]] = None,
 ) -> Dict[str, Any]:
     """
     基于规则命中 + LLM 问题计算多维度评分。
@@ -163,6 +183,32 @@ def compute_score(
         dimension_penalties[dim] = dimension_penalties.get(dim, 0.0) + penalty
         dimension_issue_counts[dim] = dimension_issue_counts.get(dim, 0) + 1
 
+    # 跨条款连锁风险（来自 cross_clause_analyzer）
+    if cross_clause_risks is None:
+        cross_clause_risks = []
+    for cc_risk in cross_clause_risks:
+        issue_type = cc_risk.get("issue_type", "")
+        severity = cc_risk.get("severity", "medium")
+        # 映射到维度
+        cc_dim_map = {
+            "confidentiality_period_missing": "保密义务",
+            "confidentiality_shorter_than_contract": "保密义务",
+            "payment_cycle_excessive": "付款条款",
+            "liability_exemption_conflict": "免责条款",
+            "termination_notice_imbalance": "终止条款",
+            "termination_unconditional_vs_notice": "终止条款",
+            "arbitration_litigation_conflict": "争议解决",
+            "missing_parties": "其他",
+            "missing_contract_period": "其他",
+            "missing_payment_terms": "付款条款",
+            "missing_liability_terms": "违约责任",
+            "missing_dispute_resolution": "争议解决",
+        }
+        dim = cc_dim_map.get(issue_type, "跨条款冲突")
+        penalty = SEVERITY_PENALTY.get(severity, 10.0)
+        dimension_penalties[dim] = dimension_penalties.get(dim, 0.0) + penalty
+        dimension_issue_counts[dim] = dimension_issue_counts.get(dim, 0) + 1
+
     # --- 2. 计算各维度分数 ---
     all_dimensions = set(list(DEFAULT_WEIGHTS.keys()) + list(dimension_penalties.keys()))
 
@@ -215,6 +261,16 @@ def compute_score(
 
     for issue in llm_issues:
         sev = issue.get("severity", "medium")
+        if sev == "high":
+            high_count += 1
+        elif sev == "medium":
+            medium_count += 1
+        else:
+            low_count += 1
+
+    # 跨条款风险也纳入风险等级计数
+    for cc_risk in cross_clause_risks:
+        sev = cc_risk.get("severity", "medium")
         if sev == "high":
             high_count += 1
         elif sev == "medium":
