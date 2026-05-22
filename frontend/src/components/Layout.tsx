@@ -1,5 +1,5 @@
 import { Outlet, NavLink } from 'react-router-dom';
-import { Shield, Home, FileText, ClipboardCheck } from 'lucide-react';
+import { Shield, Home, FileText, ClipboardCheck, ScrollText } from 'lucide-react';
 
 export default function Layout() {
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
@@ -49,6 +49,10 @@ export default function Layout() {
               <NavLink to="/review/latest" className={navLinkClass}>
                 <ClipboardCheck className="w-4 h-4" />
                 审查报告
+              </NavLink>
+              <NavLink to="/audit-log" className={navLinkClass}>
+                <ScrollText className="w-4 h-4" />
+                审计日志
               </NavLink>
               <NavLink to="/rules" className={navLinkClass}>
                 规则管理

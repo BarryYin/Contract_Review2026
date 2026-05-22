@@ -38,6 +38,11 @@ export default function Dashboard() {
   const [compareMode, setCompareMode] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [uploading, setUploading] = useState(false);
+  // Filters
+  const [filterRisk, setFilterRisk] = useState<string>('all');
+  const [filterType, setFilterType] = useState<string>('all');
+  const [filterDateFrom, setFilterDateFrom] = useState<string>('');
+  const [filterDateTo, setFilterDateTo] = useState<string>('');
 
   useEffect(() => {
     loadReviews();
@@ -79,7 +84,16 @@ export default function Dashboard() {
     navigate(`/compare?a=${ids[0]}&b=${ids[1]}`);
   };
 
-  const sorted = [...reviews].sort((a, b) => {
+  // Apply filters
+  const filtered = reviews.filter((r) => {
+    if (filterRisk !== 'all' && r.risk_level !== filterRisk) return false;
+    if (filterType !== 'all' && r.contract_type !== filterType) return false;
+    if (filterDateFrom && r.review_time && r.review_time.slice(0, 10) < filterDateFrom) return false;
+    if (filterDateTo && r.review_time && r.review_time.slice(0, 10) > filterDateTo) return false;
+    return true;
+  });
+
+  const sorted = [...filtered].sort((a, b) => {
     if (sortBy === 'score') return a.risk_score - b.risk_score;
     if (sortBy === 'risk') {
       const order: Record<string, number> = { high: 0, medium: 1, low: 2 };
@@ -97,7 +111,7 @@ export default function Dashboard() {
   return (
     <div className="max-w-7xl mx-auto p-4">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">批量审查 Dashboard</h1>
+        <h1 className="text-2xl font-bold">批量审查 Dashboard <span className="text-sm font-normal text-gray-400 ml-2">{filtered.length} / {reviews.length} 份</span></h1>
         <div className="flex gap-2">
           <button
             onClick={() => setCompareMode(!compareMode)}
@@ -139,6 +153,52 @@ export default function Dashboard() {
           <div className="text-2xl font-bold text-green-600">{lowCount}</div>
           <div className="text-xs text-gray-500">低风险</div>
         </div>
+      </div>
+
+      {/* Filters */}
+      <div className="bg-white rounded-lg shadow p-3 mb-4 flex flex-wrap items-center gap-3">
+        <span className="text-sm text-gray-500">筛选:</span>
+        <select
+          value={filterRisk}
+          onChange={(e) => setFilterRisk(e.target.value)}
+          className="border rounded px-2 py-1 text-sm"
+        >
+          <option value="all">全部风险等级</option>
+          <option value="high">高风险</option>
+          <option value="medium">中风险</option>
+          <option value="low">低风险</option>
+        </select>
+        <select
+          value={filterType}
+          onChange={(e) => setFilterType(e.target.value)}
+          className="border rounded px-2 py-1 text-sm"
+        >
+          <option value="all">全部合同类型</option>
+          {[...new Set(reviews.map((r) => r.contract_type).filter(Boolean))].map((t) => (
+            <option key={t} value={t!}>{t}</option>
+          ))}
+        </select>
+        <input
+          type="date"
+          value={filterDateFrom}
+          onChange={(e) => setFilterDateFrom(e.target.value)}
+          className="border rounded px-2 py-1 text-sm"
+          placeholder="起始日期"
+        />
+        <span className="text-gray-400">~</span>
+        <input
+          type="date"
+          value={filterDateTo}
+          onChange={(e) => setFilterDateTo(e.target.value)}
+          className="border rounded px-2 py-1 text-sm"
+          placeholder="截止日期"
+        />
+        <button
+          onClick={() => { setFilterRisk('all'); setFilterType('all'); setFilterDateFrom(''); setFilterDateTo(''); }}
+          className="text-xs text-gray-400 hover:text-gray-600"
+        >
+          重置
+        </button>
       </div>
 
       {/* Sort */}
@@ -225,8 +285,10 @@ export default function Dashboard() {
       {/* Cards */}
       {loading ? (
         <div className="text-center text-gray-500 py-8">加载中...</div>
-      ) : sorted.length === 0 ? (
+      ) : reviews.length === 0 ? (
         <div className="text-center text-gray-500 py-8">暂无审查结果，请上传合同文件</div>
+      ) : sorted.length === 0 ? (
+        <div className="text-center text-gray-500 py-8">没有匹配的审查结果，请调整筛选条件</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {sorted.map((r) => (
