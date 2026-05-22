@@ -4,6 +4,7 @@ import Home from './pages/Home'
 import ReviewDetail from './pages/ReviewDetail'
 import Dashboard from './pages/Dashboard'
 import Compare from './pages/Compare'
+import RulesManage from './pages/RulesManage'
 import LatestReviewRedirect from './components/LatestReviewRedirect'
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
           <Route path="review/:fileId" element={<ReviewDetail />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="compare" element={<Compare />} />
+          <Route path="rules" element={<RulesManage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

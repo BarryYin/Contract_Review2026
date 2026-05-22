@@ -20,6 +20,7 @@ from .rule_engine import get_rule_engine, RuleHit
 from .scorer import compute_score, DEFAULT_WEIGHTS
 from . import audit_service
 from ..core.config import UPLOAD_DIR
+from . import webhook_service
 
 logger = logging.getLogger(__name__)
 

@@ -50,6 +50,9 @@ export default function Layout() {
                 <ClipboardCheck className="w-4 h-4" />
                 审查报告
               </NavLink>
+              <NavLink to="/rules" className={navLinkClass}>
+                规则管理
+              </NavLink>
             </nav>
           </div>
           {/* Right: Avatar */}

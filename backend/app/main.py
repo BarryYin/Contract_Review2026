@@ -12,7 +12,7 @@ from fastapi.staticfiles import StaticFiles
 
 from .core.config import CORS_ORIGINS
 from .middleware.error_handler import ErrorHandlerMiddleware
-from .routers import health, files, reviews
+from .routers import health, files, reviews, webhooks, rules
 
 app = FastAPI(
     title="ContractAI - 智能合同合规审查工具",
@@ -58,6 +58,8 @@ app.add_middleware(ErrorHandlerMiddleware)
 app.include_router(health.router)
 app.include_router(files.router)
 app.include_router(reviews.router)
+app.include_router(webhooks.router)
+app.include_router(rules.router)
 
 
 @app.get("/")
