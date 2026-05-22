@@ -182,6 +182,21 @@ async def get_structured_info(file_id: str):
             "issue_id": issue.get("id", ""),
         })
 
+    # Normalise entities: ensure each entity has both `text` and `value` fields
+    # Backend NER returns `value`, frontend expects `text`
+    normalised_entities = []
+    for ent in entities.get("entities", []):
+        if isinstance(ent, dict):
+            ne = dict(ent)
+            ne["text"] = ne.get("text") or ne.get("value", "")
+            ne["value"] = ne.get("value") or ne.get("text", "")
+            normalised_entities.append(ne)
+    entities_out = {
+        "entities": normalised_entities,
+        "total": entities.get("total", len(normalised_entities)),
+        "type_counts": entities.get("type_counts", {}),
+    }
+
     return {
         "file_id": file_id,
         "contract_type": structured_info.get("contract_type", "未识别"),
@@ -193,7 +208,7 @@ async def get_structured_info(file_id: str):
         "confidentiality": structured_info.get("confidentiality", []),
         "intellectual_property": structured_info.get("intellectual_property", []),
         "termination": structured_info.get("termination", []),
-        "entities": entities,
+        "entities": entities_out,
         "clauses": clauses,
     }
 

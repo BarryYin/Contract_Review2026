@@ -41,14 +41,22 @@ const ENTITY_COLORS: Record<string, string> = {
 };
 
 // Utility: highlight entities in text
-function highlightEntities(text: string, entities: Entity[]): React.ReactNode {
+function highlightEntities(
+  text: string,
+  entities: Entity[],
+  onClickEntity?: (e: Entity) => void,
+): React.ReactNode {
   if (!entities.length) return text;
-  
+
+  // Entity has `text` (frontend) or `value` (backend NER) — normalise
+  const getVal = (e: Entity) => e.text || (e as any).value || '';
+
   // Sort entities by position in text (earliest first)
   const sorted = [...entities]
     .map((e) => {
-      const idx = text.indexOf(e.text);
-      return { ...e, idx };
+      const val = getVal(e);
+      const idx = text.indexOf(val);
+      return { ...e, _val: val, idx };
     })
     .filter((e) => e.idx >= 0)
     .sort((a, b) => a.idx - b.idx);
@@ -64,19 +72,36 @@ function highlightEntities(text: string, entities: Entity[]): React.ReactNode {
     }
     parts.push(
       <span
-        key={`e-${entity.idx}-${entity.text}`}
+        key={`e-${entity.idx}-${entity._val}`}
         className={`px-0.5 rounded-sm cursor-pointer text-xs ${ENTITY_COLORS[entity.type] || 'bg-gray-100'}`}
-        title={`${entity.type}: ${entity.text}`}
+        title={`${entity.type}: ${entity._val}`}
+        onClick={(ev) => { ev.stopPropagation(); onClickEntity?.(entity); }}
       >
-        {entity.text}
+        {entity._val}
       </span>
     );
-    cursor = entity.idx + entity.text.length;
+    cursor = entity.idx + entity._val.length;
   }
   if (cursor < text.length) parts.push(text.slice(cursor));
   return <>{parts}</>;
 }
 
+
+// Scroll contract text area to show the entity in context
+function scrollToEntityInClause(entity: Entity, allEntities: Entity[]) {
+  const val = (entity as any).text || (entity as any).value || '';
+  if (!val) return;
+  // Find the clause element containing this entity text
+  const clausesEl = document.getElementById('contract-clauses');
+  if (!clausesEl) return;
+  const spans = clausesEl.querySelectorAll('span[title]');
+  for (const span of spans) {
+    if (span.textContent?.includes(val)) {
+      span.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+  }
+}
 
 export default function ReviewDetail() {
   const { fileId } = useParams<{ fileId: string }>();
@@ -297,10 +322,10 @@ export default function ReviewDetail() {
                 className={`px-2 py-0.5 rounded text-xs cursor-pointer transition-all ${ENTITY_COLORS[e.type] || 'bg-gray-100'} ${activeEntity === e ? 'ring-2 ring-offset-1 ring-blue-400' : ''}`}
                 onClick={() => {
                   setActiveEntity(activeEntity === e ? null : e);
-                  scrollToEntity(e, entities);
+                  scrollToEntityInClause(e, entities);
                 }}
               >
-                {e.text}
+                {(e as any).text || (e as any).value || ''}
                 <span className="ml-1 opacity-60">{e.type}</span>
               </span>
             ))}
@@ -308,7 +333,7 @@ export default function ReviewDetail() {
           {activeEntity && (
             <div className="mt-2 p-2 bg-gray-50 rounded text-sm border-l-3 border-blue-400">
               <div className="font-medium">
-                {activeEntity.text} <span className="opacity-60 text-xs">({activeEntity.type})</span>
+                {(activeEntity as any).text || (activeEntity as any).value || ''} <span className="opacity-60 text-xs">({activeEntity.type})</span>
               </div>
               {activeEntity.context && (
                 <div className="mt-1 text-xs text-gray-500 italic">
@@ -398,7 +423,7 @@ export default function ReviewDetail() {
         <div className="flex-1 bg-white rounded-lg shadow p-4 overflow-y-auto" style={{ maxHeight: '80vh' }}>
           <h3 className="font-semibold mb-3">合同条款</h3>
           {clauses.length > 0 ? (
-            <div className="space-y-3">
+            <div className="space-y-3" id="contract-clauses">
               {clauses.map((clause, idx) => {
                 const relatedIssues = issues.filter(
                   (i) => i.clause_reference?.includes(clause.number || '') || i.clause_reference?.includes(clause.title || '')
@@ -420,7 +445,7 @@ export default function ReviewDetail() {
                   >
                     {clause.number && <span className="text-xs text-gray-400 mr-2">#{clause.number}</span>}
                     {clause.title && <strong className="text-sm">{clause.title}</strong>}
-                    <p className="text-sm text-gray-700 mt-1">{showEntities ? highlightEntities(clause.content, entities, (e) => { setActiveEntity(e); scrollToEntity(e, entities); }) : clause.content}</p>
+                    <p className="text-sm text-gray-700 mt-1">{showEntities ? highlightEntities(clause.content, entities, (e) => { setActiveEntity(e); scrollToEntityInClause(e, entities); }) : clause.content}</p>
                     {relatedIssues.length > 0 && (
                       <div className="mt-1 flex gap-1">
                         {relatedIssues.map((ri) => (

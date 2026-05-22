@@ -126,9 +126,12 @@ export interface StructuredResponse {
 /* ── NER Entities ──────────────────────────────────── */
 
 export interface Entity {
-  text: string;
+  text?: string;           // frontend field
+  value?: string;          // backend NER field (normalised to text by frontend)
   type: string;
   context?: string;
+  position_hint?: string;  // backend NER field
+  color?: string;          // backend NER field
   start?: number;
   end?: number;
 }
