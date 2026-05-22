@@ -16,6 +16,15 @@ interface ComparisonResult {
     common_titles: string[];
   };
   dimension_comparison: { dimension: string; score_a: number; score_b: number; diff: number }[];
+  clause_diffs: {
+    clause_key: string;
+    number: string;
+    title: string;
+    status: 'identical' | 'modified' | 'only_a' | 'only_b';
+    content_a: string;
+    content_b: string;
+    changes: { type: string; old: string; new: string }[];
+  }[];
 }
 
 const scoreColor = (s: number) => (s >= 80 ? 'text-green-600' : s >= 60 ? 'text-orange-500' : 'text-red-600');
@@ -159,10 +168,10 @@ export default function Compare() {
         </div>
       )}
 
-      {/* Field diffs */}
+      {/* Field diffs (structured info) */}
       {data.field_diffs.length > 0 && (
         <div className="bg-white rounded-lg shadow p-4 mb-4">
-          <h3 className="font-semibold mb-3">条款差异</h3>
+          <h3 className="font-semibold mb-3">结构化字段差异</h3>
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b">
@@ -191,6 +200,77 @@ export default function Compare() {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Clause-level text diff (逐条对比) */}
+      {data.clause_diffs && data.clause_diffs.length > 0 && (
+        <div className="bg-white rounded-lg shadow p-4 mb-4">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold">逐条条款对比</h3>
+            <div className="flex gap-3 text-xs text-gray-500">
+              <span><span className="inline-block w-3 h-3 bg-red-100 border border-red-300 rounded-sm align-middle mr-1" />删除</span>
+              <span><span className="inline-block w-3 h-3 bg-green-100 border border-green-300 rounded-sm align-middle mr-1" />新增</span>
+              <span><span className="inline-block w-3 h-3 bg-yellow-100 border border-yellow-300 rounded-sm align-middle mr-1" />修改</span>
+            </div>
+          </div>
+          <div className="space-y-3">
+            {data.clause_diffs
+              .filter((c) => c.status !== 'identical')
+              .map((clause, idx) => (
+                <div key={idx} className="border rounded-lg overflow-hidden">
+                  <div className={`px-3 py-2 text-sm font-medium flex items-center gap-2 ${
+                    clause.status === 'modified' ? 'bg-yellow-50 border-b border-yellow-200' :
+                    clause.status === 'only_a' ? 'bg-red-50 border-b border-red-200' :
+                    'bg-green-50 border-b border-green-200'
+                  }`}>
+                    <span className="text-gray-400">#{clause.number || '?'}</span>
+                    <span>{clause.title || clause.clause_key}</span>
+                    <span className={`ml-auto text-xs px-2 py-0.5 rounded ${
+                      clause.status === 'modified' ? 'bg-yellow-200 text-yellow-800' :
+                      clause.status === 'only_a' ? 'bg-red-200 text-red-800' :
+                      'bg-green-200 text-green-800'
+                    }`}>
+                      {clause.status === 'modified' ? '已修改' : clause.status === 'only_a' ? 'A独有' : 'B独有'}
+                    </span>
+                  </div>
+                  {clause.status === 'modified' && clause.changes.length > 0 ? (
+                    <div className="p-3 text-sm space-y-2">
+                      {clause.changes.map((ch, ci) => (
+                        <div key={ci} className="flex gap-2">
+                          {(ch.type === 'replace' || ch.type === 'delete') && ch.old && (
+                            <div className="flex-1 bg-red-50 border border-red-200 rounded p-2">
+                              <div className="text-xs text-red-500 mb-1">- 原文</div>
+                              <div className="text-red-800 whitespace-pre-wrap">{ch.old}</div>
+                            </div>
+                          )}
+                          {(ch.type === 'replace' || ch.type === 'insert') && ch.new && (
+                            <div className="flex-1 bg-green-50 border border-green-200 rounded p-2">
+                              <div className="text-xs text-green-600 mb-1">+ 新文</div>
+                              <div className="text-green-800 whitespace-pre-wrap">{ch.new}</div>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="p-3 grid grid-cols-2 gap-2">
+                      <div className={clause.status === 'only_a' ? 'bg-red-50' : ''}>
+                        <div className="text-xs text-gray-400 mb-1">合同 A</div>
+                        <div className="text-sm whitespace-pre-wrap">{clause.content_a || '-'}</div>
+                      </div>
+                      <div className={clause.status === 'only_b' ? 'bg-green-50' : ''}>
+                        <div className="text-xs text-gray-400 mb-1">合同 B</div>
+                        <div className="text-sm whitespace-pre-wrap">{clause.content_b || '-'}</div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            {data.clause_diffs.every((c) => c.status === 'identical') && (
+              <div className="text-center text-gray-400 py-4">两份合同条款内容完全一致</div>
+            )}
+          </div>
         </div>
       )}
     </div>

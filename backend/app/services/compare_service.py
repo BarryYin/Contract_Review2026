@@ -1,5 +1,6 @@
 """Contract comparison service - diffs two review results."""
-from typing import Dict, Any, List, Optional
+import difflib
+from typing import Dict, Any, List, Optional, Tuple
 
 
 def compare_reviews(review_a: Dict[str, Any], review_b: Dict[str, Any]) -> Dict[str, Any]:
@@ -39,6 +40,12 @@ def compare_reviews(review_a: Dict[str, Any], review_b: Dict[str, Any]) -> Dict[
                 "status": "different" if (va and vb) else ("only_a" if va else "only_b"),
             })
 
+    # Clause-level text diff (逐条对比)
+    result["clause_diffs"] = _diff_clauses(
+        sa.get("clauses") or [],
+        sb.get("clauses") or [],
+    )
+
     return result
 
 
@@ -77,6 +84,90 @@ def _find_common(ia: List[Dict], ib: List[Dict]) -> List[str]:
     titles_a = {i.get("title", "") for i in ia if i.get("title")}
     titles_b = {i.get("title", "") for i in ib if i.get("title")}
     return sorted(titles_a & titles_b)
+
+
+def _diff_clauses(
+    clauses_a: List[Dict], clauses_b: List[Dict]
+) -> List[Dict[str, Any]]:
+    """逐条对比两个合同的条款文本，生成带高亮标记的 diff。"""
+    # Build lookup by clause number/title
+    def _key(c: Dict) -> str:
+        return c.get("number", "") or c.get("title", "") or c.get("content", "")[:30]
+
+    map_a = {_key(c): c for c in clauses_a}
+    map_b = {_key(c): c for c in clauses_b}
+    all_keys = list(dict.fromkeys(list(map_a.keys()) + list(map_b.keys())))
+
+    diffs = []
+    for key in all_keys:
+        ca = map_a.get(key)
+        cb = map_b.get(key)
+
+        if ca and not cb:
+            diffs.append({
+                "clause_key": key,
+                "number": ca.get("number", ""),
+                "title": ca.get("title", ""),
+                "status": "only_a",
+                "content_a": ca.get("content", ""),
+                "content_b": "",
+                "changes": [],
+            })
+            continue
+        if cb and not ca:
+            diffs.append({
+                "clause_key": key,
+                "number": cb.get("number", ""),
+                "title": cb.get("title", ""),
+                "status": "only_b",
+                "content_a": "",
+                "content_b": cb.get("content", ""),
+                "changes": [],
+            })
+            continue
+
+        # Both exist — do line-level diff
+        text_a = (ca.get("content") or "").strip()
+        text_b = (cb.get("content") or "").strip()
+
+        if text_a == text_b:
+            diffs.append({
+                "clause_key": key,
+                "number": ca.get("number", ""),
+                "title": ca.get("title", ""),
+                "status": "identical",
+                "content_a": text_a,
+                "content_b": text_b,
+                "changes": [],
+            })
+            continue
+
+        # Use difflib for fine-grained diff
+        lines_a = text_a.splitlines() if text_a else []
+        lines_b = text_b.splitlines() if text_b else []
+        matcher = difflib.SequenceMatcher(None, lines_a, lines_b)
+
+        changes: List[Dict[str, str]] = []
+        for op, i1, i2, j1, j2 in matcher.get_opcodes():
+            if op == "equal":
+                continue
+            changes.append({
+                "type": op,  # replace / insert / delete
+                "old": "\n".join(lines_a[i1:i2]),
+                "new": "\n".join(lines_b[j1:j2]),
+            })
+
+        diffs.append({
+            "clause_key": key,
+            "number": ca.get("number", cb.get("number", "")),
+            "title": ca.get("title", cb.get("title", "")),
+            "status": "modified",
+            "content_a": text_a,
+            "content_b": text_b,
+            "changes": changes,
+        })
+
+    return diffs
 
 
 def _truncate(val: Any, max_len: int = 200) -> Any:

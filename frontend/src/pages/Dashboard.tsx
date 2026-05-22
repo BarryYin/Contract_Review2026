@@ -150,33 +150,74 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {/* Heatmap */}
+      {/* Heatmap — full scrollable with continuous color scale */}
       {reviews.length > 0 && (
-        <div className="bg-white rounded-lg shadow p-3 mb-4">
-          <h3 className="font-semibold text-sm mb-2">风险分布热力图</h3>
-          <div className="grid gap-1" style={{ gridTemplateColumns: `180px repeat(${Math.min(reviews.length, 7)}, 1fr)` }}>
-            <div />
-            {reviews.slice(0, 7).map((r) => (
-              <div key={r.file_id} className="text-xs text-center truncate" title={r.filename}>
-                {r.filename?.slice(0, 10)}
-              </div>
-            ))}
-            {['评分', '风险', '问题数'].map((label) => (
-              <Fragment key={label}>
-                <div className="text-xs text-gray-500">{label}</div>
-                {reviews.slice(0, 7).map((r) => {
-                  const val = label === '评分' ? r.risk_score : label === '风险' ? (r.risk_level === 'high' ? 3 : r.risk_level === 'medium' ? 2 : 1) : r.issues_count;
-                  const max = label === '评分' ? 100 : label === '风险' ? 3 : 15;
-                  const intensity = Math.min(val / max, 1);
-                  const bg = intensity > 0.66 ? 'bg-red-200' : intensity > 0.33 ? 'bg-orange-200' : 'bg-green-200';
-                  return (
-                    <div key={`${label}-${r.file_id}`} className={`text-center text-xs py-1 rounded ${bg}`}>
-                      {val}
-                    </div>
-                  );
+        <div className="bg-white rounded-lg shadow p-4 mb-4">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold text-sm">风险分布热力图</h3>
+            <div className="flex items-center gap-2 text-xs text-gray-400">
+              <span>安全</span>
+              <div className="flex h-3 rounded overflow-hidden" style={{ width: 120 }}>
+                {Array.from({ length: 10 }, (_, i) => {
+                  const t = i / 9;
+                  const r = Math.round(34 + t * 221);
+                  const g = Math.round(197 - t * 145);
+                  const b = Math.round(94 - t * 62);
+                  return <div key={i} style={{ flex: 1, backgroundColor: `rgb(${r},${g},${b})` }} />;
                 })}
-              </Fragment>
-            ))}
+              </div>
+              <span>危险</span>
+            </div>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs border-collapse" style={{ minWidth: Math.max(400, reviews.length * 90 + 80) }}>
+              <thead>
+                <tr>
+                  <th className="text-left py-1 px-2 w-20 text-gray-500 font-normal sticky left-0 bg-white z-10">维度</th>
+                  {reviews.map((r) => (
+                    <th key={r.file_id} className="text-center py-1 px-1 font-normal">
+                      <div className="truncate max-w-[80px]" title={r.filename}>{r.filename?.replace(/\.[^.]+$/, '').slice(0, 8)}</div>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { label: '评分', getValue: (r: ReviewItem) => r.risk_score, max: 100, invert: true },
+                  { label: '高风险', getValue: (r: ReviewItem) => reviews.filter(x => x.risk_level === 'high' && x.file_id === r.file_id).length ? 1 : 0, max: 1, invert: false },
+                  { label: '问题数', getValue: (r: ReviewItem) => r.issues_count, max: Math.max(...reviews.map(x => x.issues_count), 1), invert: false },
+                  { label: '风险等级', getValue: (r: ReviewItem) => r.risk_level === 'high' ? 3 : r.risk_level === 'medium' ? 2 : 1, max: 3, invert: false },
+                ].map((row) => (
+                  <tr key={row.label} className="border-t">
+                    <td className="py-1 px-2 text-gray-500 sticky left-0 bg-white z-10">{row.label}</td>
+                    {reviews.map((r) => {
+                      const val = row.getValue(r);
+                      const intensity = Math.min(val / row.max, 1);
+                      // Continuous green → yellow → red
+                      const t = row.invert ? 1 - intensity : intensity;
+                      const cr = Math.round(34 + t * 221);
+                      const cg = Math.round(197 - t * 145);
+                      const cb = Math.round(94 - t * 62);
+                      return (
+                        <td key={r.file_id} className="text-center py-1.5 px-1">
+                          <div
+                            className="rounded px-1 py-0.5 font-medium"
+                            style={{
+                              backgroundColor: `rgba(${cr},${cg},${cb},0.25)`,
+                              color: `rgb(${cr},${cg},${cb})`,
+                            }}
+                          >
+                            {row.label === '风险等级'
+                              ? (r.risk_level === 'high' ? '高' : r.risk_level === 'medium' ? '中' : '低')
+                              : val}
+                          </div>
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
