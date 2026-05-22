@@ -70,10 +70,23 @@ export default function Dashboard() {
     try {
       const res = await fetch(`${API_BASE}/files/batch-upload`, { method: 'POST', body: formData });
       if (res.ok) {
-        await new Promise((r) => setTimeout(r, 2000));
+        const data = await res.json();
+        const errCount = data.results?.filter((r: any) => r.status === 'error').length || 0;
+        if (errCount > 0) {
+          alert(`${files.length - errCount} 份上传成功，${errCount} 份失败`);
+        }
+        // 等待后台审查初始化，然后刷新列表
+        await new Promise((r) => setTimeout(r, 3000));
         loadReviews();
+        // 8秒后再刷一次（审查可能需要更长时间）
+        setTimeout(() => loadReviews(), 8000);
+      } else {
+        const err = await res.json().catch(() => ({}));
+        alert(`批量上传失败: ${err.detail || res.statusText}`);
       }
-    } catch {}
+    } catch (err) {
+      alert(`网络错误: ${err}`);
+    }
     setUploading(false);
     e.target.value = '';
   };

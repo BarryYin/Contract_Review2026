@@ -142,32 +142,56 @@ async def delete_file(file_id: str):
     description="Upload multiple contract files at once. Each file is validated, saved, and queued for background AI review individually.",
 )
 async def batch_upload_files(files: List[UploadFile] = File(...)):
-    import uuid
+    """批量上传：复用 file_service.save_file + 后台审查，与单文件上传逻辑一致。"""
     results = []
     for file in files:
         try:
-            file_id = str(uuid.uuid4())
-            file_path = os.path.join(settings.UPLOAD_DIR, f"{file_id}_{file.filename}")
-            with open(file_path, "wb") as fout:
-                content = await file.read()
-                fout.write(content)
-            
-            file_service.register_file(file_id, file.filename, len(content), file_path)
-            
-            from ..services.review_service import review_file
-            asyncio.create_task(review_file(file_id))
-            
+            # 验证扩展名
+            if file.filename is None:
+                results.append({"filename": "", "status": "error", "error": "缺少文件名"})
+                continue
+
+            ext = Path(file.filename).suffix.lower()
+            if ext not in ALLOWED_EXTENSIONS:
+                results.append({
+                    "filename": file.filename,
+                    "status": "error",
+                    "error": f"不支持的文件类型: {ext}",
+                })
+                continue
+
+            # 读取内容并校验大小
+            file_content = await file.read()
+            if len(file_content) == 0:
+                results.append({"filename": file.filename, "status": "error", "error": "文件为空"})
+                continue
+            if len(file_content) > MAX_FILE_SIZE:
+                results.append({
+                    "filename": file.filename,
+                    "status": "error",
+                    "error": f"文件过大（>{MAX_FILE_SIZE // (1024*1024)}MB）",
+                })
+                continue
+
+            # 复用 file_service 保存（生成 UUID、写磁盘、记录元数据）
+            file_info = file_service.save_file(file.filename, file_content)
+            file_path = file_service.get_file_path(file_info.id)
+
+            # 后台审查
+            if file_path:
+                asyncio.create_task(_trigger_review(file_info.id, file_path))
+
             results.append({
-                "file_id": file_id,
-                "filename": file.filename,
-                "size": len(content),
+                "file_id": file_info.id,
+                "filename": file_info.filename,
+                "size": file_info.size,
                 "status": "processing",
             })
         except Exception as e:
             results.append({
-                "filename": file.filename,
+                "filename": getattr(file, "filename", "unknown"),
                 "status": "error",
                 "error": str(e),
             })
-    
+
     return {"results": results, "total": len(results)}
