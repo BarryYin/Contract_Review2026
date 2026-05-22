@@ -1,14 +1,117 @@
 {
-  "id": "review_546ad652",
-  "file_id": "546ad652-9851-479d-9033-da009bcc3632",
-  "risk_score": 100.0,
-  "risk_level": "low",
+  "id": "review_bef2df70",
+  "file_id": "bef2df70-cac8-47e9-8bae-323e2b542427",
+  "risk_score": 89.8,
+  "risk_level": "medium",
   "contract_type": "保密协议",
-  "issues": [],
-  "summary": "AI审查暂不可用。已上传合同文本，请稍后重试或联系管理员配置LLM API密钥。",
+  "issues": [
+    {
+      "id": "issue_1",
+      "title": "管辖条款不适用中国法律",
+      "clause_reference": "10. Governing Law",
+      "severity": "high",
+      "risk_description": "合同指定适用加州法律和圣克拉拉县法院管辖。如果涉及中国公司或业务在中国，这可能在中国法院难以执行，增加诉讼成本和不确定性，且可能违反中国专属管辖规定。",
+      "legal_basis": "依据《民事诉讼法》第34条，合同双方可以协议管辖，但不得违反级别管辖和专属管辖的规定。参照《民法典》第467条，涉外合同当事人可以选择合同争议适用的法律，但中华人民共和国法律另有规定的除外。",
+      "modification_example": {
+        "original": "This Agreement is governed by the laws of the State of California. Courts located in Santa Clara County shall have exclusive jurisdiction.",
+        "suggested": "本协议适用中华人民共和国法律。因本协议引起的或与本协议有关的任何争议，应提交至有管辖权的中国人民法院诉讼解决。"
+      },
+      "clause": null,
+      "risk_type": null,
+      "description": null,
+      "suggestion": null,
+      "status": "pending"
+    },
+    {
+      "id": "issue_2",
+      "title": "保密期限约定较短",
+      "clause_reference": "5. Term",
+      "severity": "medium",
+      "risk_description": "保密义务仅在披露后十八个月有效。对于长期敏感的商业信息或技术秘密，这可能不足以保护披露方利益，导致信息泄露风险增加。",
+      "legal_basis": "依据《民法典》第501条，当事人在订立合同过程中知悉的商业秘密或者其他应当保密的信息，无论合同是否成立，不得泄露或者不正当地使用。保密期限可以由当事人约定，但应合理。",
+      "modification_example": {
+        "original": "Confidentiality obligations survive for eighteen months after disclosure.",
+        "suggested": "保密义务应在披露后持续有效，直至该信息成为公开信息或不再是保密信息为止，但最长不超过五 年。"
+      },
+      "clause": null,
+      "risk_type": null,
+      "description": null,
+      "suggestion": null,
+      "status": "pending"
+    },
+    {
+      "id": "issue_3",
+      "title": "免责条款过于宽泛",
+      "clause_reference": "9. No Warranty",
+      "severity": "medium",
+      "risk_description": "合同声明所有保密信息“按原样”提供，不保证准确性或完整性。这可能不合理地免除披露方的所有责任，使接收方在使用信息时面临风险，且可能违反公平原则导致条款无效。",
+      "legal_basis": "依据《民法典》第506条，合同中的下列免责条款无效：(一)造成对方人身损害的；(二)因故意或者重大过失造成对方财产损失的。免责条款不合理地免除或者减轻其责任、加重对方责任、限制对方主要权利的，该条款无效。",
+      "modification_example": {
+        "original": "All Confidential Information is provided as is. Neither party makes any representation regarding accuracy or completeness.",
+        "suggested": "保密信息按现状提供。披露方保证其有权披露该信息，但不对信息的准确性或完整性作任何明示或默示的保证，除非法律另有规定。"
+      },
+      "clause": null,
+      "risk_type": null,
+      "description": null,
+      "suggestion": null,
+      "status": "pending"
+    },
+    {
+      "id": "issue_4",
+      "title": "缺乏提前终止条件",
+      "clause_reference": "5. Term",
+      "severity": "low",
+      "risk_description": "合同只有固定期限一年，没有规定任何一方可以提前终止的条件，如违约或不可抗力，可能导致合同无法灵活终止，影响双方权益。",
+      "legal_basis": "依据《民法典》第562条，当事人协商一致，可以解除合同。当事人可以约定一方解除合同的事由。解除合同的事由发生时，解除权人可以解除合同。",
+      "modification_example": {
+        "original": "This Agreement begins on the Effective Date and continues for one year.",
+        "suggested": "本协议自生效日期起生效，有效期为一年，除非任何一方提前书面通知终止。任何一方在对方违约时有权提前终止本协议。"
+      },
+      "clause": null,
+      "risk_type": null,
+      "description": null,
+      "suggestion": null,
+      "status": "pending"
+    },
+    {
+      "id": "issue_5",
+      "title": "权利义务不对等",
+      "clause_reference": "3. Use and Protection, 7. No License",
+      "severity": "medium",
+      "risk_description": "接收方承担广泛的保密和使用限制义务，但披露方没有相应义务，如保证信息合法性或提供支持，可能导致合同不公平，违反公平原则。",
+      "legal_basis": "依据《民法典》第6条，民事主体从事民事活动，应当遵循公平原则，合理确定各方的权利和义务。",
+      "modification_example": {
+        "original": "The Receiving Party shall use Confidential Information solely for the Purpose and protect it using at least reasonable care. No license or transfer of intellectual property rights is granted except the limited right to use Confidential Information for the Purpose.",
+        "suggested": "接收方应仅为目的使用保密信息，并以至少合理的谨慎程度保护之。披露方保证其有权披露该信息，且不侵犯第三方权利。双方均有义务遵守本协议。"
+      },
+      "clause": null,
+      "risk_type": null,
+      "description": null,
+      "suggestion": null,
+      "status": "pending"
+    },
+    {
+      "id": "issue_6",
+      "title": "强制披露条款不够具体",
+      "clause_reference": "4. Compelled Disclosure",
+      "severity": "low",
+      "risk_description": "条款要求接收方在法定要求下提供通知和配合，但没有具体说明如何保护信息或限制披露范围，可能导致信息过度披露，增加泄露风险。",
+      "legal_basis": "依据《民法典》第111条，自然人的个人信息受法律保护。任何组织或者个人需要获取他人个人信息的，应当依法取得并确保信息安全，不得非法收集、使用、加工、传输他人个人信息。",
+      "modification_example": {
+        "original": "If legally required to disclose Confidential Information, the Receiving Party shall, where legally permitted, provide prompt notice and cooperate with reasonable protective measures.",
+        "suggested": "如果法律要求披露保密信息，接收方应在法律允许的情况下，立即通知披露方，并尽力采取合理措施限制披露范围，包括寻求保护令或使用保密协议。"
+      },
+      "clause": null,
+      "risk_type": null,
+      "description": null,
+      "suggestion": null,
+      "status": "pending"
+    }
+  ],
+  "summary": "该保密协议主要风险包括：管辖条款指定加州法律和法院，可能在中国难以执行；保密期限仅18个月，对长期敏感信息保护不足；免责条款过于宽泛，可能无效；缺乏合同解除条款；权利义务不对等。建议修改以符合中国法律和公平原则。",
   "filename": "03_标准保密协议NDA_英文原版.docx",
-  "upload_time": "2026-05-21T23:41:11.427028+00:00",
-  "review_time": "2026-05-21T23:51:47.985455+00:00",
+  "upload_time": "2026-05-22T03:33:58.554854+00:00",
+  "review_time": "2026-05-22T03:35:16.762018+00:00",
   "ocr_used": false,
   "rule_hits": [
     {
@@ -63,50 +166,35 @@
     "contract_period": {
       "start_date": "2026-05-15",
       "end_date": "2027-05-15",
-      "duration_description": "本协议自生效日起有效期一年，保密义务自信息披露之日起存续十八个月"
+      "duration_description": "Agreement term is one year from Effective Date, with confidentiality obligations surviving for eighteen months after disclosure."
     },
     "payment_terms": [],
     "breach_liability": [
       {
-        "clause_title": "违约责任救济条款",
-        "content": "未经授权披露保密信息可能对披露方造成不可挽回的损害，披露方除可主张其他救济措施外，还有权寻求禁令救济"
+        "clause_title": "Remedies",
+        "content": "Unauthorized disclosure may cause irreparable harm, and the Disclosing Party may seek injunctive relief in addition to other remedies."
       }
     ],
     "dispute_resolution": [
       {
-        "clause_title": "准据法与争议解决条款",
-        "content": "本协议受加利福尼亚州法律管辖，因本协议产生的争议由圣克拉拉县法院专属管辖",
+        "clause_title": "Governing Law",
+        "content": "This Agreement is governed by the laws of the State of California. Courts located in Santa Clara County shall have exclusive jurisdiction.",
         "arbitration_institution": null,
-        "jurisdiction": "圣克拉拉县法院"
+        "jurisdiction": "Santa Clara County, California"
       }
     ],
     "confidentiality": [
       {
-        "clause_title": "保密信息定义条款",
-        "content": "保密信息指任何一方披露的非公开业务、技术、财务、客户、产品、安全及运营信息，无论以口头、视觉、电子或书面形式披露；标注为保密的信息属于保密信息，未标注但理性人可合理理解其保密性质的信息也属于保密信息",
-        "duration": "信息披露后十八个月"
-      },
-      {
-        "clause_title": "保密信息使用与保护条款",
-        "content": "接收方仅可将保密信息用于约定的AI合规工具评估目的，并采取至少合理注意的标准保护保密信息；仅可向有知悉必要且受保密义务约束的员工、关联方及顾问披露保密信息",
-        "duration": "信息披露后十八个月"
-      },
-      {
-        "clause_title": "强制披露保密信息条款",
-        "content": "若接收方被依法要求披露保密信息，在法律允许的范围内，应及时通知披露方并配合采取合理的保护措施",
-        "duration": "信息披露后十八个月"
-      },
-      {
-        "clause_title": "保密信息返还或销毁条款",
-        "content": "接收方在披露方提出要求后，应在合理时间内返还或销毁保密信息，但为法律或合规目的保留的存档副本除外",
-        "duration": "信息披露后十八个月"
+        "clause_title": "Confidentiality",
+        "content": "Confidential Information is defined, and the Receiving Party must protect it using reasonable care, use it solely for the Purpose, and comply with disclosure and return obligations.",
+        "duration": "Eighteen months after disclosure"
       }
     ],
     "intellectual_property": [
       {
-        "clause_title": "知识产权许可条款",
-        "content": "除为约定目的有限使用保密信息的权利外，本协议未授予任何一方知识产权许可或转让",
-        "scope": "仅为评估AI合规工具目的下有限使用保密信息的权利"
+        "clause_title": "No License",
+        "content": "No license or transfer of intellectual property rights is granted except the limited right to use Confidential Information for the Purpose.",
+        "scope": "Limited use of Confidential Information for the Purpose"
       }
     ],
     "termination": []
@@ -116,63 +204,49 @@
       {
         "type": "DATE",
         "value": "May 15, 2026",
-        "context": "Effective Date | May 15, 2026 | Purpose | Evaluation of AI compliance tools",
-        "position_hint": "合同签署信息表格部分",
-        "color": "blue"
-      },
-      {
-        "type": "DATE",
-        "value": "one year",
-        "context": "This Agreement begins on the Effective Date and continues for one year. Confidentiality obligations survive for eighteen",
-        "position_hint": "第五条 期限条款",
-        "color": "blue"
-      },
-      {
-        "type": "DATE",
-        "value": "eighteen months after disclosure",
-        "context": "for one year. Confidentiality obligations survive for eighteen months after disclosure.",
-        "position_hint": "第五条 期限条款",
+        "context": "Effective Date | May 15, 2026 | Purpose",
+        "position_hint": "合同尾部字段表格",
         "color": "blue"
       },
       {
         "type": "LOCATION",
         "value": "State of California",
-        "context": "This Agreement is governed by the laws of the State of California. Courts located in Santa Clara County shall have",
-        "position_hint": "第十条 管辖法律条款",
+        "context": "the laws of the State of California. Courts",
+        "position_hint": "第10条（适用法律）",
         "color": "orange"
       },
       {
         "type": "LOCATION",
         "value": "Santa Clara County",
-        "context": "of the State of California. Courts located in Santa Clara County shall have exclusive jurisdiction.",
-        "position_hint": "第十条 管辖法律条款",
+        "context": "located in Santa Clara County shall have",
+        "position_hint": "第10条（适用法律）",
         "color": "orange"
       },
       {
         "type": "COMPANY",
         "value": "Atlas Robotics Inc.",
-        "context": "Disclosing Party | Atlas Robotics Inc. | Receiving Party | BrightWorks Analytics LLC",
-        "position_hint": "合同签署信息表格部分",
+        "context": "Disclosing Party | Atlas Robotics Inc. | Receiving Party",
+        "position_hint": "合同尾部字段表格",
         "color": "purple"
       },
       {
         "type": "COMPANY",
         "value": "BrightWorks Analytics LLC",
-        "context": "Atlas Robotics Inc. | Receiving Party | BrightWorks Analytics LLC",
-        "position_hint": "合同签署信息表格部分",
+        "context": "Receiving Party | BrightWorks Analytics LLC | Effective Date",
+        "position_hint": "合同尾部字段表格",
         "color": "purple"
       }
     ],
-    "total": 7,
+    "total": 5,
     "type_counts": {
-      "DATE": 3,
+      "DATE": 1,
       "LOCATION": 2,
       "COMPANY": 2
     }
   },
   "bilingual_analysis": {
     "chinese_section": {
-      "contract_type": "其他",
+      "contract_type": "None",
       "parties": [],
       "contract_period": {
         "start_date": null,
@@ -205,60 +279,35 @@
       "contract_period": {
         "start_date": "2026-05-15",
         "end_date": "2027-05-15",
-        "duration_description": "本协议自生效日起持续一年，保密义务在信息披露后十八个月仍然有效"
+        "duration_description": "合同自生效日期起持续一年。"
       },
       "payment_terms": [],
       "breach_liability": [
         {
-          "clause_title": "Remedies（救济措施）",
-          "content": "未经授权披露保密信息可能造成不可挽回的损害，披露方除其他救济措施外，有权寻求禁令救济"
+          "clause_title": "违约责任",
+          "content": "未经授权的披露可能导致不可弥补的损害，披露方可以寻求禁令救济及其他补救措施。"
         }
       ],
       "dispute_resolution": [
         {
-          "clause_title": "Governing Law（准据法）",
-          "content": "本协议受加利福尼亚州法律管辖，位于圣克拉拉县的法院拥有专属管辖权",
+          "clause_title": "争议解决",
+          "content": "本协议受加利福尼亚州法律管辖，位于圣克拉拉县的法院具有专属管辖权。",
           "arbitration_institution": null,
-          "jurisdiction": "圣克拉拉县法院"
+          "jurisdiction": "圣克拉拉县，加利福尼亚州"
         }
       ],
       "confidentiality": [
         {
-          "clause_title": "Definition of Confidential Information（保密信息定义）",
-          "content": "保密信息指任何一方披露的非公开业务、技术、财务、客户、产品、安全及运营信息，无论以口头、视觉、电子或书面形式披露；标注保密的信息受保护，未标注但理性人可合理理解其保密性质的信息也属于保密信息",
-          "duration": null
-        },
-        {
-          "clause_title": "Exclusions（保密信息除外情形）",
-          "content": "以下信息不属于保密信息：已公开且披露未违反本协议的信息、披露方已合法知悉且无保密义务的信息、接收方未使用本协议保密信息独立开发的信息、接收方从无保密限制的第三方合法获取的信息",
-          "duration": null
-        },
-        {
-          "clause_title": "Use and Protection（使用与保护）",
-          "content": "接收方仅可将保密信息用于评估AI合规工具的约定目的，并采取至少合理注意的标准保护保密信息；仅可向有知悉必要且受保密义务约束的员工、关联方及顾问披露保密信息",
-          "duration": null
-        },
-        {
-          "clause_title": "Compelled Disclosure（强制披露）",
-          "content": "若接收方被依法要求披露保密信息，在法律允许的范围内，应及时向披露方发出通知，并配合采取合理的保护措施",
-          "duration": null
-        },
-        {
-          "clause_title": "Return or Destruction（返还或销毁）",
-          "content": "接收方在披露方提出要求后，应在合理时间内返还或销毁保密信息，但为法律或合规目的保留的存档副本除外",
-          "duration": null
-        },
-        {
-          "clause_title": "保密义务存续期限",
-          "content": "本协议终止后，接收方的保密义务在信息披露后十八个月仍然有效",
-          "duration": "信息披露后十八个月"
+          "clause_title": "保密条款",
+          "content": "保密信息包括非公开的商业、技术、财务等信息，接收方需保护并仅用于特定目的，保密义务在披露后持续十八个月。",
+          "duration": "披露后十八个月"
         }
       ],
       "intellectual_property": [
         {
-          "clause_title": "No License（知识产权许可）",
-          "content": "除为评估AI合规工具的约定目的有限使用保密信息的权利外，双方未授予对方任何知识产权许可或转让任何知识产权权利",
-          "scope": "仅授予为评估AI合规工具目的有限使用保密信息的权利，无其他知识产权授权"
+          "clause_title": "知识产权",
+          "content": "不授予任何知识产权许可或转让，除了为特定目的使用保密信息的有限权利。",
+          "scope": "保密信息的使用权仅限于特定目的"
         }
       ],
       "termination": []
@@ -267,8 +316,8 @@
       {
         "field": "contract_type",
         "status": "inconsistent",
-        "detail": "不一致: 中文='其他' vs 英文='保密协议'",
-        "chinese_value": "其他",
+        "detail": "不一致: 中文='None' vs 英文='保密协议'",
+        "chinese_value": "None",
         "english_value": "保密协议"
       },
       {
@@ -308,9 +357,9 @@
       {
         "field": "contract_period.duration_description",
         "status": "inconsistent",
-        "detail": "不一致: 中文='None' vs 英文='本协议自生效日起持续一年，保密义务在信息披露后十八个月仍然有效'",
+        "detail": "不一致: 中文='None' vs 英文='合同自生效日期起持续一年。'",
         "chinese_value": "None",
-        "english_value": "本协议自生效日起持续一年，保密义务在信息披露后十八个月仍然有效"
+        "english_value": "合同自生效日期起持续一年。"
       },
       {
         "field": "breach_liability",
@@ -319,8 +368,8 @@
         "chinese_value": [],
         "english_value": [
           {
-            "clause_title": "Remedies（救济措施）",
-            "content": "未经授权披露保密信息可能造成不可挽回的损害，披露方除其他救济措施外，有权寻求禁令救济"
+            "clause_title": "违约责任",
+            "content": "未经授权的披露可能导致不可弥补的损害，披露方可以寻求禁令救济及其他补救措施。"
           }
         ]
       },
@@ -331,48 +380,23 @@
         "chinese_value": [],
         "english_value": [
           {
-            "clause_title": "Governing Law（准据法）",
-            "content": "本协议受加利福尼亚州法律管辖，位于圣克拉拉县的法院拥有专属管辖权",
+            "clause_title": "争议解决",
+            "content": "本协议受加利福尼亚州法律管辖，位于圣克拉拉县的法院具有专属管辖权。",
             "arbitration_institution": null,
-            "jurisdiction": "圣克拉拉县法院"
+            "jurisdiction": "圣克拉拉县，加利福尼亚州"
           }
         ]
       },
       {
         "field": "confidentiality",
         "status": "missing",
-        "detail": "中文侧有 0 条, 英文侧有 6 条",
+        "detail": "中文侧有 0 条, 英文侧有 1 条",
         "chinese_value": [],
         "english_value": [
           {
-            "clause_title": "Definition of Confidential Information（保密信息定义）",
-            "content": "保密信息指任何一方披露的非公开业务、技术、财务、客户、产品、安全及运营信息，无论以口头、视觉、电子或书面形式披露；标注保密的信息受保护，未标注但理性人可合理理解其保密性质的信息也属于保密信息",
-            "duration": null
-          },
-          {
-            "clause_title": "Exclusions（保密信息除外情形）",
-            "content": "以下信息不属于保密信息：已公开且披露未违反本协议的信息、披露方已合法知悉且无保密义务的信息、接收方未使用本协议保密信息独立开发的信息、接收方从无保密限制的第三方合法获取的信息",
-            "duration": null
-          },
-          {
-            "clause_title": "Use and Protection（使用与保护）",
-            "content": "接收方仅可将保密信息用于评估AI合规工具的约定目的，并采取至少合理注意的标准保护保密信息；仅可向有知悉必要且受保密义务约束的员工、关联方及顾问披露保密信息",
-            "duration": null
-          },
-          {
-            "clause_title": "Compelled Disclosure（强制披露）",
-            "content": "若接收方被依法要求披露保密信息，在法律允许的范围内，应及时向披露方发出通知，并配合采取合理的保护措施",
-            "duration": null
-          },
-          {
-            "clause_title": "Return or Destruction（返还或销毁）",
-            "content": "接收方在披露方提出要求后，应在合理时间内返还或销毁保密信息，但为法律或合规目的保留的存档副本除外",
-            "duration": null
-          },
-          {
-            "clause_title": "保密义务存续期限",
-            "content": "本协议终止后，接收方的保密义务在信息披露后十八个月仍然有效",
-            "duration": "信息披露后十八个月"
+            "clause_title": "保密条款",
+            "content": "保密信息包括非公开的商业、技术、财务等信息，接收方需保护并仅用于特定目的，保密义务在披露后持续十八个月。",
+            "duration": "披露后十八个月"
           }
         ]
       },
@@ -383,21 +407,21 @@
         "chinese_value": [],
         "english_value": [
           {
-            "clause_title": "No License（知识产权许可）",
-            "content": "除为评估AI合规工具的约定目的有限使用保密信息的权利外，双方未授予对方任何知识产权许可或转让任何知识产权权利",
-            "scope": "仅授予为评估AI合规工具目的有限使用保密信息的权利，无其他知识产权授权"
+            "clause_title": "知识产权",
+            "content": "不授予任何知识产权许可或转让，除了为特定目的使用保密信息的有限权利。",
+            "scope": "保密信息的使用权仅限于特定目的"
           }
         ]
       }
     ],
-    "consistency_score": 14
+    "consistency_score": 55
   },
   "scoring_dimensions": [
     {
       "name": "争议解决",
-      "score": 100.0,
+      "score": 75.0,
       "weight": 0.1,
-      "issues_count": 0
+      "issues_count": 1
     },
     {
       "name": "付款条款",
@@ -407,15 +431,21 @@
     },
     {
       "name": "保密义务",
-      "score": 100.0,
+      "score": 55.0,
       "weight": 0.15,
-      "issues_count": 0
+      "issues_count": 3
     },
     {
       "name": "免责条款",
       "score": 100.0,
       "weight": 0.15,
       "issues_count": 0
+    },
+    {
+      "name": "其他",
+      "score": 95.0,
+      "weight": 0.0,
+      "issues_count": 1
     },
     {
       "name": "知识产权",
@@ -431,11 +461,11 @@
     },
     {
       "name": "违约责任",
-      "score": 100.0,
+      "score": 95.0,
       "weight": 0.2,
-      "issues_count": 0
+      "issues_count": 1
     }
   ],
-  "scoring_explanation": "综合评分 100.0 分（满分100），共发现 0 个问题（高风险 0，中风险 0，低风险 0）。风险等级：low。",
+  "scoring_explanation": "综合评分 89.8 分（满分100），共发现 6 个问题（高风险 1，中风险 3，低风险 2）。风险等级：medium。重点关注维度：保密义务（55.0分，3个问题）、争议解决（75.0分，1个问题）、其他（95.0分，1个问题）。",
   "file_hash": "78d589b5805935ca624590767a10d367eb962e89287e398bca2dc2e73fbdead1"
 }

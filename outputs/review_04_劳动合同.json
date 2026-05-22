@@ -1,14 +1,117 @@
 {
-  "id": "review_df37781e",
-  "file_id": "df37781e-1d83-411b-ad26-de81a9fd5e2a",
-  "risk_score": 95.2,
-  "risk_level": "medium",
+  "id": "review_d2e9c514",
+  "file_id": "d2e9c514-8f0a-4d81-81ef-59f8e347c71a",
+  "risk_score": 91.2,
+  "risk_level": "high",
   "contract_type": "劳动合同",
-  "issues": [],
-  "summary": "AI审查暂不可用（Client error '429 Too Many Requests' for url 'https://api.stepfun.com/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429）。已上传合同文本，请稍后重试或联系管理员配置LLM API密钥。",
+  "issues": [
+    {
+      "id": "issue_1",
+      "title": "单方调整岗位权利过宽",
+      "clause_reference": "第二条 工作内容",
+      "severity": "high",
+      "risk_description": "合同允许用人单位根据经营需要随意调整劳动者的岗位、职级、工作地点和汇报关系，这可能导致劳动者被迫接受不合理变动，如突然调岗或异地工作，破坏劳动关系稳定性。如果发生纠纷，这种无限制的调整可能被法院认定为无效，但劳动者需耗费时间精力维权，且过程中工作生活受影响。",
+      "legal_basis": "依据《劳动合同法》第35条",
+      "modification_example": {
+        "original": "用人单位可根据经营需要调整劳动者岗位、职级、工作地点和汇报关系。",
+        "suggested": "用人单位因经营需要调整劳动者岗位、职级、工作地点或汇报关系时，应与劳动者协商一致，并以书面形式变更劳动合同。"
+      },
+      "clause": null,
+      "risk_type": null,
+      "description": null,
+      "suggestion": null,
+      "status": "pending"
+    },
+    {
+      "id": "issue_2",
+      "title": "加班安排与补偿模糊",
+      "clause_reference": "第三条 工作时间与休息休假",
+      "severity": "medium",
+      "risk_description": "合同要求劳动者配合加班或线上响应，但仅说按公司制度执行补偿，如果公司制度未依法制定或未明确加班费计算方式，劳动者可能无法获得法定加班报酬，如150%或200%的工资，引发劳动争议和欠薪风险。",
+      "legal_basis": "依据《劳动法》第44条、《劳动合同法》第31条",
+      "modification_example": {
+        "original": "加班安排和补偿按公司制度执行。",
+        "suggested": "加班安排和补偿严格按照国家法律法规及公司依法制定的规章制度执行，确保劳动者获得相应的加班费或调休。"
+      },
+      "clause": null,
+      "risk_type": null,
+      "description": null,
+      "suggestion": null,
+      "status": "pending"
+    },
+    {
+      "id": "issue_3",
+      "title": "绩效奖金调整缺乏标准",
+      "clause_reference": "第四条 劳动报酬",
+      "severity": "medium",
+      "risk_description": "用人单位可根据经营状况调整绩效奖金，但未设定具体调整条件、程序或通知义务，可能导致奖金发放随意，劳动者对收入预期不稳定，甚至无故被削减奖金，损害经济权益。",
+      "legal_basis": "依据《劳动合同法》第18条",
+      "modification_example": {
+        "original": "用人单位可根据经营状况合理调整绩效奖金发放。",
+        "suggested": "绩效奖金的发放根据公司经营情况和个人绩效确定，调整时应遵循公平合理原则，并提前告知劳动者调整方案，确保透明度。"
+      },
+      "clause": null,
+      "risk_type": null,
+      "description": null,
+      "suggestion": null,
+      "status": "pending"
+    },
+    {
+      "id": "issue_4",
+      "title": "竞业限制条款未明确",
+      "clause_reference": "第六条 保密与竞业限制",
+      "severity": "medium",
+      "risk_description": "竞业限制仅写“另行约定”，但未在合同中具体说明期限、补偿标准等核心内容，可能导致后续补充协议缺失或无效，劳动者离职后无法获得合理补偿却受限制，引发纠纷。",
+      "legal_basis": "依据《劳动合同法》第23条、第24条",
+      "modification_example": {
+        "original": "竞业限制期限、补偿标准及范围另行约定。",
+        "suggested": "竞业限制的具体期限、经济补偿标准、限制范围等事项，双方应在本合同附件或补充协议中明确约定，确保符合法律规定。"
+      },
+      "clause": null,
+      "risk_type": null,
+      "description": null,
+      "suggestion": null,
+      "status": "pending"
+    },
+    {
+      "id": "issue_5",
+      "title": "争议解决条款缺失",
+      "clause_reference": "合同未包含争议解决条款",
+      "severity": "high",
+      "risk_description": "合同完全没有提及争议解决方式，如仲裁或诉讼，一旦发生劳动争议，双方可能对管辖机构（如劳动仲裁委员会或法院）产生分歧，延误纠纷解决，增加维权成本和不确定性。",
+      "legal_basis": "参照《劳动争议调解仲裁法》第5条",
+      "modification_example": {
+        "original": "",
+        "suggested": "因履行本合同发生争议，双方应首先协商解决；协商不成的，任何一方可依法向用人单位所在地劳动争议仲裁委员会申请仲裁。"
+      },
+      "clause": null,
+      "risk_type": null,
+      "description": null,
+      "suggestion": null,
+      "status": "pending"
+    },
+    {
+      "id": "issue_6",
+      "title": "工作地点变更风险",
+      "clause_reference": "手写补充条款中的工作地点",
+      "severity": "medium",
+      "risk_description": "工作地点写为“杭州 / 可安排异地出差”，未明确出差频率、时长、补偿或协商机制，可能导致劳动者被频繁派往外地，影响家庭生活和工作平衡，且缺乏保障。",
+      "legal_basis": "依据《劳动合同法》第35条",
+      "modification_example": {
+        "original": "工作地点：杭州 / 可安排异地出差",
+        "suggested": "工作地点为杭州，因工作需要安排异地出差时，应提前与劳动者协商，并提供合理的出差补贴和安排。"
+      },
+      "clause": null,
+      "risk_type": null,
+      "description": null,
+      "suggestion": null,
+      "status": "pending"
+    }
+  ],
+  "summary": "本劳动合同存在多项合规风险：用人单位单方调整岗位、职级、工作地点的权利过于宽泛，可能违反变更劳动合同需协商一致的规定；加班安排和补偿依赖公司制度，但未明确具体标准，易引发加班费争议；绩效奖金调整权缺乏约束，可能损害劳动者收益稳定性；竞业限制条款未具体化，留白风险；最关键的是合同缺少争议解决条款，一旦发生纠纷将导致管辖不明。综合评估，合同整体风险较高，需修订关键条款以符合《劳动合同法》等法规要求。",
   "filename": "04_含手写补充条款的劳动合同_混合OCR.docx",
-  "upload_time": "2026-05-22T01:05:07.387609+00:00",
-  "review_time": "2026-05-22T01:05:23.177121+00:00",
+  "upload_time": "2026-05-22T03:32:21.940282+00:00",
+  "review_time": "2026-05-22T03:33:34.386470+00:00",
   "ocr_used": false,
   "rule_hits": [
     {
@@ -71,110 +174,294 @@
     "contract_period": {
       "start_date": "2026-06-01",
       "end_date": "2029-05-31",
-      "duration_description": "固定期限劳动合同，自2026年6月1日起至2029年5月31日止，试用期六个月"
+      "duration_description": "固定期限劳动合同，自2026年6月1日起至2029年5月31日止，试用期为六个月"
     },
     "payment_terms": [
       {
         "amount": 32000,
         "currency": "CNY",
-        "payment_cycle": "按月支付",
+        "payment_cycle": "按月付款",
         "payment_method": null,
-        "description": "劳动者月基本工资为人民币32000元，绩效奖金根据公司经营情况和个人绩效综合确定，用人单位可根据经营状况合理调整绩效奖金发放，试用期工资按约定工资的80%执行"
+        "description": "月基本工资32,000元，绩效奖金根据公司经营情况和个人绩效综合确定"
       }
     ],
-    "breach_liability": [
-      {
-        "clause_title": "解除与终止",
-        "content": "劳动者违反公司规章制度或造成重大风险的，用人单位可立即解除合同，任何一方解除或终止本合同应依照法律规定办理"
-      }
-    ],
+    "breach_liability": [],
     "dispute_resolution": [],
     "confidentiality": [
       {
         "clause_title": "保密与竞业限制",
-        "content": "劳动者应对用人单位商业秘密、客户资料、源代码、模型参数和产品路线负有保密义务，竞业限制期限、补偿标准及范围另行约定",
+        "content": "劳动者应对用人单位商业秘密、客户资料、源代码、模型参数和产品路线负有保密义务。竞业限制期限、补偿标准及范围另行约定。",
         "duration": null
       }
     ],
     "intellectual_property": [
       {
         "clause_title": "知识产权",
-        "content": "劳动者在任职期间完成或主要利用用人单位资源完成的发明、作品、算法、模型、文档、方案及其他成果均归用人单位所有",
-        "scope": "劳动者任职期间完成或主要利用用人单位资源完成的发明、作品、算法、模型、文档、方案及其他智力成果"
+        "content": "劳动者在任职期间完成或主要利用用人单位资源完成的发明、作品、算法、模型、文档、方案及其他成果均归用人单位所有。",
+        "scope": "任职期间完成或主要利用用人单位资源完成的发明、作品、算法、模型、文档、方案及其他成果"
       }
     ],
     "termination": [
       {
         "clause_title": "解除与终止",
-        "content": "任何一方解除或终止本合同应依照法律规定办理，劳动者违反公司规章制度或造成重大风险的，用人单位可立即解除合同",
+        "content": "任何一方解除或终止本合同，应依照法律规定办理。劳动者违反公司规章制度或造成重大风险的，用人单位可立即解除合同。",
         "notice_period": null,
-        "conditions": "劳动者违反公司规章制度或造成重大风险，用人单位可立即解除合同，其他解除终止情形依照法律规定"
+        "conditions": "依照法律规定办理，劳动者违反公司规章制度或造成重大风险时，用人单位可立即解除"
       }
     ]
   },
   "entities": {
-    "entities": [],
-    "_meta": {
-      "source": "fallback",
-      "error": "Client error '429 Too Many Requests' for url 'https://api.stepfun.com/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429"
+    "entities": [
+      {
+        "type": "DATE",
+        "value": "2026年6月1日",
+        "context": "自2026年6月1日起至2029年5月31日止",
+        "position_hint": "第一条",
+        "color": "blue"
+      },
+      {
+        "type": "DATE",
+        "value": "2029年5月31日",
+        "context": "自2026年6月1日起至2029年5月31日止",
+        "position_hint": "第一条",
+        "color": "blue"
+      },
+      {
+        "type": "MONEY",
+        "value": "人民币32,000元",
+        "context": "劳动者月基本工资为人民币32,000元",
+        "position_hint": "第四条",
+        "color": "green"
+      },
+      {
+        "type": "COMPANY",
+        "value": "杭州云堤科技有限公司",
+        "context": "用人单位 | 杭州云堤科技有限公司",
+        "position_hint": "手写补充条款扫描区",
+        "color": "purple"
+      },
+      {
+        "type": "PERSON",
+        "value": "周雨晴",
+        "context": "劳动者 | 周雨晴",
+        "position_hint": "手写补充条款扫描区",
+        "color": "red"
+      },
+      {
+        "type": "DATE",
+        "value": "2026-06-01",
+        "context": "合同期限 | 2026-06-01 至 2029-05-31",
+        "position_hint": "手写补充条款扫描区",
+        "color": "blue"
+      },
+      {
+        "type": "DATE",
+        "value": "2029-05-31",
+        "context": "合同期限 | 2026-06-01 至 2029-05-31",
+        "position_hint": "手写补充条款扫描区",
+        "color": "blue"
+      },
+      {
+        "type": "LOCATION",
+        "value": "杭州",
+        "context": "工作地点 | 杭州 / 可安排异地出差",
+        "position_hint": "手写补充条款扫描区",
+        "color": "orange"
+      }
+    ],
+    "total": 8,
+    "type_counts": {
+      "DATE": 4,
+      "MONEY": 1,
+      "COMPANY": 1,
+      "PERSON": 1,
+      "LOCATION": 1
     }
   },
   "bilingual_analysis": {
     "chinese_section": {
-      "contract_type": "未识别",
-      "parties": [],
+      "contract_type": "劳动合同",
+      "parties": [
+        {
+          "name": "杭州云堤科技有限公司",
+          "address": null,
+          "legal_representative": null,
+          "role": "甲方"
+        },
+        {
+          "name": "周雨晴",
+          "address": null,
+          "legal_representative": null,
+          "role": "乙方"
+        }
+      ],
       "contract_period": {
-        "start_date": null,
-        "end_date": null,
-        "duration_description": ""
+        "start_date": "2026-06-01",
+        "end_date": "2029-05-31",
+        "duration_description": "固定期限劳动合同，自2026年6月1日起至2029年5月31日止，试用期为六个月。"
       },
-      "payment_terms": [],
+      "payment_terms": [
+        {
+          "amount": 32000,
+          "currency": "CNY",
+          "payment_cycle": "按月付款",
+          "payment_method": null,
+          "description": "月基本工资为人民币32,000元，绩效奖金根据公司经营情况和个人绩效综合确定。"
+        }
+      ],
       "breach_liability": [],
       "dispute_resolution": [],
-      "confidentiality": [],
-      "intellectual_property": [],
-      "termination": [],
-      "_meta": {
-        "source": "fallback",
-        "error": "Client error '429 Too Many Requests' for url 'https://api.stepfun.com/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429"
-      }
+      "confidentiality": [
+        {
+          "clause_title": "保密与竞业限制",
+          "content": "劳动者应对用人单位商业秘密、客户资料、源代码、模型参数和产品路线负有保密义务。",
+          "duration": null
+        }
+      ],
+      "intellectual_property": [
+        {
+          "clause_title": "知识产权",
+          "content": "劳动者在任职期间完成或主要利用用人单位资源完成的发明、作品、算法、模型、文档、方案及其他成果均归用人单位所有。",
+          "scope": "发明、作品、算法、模型、文档、方案及其他成果"
+        }
+      ],
+      "termination": [
+        {
+          "clause_title": "解除与终止",
+          "content": "任何一方解除或终止本合同，应依照法律规定办理。劳动者违反公司规章制度或造成重大风险的，用人单位可立即解除合同。",
+          "notice_period": null,
+          "conditions": "解除或终止依照法律规定；劳动者违反公司规章制度或造成重大风险时，用人单位可立即解除合同。"
+        }
+      ]
     },
     "english_section": {
-      "contract_type": "未识别",
+      "contract_type": "劳动合同",
       "parties": [],
       "contract_period": {
-        "start_date": null,
-        "end_date": null,
-        "duration_description": ""
+        "start_date": "2026-06-01",
+        "end_date": "2029-05-31",
+        "duration_description": "从2026年6月1日至2029年5月31日"
       },
       "payment_terms": [],
       "breach_liability": [],
       "dispute_resolution": [],
       "confidentiality": [],
       "intellectual_property": [],
-      "termination": [],
-      "_meta": {
-        "source": "fallback",
-        "error": "Client error '429 Too Many Requests' for url 'https://api.stepfun.com/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429"
-      }
+      "termination": []
     },
     "consistency": [
       {
         "field": "contract_type",
         "status": "consistent",
         "detail": "一致",
-        "chinese_value": "未识别",
-        "english_value": "未识别"
+        "chinese_value": "劳动合同",
+        "english_value": "劳动合同"
+      },
+      {
+        "field": "parties",
+        "status": "missing",
+        "detail": "中文侧有 2 条, 英文侧有 0 条",
+        "chinese_value": [
+          {
+            "name": "杭州云堤科技有限公司",
+            "address": null,
+            "legal_representative": null,
+            "role": "甲方"
+          },
+          {
+            "name": "周雨晴",
+            "address": null,
+            "legal_representative": null,
+            "role": "乙方"
+          }
+        ],
+        "english_value": []
+      },
+      {
+        "field": "contract_period.start_date",
+        "status": "consistent",
+        "detail": "一致",
+        "chinese_value": "2026-06-01",
+        "english_value": "2026-06-01"
+      },
+      {
+        "field": "contract_period.end_date",
+        "status": "consistent",
+        "detail": "一致",
+        "chinese_value": "2029-05-31",
+        "english_value": "2029-05-31"
+      },
+      {
+        "field": "contract_period.duration_description",
+        "status": "inconsistent",
+        "detail": "不一致: 中文='固定期限劳动合同，自2026年6月1日起至2029年5月31日止，试用期为六个月。' vs 英文='从2026年6月1日至2029年5月31日'",
+        "chinese_value": "固定期限劳动合同，自2026年6月1日起至2029年5月31日止，试用期为六个月。",
+        "english_value": "从2026年6月1日至2029年5月31日"
+      },
+      {
+        "field": "payment_terms",
+        "status": "missing",
+        "detail": "中文侧有 1 条, 英文侧有 0 条",
+        "chinese_value": [
+          {
+            "amount": 32000,
+            "currency": "CNY",
+            "payment_cycle": "按月付款",
+            "payment_method": null,
+            "description": "月基本工资为人民币32,000元，绩效奖金根据公司经营情况和个人绩效综合确定。"
+          }
+        ],
+        "english_value": []
+      },
+      {
+        "field": "confidentiality",
+        "status": "missing",
+        "detail": "中文侧有 1 条, 英文侧有 0 条",
+        "chinese_value": [
+          {
+            "clause_title": "保密与竞业限制",
+            "content": "劳动者应对用人单位商业秘密、客户资料、源代码、模型参数和产品路线负有保密义务。",
+            "duration": null
+          }
+        ],
+        "english_value": []
+      },
+      {
+        "field": "intellectual_property",
+        "status": "missing",
+        "detail": "中文侧有 1 条, 英文侧有 0 条",
+        "chinese_value": [
+          {
+            "clause_title": "知识产权",
+            "content": "劳动者在任职期间完成或主要利用用人单位资源完成的发明、作品、算法、模型、文档、方案及其他成果均归用人单位所有。",
+            "scope": "发明、作品、算法、模型、文档、方案及其他成果"
+          }
+        ],
+        "english_value": []
+      },
+      {
+        "field": "termination",
+        "status": "missing",
+        "detail": "中文侧有 1 条, 英文侧有 0 条",
+        "chinese_value": [
+          {
+            "clause_title": "解除与终止",
+            "content": "任何一方解除或终止本合同，应依照法律规定办理。劳动者违反公司规章制度或造成重大风险的，用人单位可立即解除合同。",
+            "notice_period": null,
+            "conditions": "解除或终止依照法律规定；劳动者违反公司规章制度或造成重大风险时，用人单位可立即解除合同。"
+          }
+        ],
+        "english_value": []
       }
     ],
-    "consistency_score": 100
+    "consistency_score": 73
   },
   "scoring_dimensions": [
     {
       "name": "争议解决",
-      "score": 100.0,
+      "score": 60.0,
       "weight": 0.1,
-      "issues_count": 0
+      "issues_count": 2
     },
     {
       "name": "付款条款",
@@ -195,6 +482,12 @@
       "issues_count": 0
     },
     {
+      "name": "其他",
+      "score": 30.0,
+      "weight": 0.0,
+      "issues_count": 4
+    },
+    {
       "name": "知识产权",
       "score": 100.0,
       "weight": 0.15,
@@ -213,6 +506,6 @@
       "issues_count": 0
     }
   ],
-  "scoring_explanation": "综合评分 95.2 分（满分100），共发现 2 个问题（高风险 1，中风险 1，低风险 0）。风险等级：medium。重点关注维度：终止条款（75.0分，1个问题）、保密义务（85.0分，1个问题）。",
+  "scoring_explanation": "综合评分 91.2 分（满分100），共发现 8 个问题（高风险 3，中风险 5，低风险 0）。风险等级：high。重点关注维度：其他（30.0分，4个问题）、争议解决（60.0分，2个问题）、终止条款（75.0分，1个问题）。",
   "file_hash": "6a2811c8e566e51de4bcd2fbc77f76a4e6a3c16ca6b9786ac91a171ed26fbf94"
 }
