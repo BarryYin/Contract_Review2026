@@ -36,37 +36,68 @@ def _cjk_ratio(text: str) -> float:
     return cjk_count / len(stripped)
 
 
-def split_bilingual_text(raw_text: str, threshold: float = 0.5) -> Tuple[str, str]:
+def split_bilingual_text(raw_text: str, threshold: float = 0.3) -> Tuple[str, str]:
     """
-    Split a bilingual (Chinese-English) contract into two sections.
-
-    Heuristic: every paragraph whose CJK character ratio exceeds *threshold*
-    is classified as Chinese; the rest is classified as English.
+    改进版双语切分，支持三种双语合同格式：
+    1. 双栏对照："English text | Chinese text"（逐行用 | 分隔）
+    2. 标题混合："1. Scope of Services / 服务范围"（用 / 分隔）
+    3. 分块式：连续中文段落 + 连续英文段落
 
     Returns:
-        (chinese_text, english_text) – either may be an empty string if the
-        document is monolingual.
+        (chinese_text, english_text) – either may be an empty string.
     """
-    paragraphs = re.split(r"\n{2,}", raw_text)
-
+    lines = raw_text.splitlines()
     zh_parts: List[str] = []
     en_parts: List[str] = []
 
-    for para in paragraphs:
-        stripped = para.strip()
-        if not stripped:
+    # 预过滤：页码、表头等噪音行
+    skip_re = re.compile(
+        r"^Page\s+\d+\s*/\s*\d+$"
+        r"|^English\s*\|\s*中文$"
+        r"|^字段\s*\|\s*内容"
+        r"|^第\d+页\s*/\s*\d+$",
+        re.IGNORECASE,
+    )
+
+    for line in lines:
+        s = line.strip()
+        if not s or skip_re.match(s):
             continue
-        if _cjk_ratio(stripped) >= threshold:
-            zh_parts.append(stripped)
+
+        # === 1. 双栏对照：按 | 分隔 ===
+        if "|" in s:
+            segs = [seg.strip() for seg in s.split("|")]
+            for seg in segs:
+                if not seg:
+                    continue
+                if _cjk_ratio(seg) >= threshold:
+                    zh_parts.append(seg)
+                else:
+                    en_parts.append(seg)
+            continue
+
+        # === 2. 标题混合："EN title / ZH 标题" ===
+        if "/" in s and len(s) < 150:
+            parts = [p.strip() for p in s.split("/", 1)]
+            if len(parts) == 2:
+                l_cjk = _cjk_ratio(parts[0])
+                r_cjk = _cjk_ratio(parts[1])
+                if l_cjk < r_cjk:
+                    en_parts.append(parts[0])
+                    zh_parts.append(parts[1])
+                    continue
+                elif l_cjk > r_cjk:
+                    zh_parts.append(parts[0])
+                    en_parts.append(parts[1])
+                    continue
+
+        # === 3. 兜底：按 CJK 比例分类 ===
+        if _cjk_ratio(s) >= threshold:
+            zh_parts.append(s)
         else:
-            en_parts.append(stripped)
+            en_parts.append(s)
 
     return "\n\n".join(zh_parts), "\n\n".join(en_parts)
-
-
-# ---------------------------------------------------------------------------
-# Field-level comparison utilities
-# ---------------------------------------------------------------------------
 
 def _norm_text(value: Any) -> str:
     """Normalise a value to a lowercase string for fuzzy comparison."""
