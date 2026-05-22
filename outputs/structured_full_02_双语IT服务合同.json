@@ -1,0 +1,316 @@
+{
+  "file_id": "8ad0364f-1fbd-4fbf-8c34-43b55663bbde",
+  "contract_type": "服务合同",
+  "parties": [
+    {
+      "name": "北京海衡数据科技有限公司",
+      "address": null,
+      "legal_representative": null,
+      "role": "甲方"
+    },
+    {
+      "name": "NovaCloud Solutions Pte. Ltd.",
+      "address": null,
+      "legal_representative": null,
+      "role": "乙方"
+    }
+  ],
+  "contract_period": {
+    "start_date": "2026-06-01",
+    "end_date": "2027-05-31",
+    "duration_description": "2026年6月1日至2027年5月31日"
+  },
+  "payment_terms": [
+    {
+      "amount": 420000,
+      "currency": "USD",
+      "payment_cycle": "按季度后付",
+      "payment_method": null,
+      "description": "客户应在收到有效发票后七十五日内按季度后付，合同总费用为USD 420,000"
+    }
+  ],
+  "breach_liability": [
+    {
+      "clause_title": "责任限制",
+      "content": "服务商累计责任不超过合同履行前三个月已支付的费用，客户的付款义务不受上限限制"
+    },
+    {
+      "clause_title": "终止违约责任",
+      "content": "客户可提前十日无理由终止合同，服务商仅可在对方发生重大违约且三十日内未予补救时终止合同"
+    }
+  ],
+  "dispute_resolution": [
+    {
+      "clause_title": "争议解决",
+      "content": "争议提交新加坡国际仲裁中心（SIAC）仲裁，适用新加坡法律",
+      "arbitration_institution": "新加坡国际仲裁中心（SIAC）",
+      "jurisdiction": "新加坡"
+    }
+  ],
+  "confidentiality": [
+    {
+      "clause_title": "保密",
+      "content": "双方应自保密信息披露之日起两年内承担保密义务",
+      "duration": "2年"
+    }
+  ],
+  "intellectual_property": [
+    {
+      "clause_title": "知识产权",
+      "content": "既有材料归原权利人所有，专为客户开发的工作成果在客户全额付款后转让给客户",
+      "scope": "合同项下的既有材料及专为客户端开发的工作成果"
+    }
+  ],
+  "termination": [
+    {
+      "clause_title": "终止",
+      "content": "客户可提前十日无理由终止合同，服务商仅可在对方发生重大违约且三十日内未予补救时终止合同",
+      "notice_period": "客户提前10天，服务商终止需满足重大违约且30日补救期届满的条件",
+      "conditions": "客户可无理由提前10天通知终止；服务商仅可在对方发生重大违约且30日内未予补救时终止"
+    }
+  ],
+  "entities": {
+    "entities": [
+      {
+        "type": "COMPANY",
+        "value": "北京海衡数据科技有限公司",
+        "context": "Client / 客户 | 北京海衡数据科技有限公司 | Provider / 服务商 | NovaCloud",
+        "position_hint": "合同首部/当事人信息栏",
+        "color": "purple"
+      },
+      {
+        "type": "COMPANY",
+        "value": "NovaCloud Solutions Pte. Ltd.",
+        "context": "Provider / 服务商 | NovaCloud Solutions Pte. Ltd. | Term / 期限 | 2026",
+        "position_hint": "合同首部/当事人信息栏",
+        "color": "purple"
+      },
+      {
+        "type": "MONEY",
+        "value": "USD 420,000",
+        "context": "Term / 期限 | 2026-06-01 to 2027-05-31 | Fee / 费用 | USD 420,000",
+        "position_hint": "费用条款字段表",
+        "color": "green"
+      },
+      {
+        "type": "LOCATION",
+        "value": "Singapore",
+        "context": "Governing Law / 法律 | Laws of Singapore | Dispute / 争议 | SIAC",
+        "position_hint": "法律适用/争议解决条款",
+        "color": "orange"
+      },
+      {
+        "type": "DATE",
+        "value": "2026-06-01 to 2027-05-31",
+        "context": "Term / 期限 | 2026-06-01 to 2027-05-31 | Fee / 费用 | USD 420,000",
+        "position_hint": "合同期限条款",
+        "color": "blue"
+      },
+      {
+        "type": "DATE",
+        "value": "seventy-five (75) days",
+        "context": "within seventy-five (75) days after receiving a valid invoice. | 客户应在",
+        "position_hint": "费用与付款条款",
+        "color": "blue"
+      },
+      {
+        "type": "DATE",
+        "value": "七十五（75）日",
+        "context": "收到有效发票后七十五（75）日内按季度后付。 | 客户可随时提出变更",
+        "position_hint": "费用与付款条款",
+        "color": "blue"
+      },
+      {
+        "type": "DATE",
+        "value": "ten days' notice",
+        "context": "for convenience with ten days' notice. | 客户可提前十日无理由终",
+        "position_hint": "终止条款",
+        "color": "blue"
+      },
+      {
+        "type": "DATE",
+        "value": "十日",
+        "context": "客户可提前十日无理由终止。 | 服务商仅可在重大违约且三十",
+        "position_hint": "终止条款",
+        "color": "blue"
+      },
+      {
+        "type": "DATE",
+        "value": "thirty days",
+        "context": "not cured within thirty days. | 服务商仅可在重大违约且三十",
+        "position_hint": "终止条款",
+        "color": "blue"
+      },
+      {
+        "type": "DATE",
+        "value": "三十日",
+        "context": "且三十日内未补救时终止。 | 客户可审计服务商系统",
+        "position_hint": "终止条款",
+        "color": "blue"
+      },
+      {
+        "type": "DATE",
+        "value": "two (2) years",
+        "context": "confidential information for two (2) years after disclosure. | 双方应自",
+        "position_hint": "保密条款",
+        "color": "blue"
+      },
+      {
+        "type": "DATE",
+        "value": "两（2）年",
+        "context": "自披露之日起两（2）年内保护保密信息。 | 服务商累计责任",
+        "position_hint": "保密条款",
+        "color": "blue"
+      },
+      {
+        "type": "DATE",
+        "value": "five business days",
+        "context": "upon five business days' notice no more than twice per year. | 客户",
+        "position_hint": "审计条款",
+        "color": "blue"
+      },
+      {
+        "type": "DATE",
+        "value": "五个工作日",
+        "context": "提前五个工作日通知审计服务商系统，每年不超过两次。 | 双方应",
+        "position_hint": "审计条款",
+        "color": "blue"
+      }
+    ],
+    "total": 15,
+    "type_counts": {
+      "COMPANY": 2,
+      "MONEY": 1,
+      "LOCATION": 1,
+      "DATE": 11
+    }
+  },
+  "clauses": [
+    {
+      "number": "1",
+      "title": "付款条款",
+      "content": "{\"amount\": 420000, \"currency\": \"USD\", \"payment_cycle\": \"按季度后付\", \"payment_method\": null, \"description\": \"客户应在收到有效发票后七十五日内按季度后付，合同总费用为USD 420,000\"}"
+    },
+    {
+      "number": "1",
+      "title": "违约责任",
+      "content": "{\"clause_title\": \"责任限制\", \"content\": \"服务商累计责任不超过合同履行前三个月已支付的费用，客户的付款义务不受上限限制\"}"
+    },
+    {
+      "number": "2",
+      "title": "违约责任",
+      "content": "{\"clause_title\": \"终止违约责任\", \"content\": \"客户可提前十日无理由终止合同，服务商仅可在对方发生重大违约且三十日内未予补救时终止合同\"}"
+    },
+    {
+      "number": "1",
+      "title": "争议解决",
+      "content": "{\"clause_title\": \"争议解决\", \"content\": \"争议提交新加坡国际仲裁中心（SIAC）仲裁，适用新加坡法律\", \"arbitration_institution\": \"新加坡国际仲裁中心（SIAC）\", \"jurisdiction\": \"新加坡\"}"
+    },
+    {
+      "number": "1",
+      "title": "保密义务",
+      "content": "{\"clause_title\": \"保密\", \"content\": \"双方应自保密信息披露之日起两年内承担保密义务\", \"duration\": \"2年\"}"
+    },
+    {
+      "number": "1",
+      "title": "知识产权",
+      "content": "{\"clause_title\": \"知识产权\", \"content\": \"既有材料归原权利人所有，专为客户开发的工作成果在客户全额付款后转让给客户\", \"scope\": \"合同项下的既有材料及专为客户端开发的工作成果\"}"
+    },
+    {
+      "number": "1",
+      "title": "终止条款",
+      "content": "{\"clause_title\": \"终止\", \"content\": \"客户可提前十日无理由终止合同，服务商仅可在对方发生重大违约且三十日内未予补救时终止合同\", \"notice_period\": \"客户提前10天，服务商终止需满足重大违约且30日补救期届满的条件\", \"conditions\": \"客户可无理由提前10天通知终止；服务商仅可在对方发生重大违约且30日内未予补救时终止\"}"
+    },
+    {
+      "number": "第十三条 语言效力",
+      "title": "语言效力条款中英文直接冲突",
+      "content": "If there is any inconsistency, the English version shall prevail. 如中英文存在不一致，以中文版本为准。",
+      "risk_level": "high",
+      "issue_id": "issue_1"
+    },
+    {
+      "number": "第九条 责任限制",
+      "title": "责任限制条款显失公平权利义务失衡",
+      "content": "Provider's aggregate liability shall not exceed fees paid in the preceding three months; however, Client's payment obligations are uncapped.",
+      "risk_level": "high",
+      "issue_id": "issue_2"
+    },
+    {
+      "number": "第十条 终止",
+      "title": "合同解除权严重失衡显失公平",
+      "content": "Client may terminate for convenience with ten days' notice. Provider may terminate only for material breach not cured within thirty days.",
+      "risk_level": "high",
+      "issue_id": "issue_3"
+    },
+    {
+      "number": "第六条 数据保护",
+      "title": "数据保护条款约定不明存在合规风险",
+      "content": "Provider may process personal data in approved regions and may use subcontractors for support, provided that it remains responsible for their acts.",
+      "risk_level": "high",
+      "issue_id": "issue_4"
+    },
+    {
+      "number": "第四条 费用与付款",
+      "title": "付款账期过长且无逾期违约责任",
+      "content": "Client shall pay quarterly in arrears within seventy-five (75) days after receiving a valid invoice.",
+      "risk_level": "medium",
+      "issue_id": "issue_5"
+    },
+    {
+      "number": "第七条 知识产权",
+      "title": "知识产权归属约定不明权益保障不足",
+      "content": "Pre-existing materials remain owned by the original owner. Work product specifically developed for Client shall be assigned to Client upon full payment.",
+      "risk_level": "medium",
+      "issue_id": "issue_6"
+    },
+    {
+      "number": "第八条 保密",
+      "title": "保密期限过短不符合商业秘密保护要求",
+      "content": "Each party shall protect confidential information for two (2) years after disclosure.",
+      "risk_level": "medium",
+      "issue_id": "issue_7"
+    },
+    {
+      "number": "第三条 服务水平",
+      "title": "服务水平约定模糊无违约追责机制",
+      "content": "Provider will use commercially reasonable efforts to maintain 99.5% monthly availability. Critical incidents should be responded to within a reasonable time.",
+      "risk_level": "medium",
+      "issue_id": "issue_8"
+    },
+    {
+      "number": "第五条 变更请求",
+      "title": "变更请求条款对服务商无约束机制",
+      "content": "Client may request changes at any time. Provider shall implement urgent changes first and discuss fee adjustments later.",
+      "risk_level": "medium",
+      "issue_id": "issue_9"
+    },
+    {
+      "number": "第十一条 审计",
+      "title": "审计条款约定不明增加服务商合规成本",
+      "content": "Client may audit Provider's systems upon five business days' notice no more than twice per year.",
+      "risk_level": "low",
+      "issue_id": "issue_10"
+    },
+    {
+      "number": "争议解决条款（合同首部约定）",
+      "title": "争议解决条款对客户不利且约定不明",
+      "content": "Governing Law / 法律：Laws of Singapore；Dispute / 争议：SIAC arbitration in Singapore",
+      "risk_level": "medium",
+      "issue_id": "issue_11"
+    },
+    {
+      "number": "第十五条 其他",
+      "title": "合同变更未约定书面形式易引发争议",
+      "content": "This Agreement constitutes the entire agreement and supersedes prior discussions.",
+      "risk_level": "low",
+      "issue_id": "issue_12"
+    },
+    {
+      "number": "第十四条 通知",
+      "title": "通知送达条款约定不合理易引发争议",
+      "content": "Notices shall be sent to the addresses stated in the order form and are deemed received upon email delivery confirmation.",
+      "risk_level": "low",
+      "issue_id": "issue_13"
+    }
+  ]
+}

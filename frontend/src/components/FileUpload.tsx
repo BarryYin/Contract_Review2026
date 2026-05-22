@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { UploadCloud, FileText, X } from 'lucide-react';
 import { uploadFile } from '../api/client';
+import type { FileInfo } from '../types';
 
 interface UploadingFile {
   id: string;
@@ -10,9 +11,10 @@ interface UploadingFile {
 
 interface FileUploadProps {
   onUploadComplete?: () => void;
+  onFileUploaded?: (fileInfo: FileInfo) => void;
 }
 
-export default function FileUpload({ onUploadComplete }: FileUploadProps) {
+export default function FileUpload({ onUploadComplete, onFileUploaded }: FileUploadProps) {
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadingFiles, setUploadingFiles] = useState<UploadingFile[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -25,13 +27,14 @@ export default function FileUpload({ onUploadComplete }: FileUploadProps) {
     ]);
 
     try {
-      await uploadFile(file, (progress) => {
+      const fileInfo = await uploadFile(file, (progress) => {
         setUploadingFiles((prev) =>
           prev.map((f) =>
             f.id === uploadId ? { ...f, progress } : f
           )
         );
-      });
+      }, false);  // autoReview=false — don't auto-trigger review
+      onFileUploaded?.(fileInfo);
       onUploadComplete?.();
     } catch {
       // Upload failed - show briefly then remove
@@ -48,7 +51,7 @@ export default function FileUpload({ onUploadComplete }: FileUploadProps) {
         setUploadingFiles((prev) => prev.filter((f) => f.id !== uploadId));
       }, 1500);
     }, 100);
-  }, [onUploadComplete]);
+  }, [onUploadComplete, onFileUploaded]);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();

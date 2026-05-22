@@ -1,0 +1,71 @@
+{
+  "contract_type": "服务合同",
+  "parties": [
+    {
+      "name": "北京海衡数据科技有限公司",
+      "address": null,
+      "legal_representative": null,
+      "role": "甲方"
+    },
+    {
+      "name": "NovaCloud Solutions Pte. Ltd.",
+      "address": null,
+      "legal_representative": null,
+      "role": "乙方"
+    }
+  ],
+  "contract_period": {
+    "start_date": "2026-06-01",
+    "end_date": "2027-05-31",
+    "duration_description": "2026年6月1日至2027年5月31日"
+  },
+  "payment_terms": [
+    {
+      "amount": 420000,
+      "currency": "USD",
+      "payment_cycle": "按季度后付",
+      "payment_method": null,
+      "description": "客户应在收到有效发票后七十五日内按季度后付，合同总费用为USD 420,000"
+    }
+  ],
+  "breach_liability": [
+    {
+      "clause_title": "责任限制",
+      "content": "服务商累计责任不超过合同履行前三个月已支付的费用，客户的付款义务不受上限限制"
+    },
+    {
+      "clause_title": "终止违约责任",
+      "content": "客户可提前十日无理由终止合同，服务商仅可在对方发生重大违约且三十日内未予补救时终止合同"
+    }
+  ],
+  "dispute_resolution": [
+    {
+      "clause_title": "争议解决",
+      "content": "争议提交新加坡国际仲裁中心（SIAC）仲裁，适用新加坡法律",
+      "arbitration_institution": "新加坡国际仲裁中心（SIAC）",
+      "jurisdiction": "新加坡"
+    }
+  ],
+  "confidentiality": [
+    {
+      "clause_title": "保密",
+      "content": "双方应自保密信息披露之日起两年内承担保密义务",
+      "duration": "2年"
+    }
+  ],
+  "intellectual_property": [
+    {
+      "clause_title": "知识产权",
+      "content": "既有材料归原权利人所有，专为客户开发的工作成果在客户全额付款后转让给客户",
+      "scope": "合同项下的既有材料及专为客户端开发的工作成果"
+    }
+  ],
+  "termination": [
+    {
+      "clause_title": "终止",
+      "content": "客户可提前十日无理由终止合同，服务商仅可在对方发生重大违约且三十日内未予补救时终止合同",
+      "notice_period": "客户提前10天，服务商终止需满足重大违约且30日补救期届满的条件",
+      "conditions": "客户可无理由提前10天通知终止；服务商仅可在对方发生重大违约且30日内未予补救时终止"
+    }
+  ]
+}

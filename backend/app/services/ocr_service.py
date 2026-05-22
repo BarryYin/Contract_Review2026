@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 # 使用 Step API（与 compliance_engine 共享同一 key）
 STEP_API_KEY = os.environ.get(
     "DEEPSEEK_API_KEY",
-    os.environ.get("OPENAI_API_KEY", "3tTXOQXTjY42d3wFEk9OTd6J3EmmgFX0akj0doTWcRtw1U92VjkGmPWKWnInvBpts")
+    os.environ.get("OPENAI_API_KEY", "")
 )
 STEP_BASE_URL = "https://api.stepfun.com/v1"
 OCR_MODEL = "step-1v-8k"

@@ -1,0 +1,60 @@
+{
+  "contract_type": "劳动合同",
+  "parties": [
+    {
+      "name": "杭州云堤科技有限公司",
+      "address": null,
+      "legal_representative": null,
+      "role": "甲方"
+    },
+    {
+      "name": "周雨晴",
+      "address": null,
+      "legal_representative": null,
+      "role": "乙方"
+    }
+  ],
+  "contract_period": {
+    "start_date": "2026-06-01",
+    "end_date": "2029-05-31",
+    "duration_description": "固定期限劳动合同，自2026年6月1日起至2029年5月31日止，试用期六个月"
+  },
+  "payment_terms": [
+    {
+      "amount": 32000,
+      "currency": "CNY",
+      "payment_cycle": "按月支付",
+      "payment_method": null,
+      "description": "劳动者月基本工资为人民币32000元，绩效奖金根据公司经营情况和个人绩效综合确定，用人单位可根据经营状况合理调整绩效奖金发放，试用期工资按约定工资的80%执行"
+    }
+  ],
+  "breach_liability": [
+    {
+      "clause_title": "解除与终止",
+      "content": "劳动者违反公司规章制度或造成重大风险的，用人单位可立即解除合同，任何一方解除或终止本合同应依照法律规定办理"
+    }
+  ],
+  "dispute_resolution": [],
+  "confidentiality": [
+    {
+      "clause_title": "保密与竞业限制",
+      "content": "劳动者应对用人单位商业秘密、客户资料、源代码、模型参数和产品路线负有保密义务，竞业限制期限、补偿标准及范围另行约定",
+      "duration": null
+    }
+  ],
+  "intellectual_property": [
+    {
+      "clause_title": "知识产权",
+      "content": "劳动者在任职期间完成或主要利用用人单位资源完成的发明、作品、算法、模型、文档、方案及其他成果均归用人单位所有",
+      "scope": "劳动者任职期间完成或主要利用用人单位资源完成的发明、作品、算法、模型、文档、方案及其他智力成果"
+    }
+  ],
+  "termination": [
+    {
+      "clause_title": "解除与终止",
+      "content": "任何一方解除或终止本合同应依照法律规定办理，劳动者违反公司规章制度或造成重大风险的，用人单位可立即解除合同",
+      "notice_period": null,
+      "conditions": "劳动者违反公司规章制度或造成重大风险，用人单位可立即解除合同，其他解除终止情形依照法律规定"
+    }
+  ]
+}

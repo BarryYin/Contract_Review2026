@@ -1,0 +1,71 @@
+{
+  "contract_type": "采购合同",
+  "parties": [
+    {
+      "name": "上海星澜智能制造有限公司",
+      "address": "上海市浦东新区",
+      "legal_representative": null,
+      "role": "甲方"
+    },
+    {
+      "name": "苏州云启电子科技有限公司",
+      "address": null,
+      "legal_representative": null,
+      "role": "乙方"
+    }
+  ],
+  "contract_period": {
+    "start_date": "2026-06-01",
+    "end_date": "2028-05-31",
+    "duration_description": "2026年6月1日至2028年5月31日"
+  },
+  "payment_terms": [
+    {
+      "amount": "8600000",
+      "currency": "CNY",
+      "payment_cycle": "验收合格后90日内一次性付款",
+      "payment_method": null,
+      "description": "乙方开具合规增值税专用发票后，甲方在验收合格且内部流程完成后九十日内付款；若甲方客户回款延迟，甲方付款期限相应顺延，乙方不得因此暂停供货"
+    }
+  ],
+  "breach_liability": [
+    {
+      "clause_title": "延迟交付违约责任",
+      "content": "乙方每延迟交付一日，应按迟延交付货款总额的5%向甲方支付违约金；迟延超过五日的，甲方有权解除订单并要求乙方赔偿全部损失，该违约金不受实际损失限制"
+    },
+    {
+      "clause_title": "批量质量事故与召回责任",
+      "content": "若产品存在安全隐患或连续三批次不合格，甲方有权要求乙方承担筛选、返工、召回、停线、客户索赔及品牌损失等全部费用，品牌损失金额由甲方根据实际影响合理确定"
+    }
+  ],
+  "dispute_resolution": [
+    {
+      "clause_title": "争议解决",
+      "content": "双方应先友好协商，协商不成的，任一方可提交甲方所在地有管辖权的人民法院诉讼解决",
+      "arbitration_institution": null,
+      "jurisdiction": "甲方所在地有管辖权的人民法院"
+    }
+  ],
+  "confidentiality": [
+    {
+      "clause_title": "保密义务",
+      "content": "乙方对甲方商业信息、技术资料、价格政策及客户信息负有保密义务，因法律法规要求披露的，乙方应在披露后合理时间内通知甲方",
+      "duration": "自信息披露之日起一年"
+    }
+  ],
+  "intellectual_property": [
+    {
+      "clause_title": "知识产权",
+      "content": "双方确认乙方为履行本协议形成的图纸、工艺文件、测试数据、软件脚本及改进成果均归甲方所有，乙方不得以任何理由主张留置、使用或许可第三方使用",
+      "scope": "乙方为履行本协议形成的全部相关知识产权成果，包括但不限于图纸、工艺文件、测试数据、软件脚本及改进成果"
+    }
+  ],
+  "termination": [
+    {
+      "clause_title": "变更与终止",
+      "content": "甲方可因业务需要提前三日通知乙方终止本协议或任一订单，且无需承担任何补偿；乙方终止协议须提前九十日书面通知并经甲方同意",
+      "notice_period": "甲方提前3日，乙方提前90日",
+      "conditions": "甲方可因业务需要随时终止本协议或任一订单，无需承担补偿；乙方终止协议需经甲方同意"
+    }
+  ]
+}

@@ -1,5 +1,8 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from .core.config import CORS_ORIGINS
 from .middleware.error_handler import ErrorHandlerMiddleware
@@ -54,3 +57,24 @@ app.include_router(reviews.router)
 @app.get("/")
 async def root():
     return {"message": "ContractAI API", "docs": "/docs"}
+
+
+# ── 生产模式：serve 前端静态文件 ──────────────────────────
+# 如果 frontend/dist 目录存在，挂载为静态文件服务
+_dist_dir = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))),
+    "frontend", "dist",
+)
+if os.path.isdir(_dist_dir):
+    from fastapi.responses import FileResponse
+
+    app.mount("/assets", StaticFiles(directory=os.path.join(_dist_dir, "assets")), name="assets")
+
+    @app.get("/{full_path:path}")
+    async def serve_spa(full_path: str):
+        """SPA fallback: serve index.html for all non-API, non-static routes."""
+        # API routes are already handled by routers above
+        file_path = os.path.join(_dist_dir, full_path)
+        if full_path and os.path.isfile(file_path):
+            return FileResponse(file_path)
+        return FileResponse(os.path.join(_dist_dir, "index.html"))

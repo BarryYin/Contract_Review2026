@@ -1,0 +1,101 @@
+{
+  "file_id": "8ad0364f-1fbd-4fbf-8c34-43b55663bbde",
+  "overall_score": 63.8,
+  "risk_level": "high",
+  "scoring_explanation": "综合评分 63.8 分（满分100），共发现 17 个问题（高风险 6，中风险 8，低风险 3）。风险等级：high。重点关注维度：违约责任（20.0分，4个问题）、争议解决（50.0分，4个问题）、其他（55.0分，3个问题）。",
+  "dimensions": [
+    {
+      "name": "争议解决",
+      "score": 50.0,
+      "weight": 0.1,
+      "issues_count": 4
+    },
+    {
+      "name": "付款条款",
+      "score": 70.0,
+      "weight": 0.15,
+      "issues_count": 2
+    },
+    {
+      "name": "保密义务",
+      "score": 70.0,
+      "weight": 0.15,
+      "issues_count": 2
+    },
+    {
+      "name": "免责条款",
+      "score": 100.0,
+      "weight": 0.15,
+      "issues_count": 0
+    },
+    {
+      "name": "其他",
+      "score": 55.0,
+      "weight": 0.0,
+      "issues_count": 3
+    },
+    {
+      "name": "知识产权",
+      "score": 75.0,
+      "weight": 0.15,
+      "issues_count": 1
+    },
+    {
+      "name": "终止条款",
+      "score": 75.0,
+      "weight": 0.1,
+      "issues_count": 1
+    },
+    {
+      "name": "违约责任",
+      "score": 20.0,
+      "weight": 0.2,
+      "issues_count": 4
+    }
+  ],
+  "weight_explanation": [
+    {
+      "dimension": "违约责任",
+      "weight": 0.2,
+      "weight_percentage": "20.0%",
+      "description": "评估违约金比例、赔偿条款的合理性和对等性"
+    },
+    {
+      "dimension": "付款条款",
+      "weight": 0.15,
+      "weight_percentage": "15.0%",
+      "description": "评估付款周期、金额、方式等条款的风险"
+    },
+    {
+      "dimension": "保密义务",
+      "weight": 0.15,
+      "weight_percentage": "15.0%",
+      "description": "评估保密范围、期限、义务等条款的完备性"
+    },
+    {
+      "dimension": "知识产权",
+      "weight": 0.15,
+      "weight_percentage": "15.0%",
+      "description": "评估知识产权归属、授权、保护等条款的清晰性"
+    },
+    {
+      "dimension": "争议解决",
+      "weight": 0.1,
+      "weight_percentage": "10.0%",
+      "description": "评估争议解决方式、管辖权等条款的明确性"
+    },
+    {
+      "dimension": "免责条款",
+      "weight": 0.15,
+      "weight_percentage": "15.0%",
+      "description": "评估免责范围、不可抗力等条款的公平性"
+    },
+    {
+      "dimension": "终止条款",
+      "weight": 0.1,
+      "weight_percentage": "10.0%",
+      "description": "评估合同终止条件、程序等条款的合理性"
+    }
+  ],
+  "llm_risk_score": 80
+}

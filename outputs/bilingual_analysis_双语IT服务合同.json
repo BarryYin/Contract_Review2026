@@ -1,0 +1,218 @@
+{
+  "file_id": "8ad0364f-1fbd-4fbf-8c34-43b55663bbde",
+  "is_bilingual": true,
+  "chinese_section": {
+    "contract_type": "服务合同",
+    "parties": [],
+    "contract_period": {
+      "start_date": null,
+      "end_date": null,
+      "duration_description": "None"
+    },
+    "payment_terms": [],
+    "breach_liability": [],
+    "dispute_resolution": [],
+    "confidentiality": [],
+    "intellectual_property": [],
+    "termination": []
+  },
+  "english_section": {
+    "contract_type": "服务合同",
+    "parties": [
+      {
+        "name": "北京海衡数据科技有限公司",
+        "address": null,
+        "legal_representative": null,
+        "role": "甲方"
+      },
+      {
+        "name": "NovaCloud Solutions Pte. Ltd.",
+        "address": null,
+        "legal_representative": null,
+        "role": "乙方"
+      }
+    ],
+    "contract_period": {
+      "start_date": "2026-06-01",
+      "end_date": "2027-05-31",
+      "duration_description": "2026年6月1日至2027年5月31日"
+    },
+    "payment_terms": [
+      {
+        "amount": "420000",
+        "currency": "USD",
+        "payment_cycle": "按季度后付",
+        "payment_method": null,
+        "description": "客户应在收到有效发票后七十五（75）日内按季度后付"
+      }
+    ],
+    "breach_liability": [
+      {
+        "clause_title": "责任限制",
+        "content": "服务商累计责任不超过前三个月已支付费用；客户付款义务不受限制"
+      }
+    ],
+    "dispute_resolution": [
+      {
+        "clause_title": "争议解决",
+        "content": "争议提交新加坡国际仲裁中心（SIAC）仲裁",
+        "arbitration_institution": "SIAC（新加坡国际仲裁中心）",
+        "jurisdiction": "新加坡"
+      }
+    ],
+    "confidentiality": [
+      {
+        "clause_title": "保密",
+        "content": "双方应自披露之日起两（2）年内保护保密信息",
+        "duration": "自披露之日起2年"
+      }
+    ],
+    "intellectual_property": [
+      {
+        "clause_title": "知识产权",
+        "content": "既有材料归原权利人所有；专为客户开发的工作成果在客户全额付款后转让给客户",
+        "scope": "既有材料及专为客户开发的工作成果"
+      }
+    ],
+    "termination": [
+      {
+        "clause_title": "终止",
+        "content": "客户可提前十日无理由终止；服务商仅可在对方重大违约且三十日内未补救时终止",
+        "notice_period": "客户提前10日通知，服务商终止需对方重大违约且30日内未补救",
+        "conditions": "客户可无理由提前10日通知终止；服务商仅可在对方发生重大违约且30日内未予补救时终止"
+      }
+    ]
+  },
+  "consistency": [
+    {
+      "field": "contract_type",
+      "status": "consistent",
+      "detail": "一致",
+      "chinese_value": "服务合同",
+      "english_value": "服务合同"
+    },
+    {
+      "field": "parties",
+      "status": "missing",
+      "detail": "中文侧有 0 条, 英文侧有 2 条",
+      "chinese_value": [],
+      "english_value": [
+        {
+          "name": "北京海衡数据科技有限公司",
+          "address": null,
+          "legal_representative": null,
+          "role": "甲方"
+        },
+        {
+          "name": "NovaCloud Solutions Pte. Ltd.",
+          "address": null,
+          "legal_representative": null,
+          "role": "乙方"
+        }
+      ]
+    },
+    {
+      "field": "contract_period.start_date",
+      "status": "missing",
+      "detail": "中文侧缺失",
+      "chinese_value": null,
+      "english_value": "2026-06-01"
+    },
+    {
+      "field": "contract_period.end_date",
+      "status": "missing",
+      "detail": "中文侧缺失",
+      "chinese_value": null,
+      "english_value": "2027-05-31"
+    },
+    {
+      "field": "contract_period.duration_description",
+      "status": "inconsistent",
+      "detail": "不一致: 中文='None' vs 英文='2026年6月1日至2027年5月31日'",
+      "chinese_value": "None",
+      "english_value": "2026年6月1日至2027年5月31日"
+    },
+    {
+      "field": "payment_terms",
+      "status": "missing",
+      "detail": "中文侧有 0 条, 英文侧有 1 条",
+      "chinese_value": [],
+      "english_value": [
+        {
+          "amount": "420000",
+          "currency": "USD",
+          "payment_cycle": "按季度后付",
+          "payment_method": null,
+          "description": "客户应在收到有效发票后七十五（75）日内按季度后付"
+        }
+      ]
+    },
+    {
+      "field": "breach_liability",
+      "status": "missing",
+      "detail": "中文侧有 0 条, 英文侧有 1 条",
+      "chinese_value": [],
+      "english_value": [
+        {
+          "clause_title": "责任限制",
+          "content": "服务商累计责任不超过前三个月已支付费用；客户付款义务不受限制"
+        }
+      ]
+    },
+    {
+      "field": "dispute_resolution",
+      "status": "missing",
+      "detail": "中文侧有 0 条, 英文侧有 1 条",
+      "chinese_value": [],
+      "english_value": [
+        {
+          "clause_title": "争议解决",
+          "content": "争议提交新加坡国际仲裁中心（SIAC）仲裁",
+          "arbitration_institution": "SIAC（新加坡国际仲裁中心）",
+          "jurisdiction": "新加坡"
+        }
+      ]
+    },
+    {
+      "field": "confidentiality",
+      "status": "missing",
+      "detail": "中文侧有 0 条, 英文侧有 1 条",
+      "chinese_value": [],
+      "english_value": [
+        {
+          "clause_title": "保密",
+          "content": "双方应自披露之日起两（2）年内保护保密信息",
+          "duration": "自披露之日起2年"
+        }
+      ]
+    },
+    {
+      "field": "intellectual_property",
+      "status": "missing",
+      "detail": "中文侧有 0 条, 英文侧有 1 条",
+      "chinese_value": [],
+      "english_value": [
+        {
+          "clause_title": "知识产权",
+          "content": "既有材料归原权利人所有；专为客户开发的工作成果在客户全额付款后转让给客户",
+          "scope": "既有材料及专为客户开发的工作成果"
+        }
+      ]
+    },
+    {
+      "field": "termination",
+      "status": "missing",
+      "detail": "中文侧有 0 条, 英文侧有 1 条",
+      "chinese_value": [],
+      "english_value": [
+        {
+          "clause_title": "终止",
+          "content": "客户可提前十日无理由终止；服务商仅可在对方重大违约且三十日内未补救时终止",
+          "notice_period": "客户提前10日通知，服务商终止需对方重大违约且30日内未补救",
+          "conditions": "客户可无理由提前10日通知终止；服务商仅可在对方发生重大违约且30日内未予补救时终止"
+        }
+      ]
+    }
+  ],
+  "consistency_score": 13
+}

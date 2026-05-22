@@ -1,0 +1,95 @@
+{
+  "file_id": "546ad652-9851-479d-9033-da009bcc3632",
+  "overall_score": 100.0,
+  "risk_level": "low",
+  "scoring_explanation": "综合评分 100.0 分（满分100），共发现 0 个问题（高风险 0，中风险 0，低风险 0）。风险等级：low。",
+  "dimensions": [
+    {
+      "name": "争议解决",
+      "score": 100.0,
+      "weight": 0.1,
+      "issues_count": 0
+    },
+    {
+      "name": "付款条款",
+      "score": 100.0,
+      "weight": 0.15,
+      "issues_count": 0
+    },
+    {
+      "name": "保密义务",
+      "score": 100.0,
+      "weight": 0.15,
+      "issues_count": 0
+    },
+    {
+      "name": "免责条款",
+      "score": 100.0,
+      "weight": 0.15,
+      "issues_count": 0
+    },
+    {
+      "name": "知识产权",
+      "score": 100.0,
+      "weight": 0.15,
+      "issues_count": 0
+    },
+    {
+      "name": "终止条款",
+      "score": 100.0,
+      "weight": 0.1,
+      "issues_count": 0
+    },
+    {
+      "name": "违约责任",
+      "score": 100.0,
+      "weight": 0.2,
+      "issues_count": 0
+    }
+  ],
+  "weight_explanation": [
+    {
+      "dimension": "违约责任",
+      "weight": 0.2,
+      "weight_percentage": "20.0%",
+      "description": "评估违约金比例、赔偿条款的合理性和对等性"
+    },
+    {
+      "dimension": "付款条款",
+      "weight": 0.15,
+      "weight_percentage": "15.0%",
+      "description": "评估付款周期、金额、方式等条款的风险"
+    },
+    {
+      "dimension": "保密义务",
+      "weight": 0.15,
+      "weight_percentage": "15.0%",
+      "description": "评估保密范围、期限、义务等条款的完备性"
+    },
+    {
+      "dimension": "知识产权",
+      "weight": 0.15,
+      "weight_percentage": "15.0%",
+      "description": "评估知识产权归属、授权、保护等条款的清晰性"
+    },
+    {
+      "dimension": "争议解决",
+      "weight": 0.1,
+      "weight_percentage": "10.0%",
+      "description": "评估争议解决方式、管辖权等条款的明确性"
+    },
+    {
+      "dimension": "免责条款",
+      "weight": 0.15,
+      "weight_percentage": "15.0%",
+      "description": "评估免责范围、不可抗力等条款的公平性"
+    },
+    {
+      "dimension": "终止条款",
+      "weight": 0.1,
+      "weight_percentage": "10.0%",
+      "description": "评估合同终止条件、程序等条款的合理性"
+    }
+  ],
+  "llm_risk_score": 0
+}

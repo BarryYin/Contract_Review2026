@@ -147,12 +147,25 @@ dmypy.json
 .ruff_cache/
 
 # =============================================================================
-# Uploaded files & generated outputs (keep directory structure via .gitkeep)
+# Uploaded files (keep directory structure via .gitkeep)
 # =============================================================================
 uploads/*
 !uploads/.gitkeep
+
+# =============================================================================
+# Generated outputs — keep deliverable samples for evaluation
+# =============================================================================
 outputs/*
 !outputs/.gitkeep
+# Keep sample deliverables for hackathon evaluation
+!outputs/screenshots/
+!outputs/screenshots/*.png
+!outputs/review_*.json
+!outputs/report_*.pdf
+!outputs/track_changes_*.docx
+!outputs/scoring_*.json
+!outputs/structured_*.json
+!outputs/bilingual_*.json
 
 # =============================================================================
 # AI / Claude artifacts (optional: keep if you want to version them)

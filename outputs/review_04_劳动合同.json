@@ -1,0 +1,218 @@
+{
+  "id": "review_df37781e",
+  "file_id": "df37781e-1d83-411b-ad26-de81a9fd5e2a",
+  "risk_score": 95.2,
+  "risk_level": "medium",
+  "contract_type": "劳动合同",
+  "issues": [],
+  "summary": "AI审查暂不可用（Client error '429 Too Many Requests' for url 'https://api.stepfun.com/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429）。已上传合同文本，请稍后重试或联系管理员配置LLM API密钥。",
+  "filename": "04_含手写补充条款的劳动合同_混合OCR.docx",
+  "upload_time": "2026-05-22T01:05:07.387609+00:00",
+  "review_time": "2026-05-22T01:05:23.177121+00:00",
+  "ocr_used": false,
+  "rule_hits": [
+    {
+      "rule_name": "违约金比例上限",
+      "severity": "high",
+      "matched": false,
+      "evidence": "[语义检查待LLM分析]",
+      "legal_basis": "《中华人民共和国民法典》第585条：约定的违约金超过造成损失的百分之三十的，一般可以认定为过分高于造成的损失。",
+      "risk_description": ""
+    },
+    {
+      "rule_name": "保密期限缺失或过短",
+      "severity": "medium",
+      "matched": true,
+      "evidence": "关键词命中: 保密, 商业秘密, 保密义务; [语义检查待LLM分析]",
+      "legal_basis": "《中华人民共和国反不正当竞争法》第9条及相关司法解释：商业秘密的保护应当有合理的保密措施和期限约定。",
+      "risk_description": "合同{section} {issue_type}。保密期限（{duration}）{risk_detail}，可能导致商业秘密保护不充分。建议设定不少于2年的保密期限。"
+    },
+    {
+      "rule_name": "争议解决条款不明确",
+      "severity": "high",
+      "matched": false,
+      "evidence": "[语义检查待LLM分析]",
+      "legal_basis": "《中华人民共和国民事诉讼法》第34条及《中华人民共和国仲裁法》第16条：仲裁协议应当具备请求仲裁的意思表示、仲裁事项和选定的仲裁委员会。协议管辖应当约定具体的管辖法院。",
+      "risk_description": ""
+    },
+    {
+      "rule_name": "免责条款单方面不对等保护",
+      "severity": "high",
+      "matched": false,
+      "evidence": "[语义检查待LLM分析]",
+      "legal_basis": "《中华人民共和国民法典》第497条：提供格式条款一方不合理地免除或者减轻其责任、加重对方责任、限制对方主要权利的，该条款无效。第506条：合同中的下列免责条款无效——造成对方人身损害的，因故意或者重大过失造成对方财产损失的。",
+      "risk_description": ""
+    },
+    {
+      "rule_name": "终止条款赋予一方无条件单方解除权",
+      "severity": "high",
+      "matched": true,
+      "evidence": "关键词命中: 解除, 终止; [语义检查待LLM分析]",
+      "legal_basis": "《中华人民共和国民法典》第562条：当事人协商一致，可以解除合同。当事人可以约定一方解除合同的事由。第563条：有下列情形之一的，当事人可以解除合同——因不可抗力致使不能实现合同目的等。单方解除权的赋予应当遵循公平原则。",
+      "risk_description": "合同第 {section} 条{issue_detail}，该等条款赋予一方无条件的单方解除权，违反了合同法的公平原则。建议为双方设定对等的解除条件和合理的通知期限。"
+    }
+  ],
+  "structured_info": {
+    "contract_type": "劳动合同",
+    "parties": [
+      {
+        "name": "杭州云堤科技有限公司",
+        "address": null,
+        "legal_representative": null,
+        "role": "甲方"
+      },
+      {
+        "name": "周雨晴",
+        "address": null,
+        "legal_representative": null,
+        "role": "乙方"
+      }
+    ],
+    "contract_period": {
+      "start_date": "2026-06-01",
+      "end_date": "2029-05-31",
+      "duration_description": "固定期限劳动合同，自2026年6月1日起至2029年5月31日止，试用期六个月"
+    },
+    "payment_terms": [
+      {
+        "amount": 32000,
+        "currency": "CNY",
+        "payment_cycle": "按月支付",
+        "payment_method": null,
+        "description": "劳动者月基本工资为人民币32000元，绩效奖金根据公司经营情况和个人绩效综合确定，用人单位可根据经营状况合理调整绩效奖金发放，试用期工资按约定工资的80%执行"
+      }
+    ],
+    "breach_liability": [
+      {
+        "clause_title": "解除与终止",
+        "content": "劳动者违反公司规章制度或造成重大风险的，用人单位可立即解除合同，任何一方解除或终止本合同应依照法律规定办理"
+      }
+    ],
+    "dispute_resolution": [],
+    "confidentiality": [
+      {
+        "clause_title": "保密与竞业限制",
+        "content": "劳动者应对用人单位商业秘密、客户资料、源代码、模型参数和产品路线负有保密义务，竞业限制期限、补偿标准及范围另行约定",
+        "duration": null
+      }
+    ],
+    "intellectual_property": [
+      {
+        "clause_title": "知识产权",
+        "content": "劳动者在任职期间完成或主要利用用人单位资源完成的发明、作品、算法、模型、文档、方案及其他成果均归用人单位所有",
+        "scope": "劳动者任职期间完成或主要利用用人单位资源完成的发明、作品、算法、模型、文档、方案及其他智力成果"
+      }
+    ],
+    "termination": [
+      {
+        "clause_title": "解除与终止",
+        "content": "任何一方解除或终止本合同应依照法律规定办理，劳动者违反公司规章制度或造成重大风险的，用人单位可立即解除合同",
+        "notice_period": null,
+        "conditions": "劳动者违反公司规章制度或造成重大风险，用人单位可立即解除合同，其他解除终止情形依照法律规定"
+      }
+    ]
+  },
+  "entities": {
+    "entities": [],
+    "_meta": {
+      "source": "fallback",
+      "error": "Client error '429 Too Many Requests' for url 'https://api.stepfun.com/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429"
+    }
+  },
+  "bilingual_analysis": {
+    "chinese_section": {
+      "contract_type": "未识别",
+      "parties": [],
+      "contract_period": {
+        "start_date": null,
+        "end_date": null,
+        "duration_description": ""
+      },
+      "payment_terms": [],
+      "breach_liability": [],
+      "dispute_resolution": [],
+      "confidentiality": [],
+      "intellectual_property": [],
+      "termination": [],
+      "_meta": {
+        "source": "fallback",
+        "error": "Client error '429 Too Many Requests' for url 'https://api.stepfun.com/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429"
+      }
+    },
+    "english_section": {
+      "contract_type": "未识别",
+      "parties": [],
+      "contract_period": {
+        "start_date": null,
+        "end_date": null,
+        "duration_description": ""
+      },
+      "payment_terms": [],
+      "breach_liability": [],
+      "dispute_resolution": [],
+      "confidentiality": [],
+      "intellectual_property": [],
+      "termination": [],
+      "_meta": {
+        "source": "fallback",
+        "error": "Client error '429 Too Many Requests' for url 'https://api.stepfun.com/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429"
+      }
+    },
+    "consistency": [
+      {
+        "field": "contract_type",
+        "status": "consistent",
+        "detail": "一致",
+        "chinese_value": "未识别",
+        "english_value": "未识别"
+      }
+    ],
+    "consistency_score": 100
+  },
+  "scoring_dimensions": [
+    {
+      "name": "争议解决",
+      "score": 100.0,
+      "weight": 0.1,
+      "issues_count": 0
+    },
+    {
+      "name": "付款条款",
+      "score": 100.0,
+      "weight": 0.15,
+      "issues_count": 0
+    },
+    {
+      "name": "保密义务",
+      "score": 85.0,
+      "weight": 0.15,
+      "issues_count": 1
+    },
+    {
+      "name": "免责条款",
+      "score": 100.0,
+      "weight": 0.15,
+      "issues_count": 0
+    },
+    {
+      "name": "知识产权",
+      "score": 100.0,
+      "weight": 0.15,
+      "issues_count": 0
+    },
+    {
+      "name": "终止条款",
+      "score": 75.0,
+      "weight": 0.1,
+      "issues_count": 1
+    },
+    {
+      "name": "违约责任",
+      "score": 100.0,
+      "weight": 0.2,
+      "issues_count": 0
+    }
+  ],
+  "scoring_explanation": "综合评分 95.2 分（满分100），共发现 2 个问题（高风险 1，中风险 1，低风险 0）。风险等级：medium。重点关注维度：终止条款（75.0分，1个问题）、保密义务（85.0分，1个问题）。",
+  "file_hash": "6a2811c8e566e51de4bcd2fbc77f76a4e6a3c16ca6b9786ac91a171ed26fbf94"
+}

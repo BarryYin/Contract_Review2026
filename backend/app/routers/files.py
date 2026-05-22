@@ -31,9 +31,12 @@ async def _trigger_review(file_id: str, file_path: str):
     "/upload",
     response_model=FileUploadResponse,
     summary="Upload a contract file",
-    description="Upload a contract file (PDF, DOCX, or DOC) for AI compliance review. Maximum file size is 20 MB. The file is automatically queued for background review after upload.",
+    description="Upload a contract file (PDF, DOCX, or DOC) for AI compliance review. Maximum file size is 20 MB. Set auto_review=false to skip automatic review and choose a template later.",
 )
-async def upload_file(file: UploadFile = File(...)):
+async def upload_file(
+    file: UploadFile = File(...),
+    auto_review: bool = True,
+):
 
     # Validate extension
     if file.filename is None:
@@ -63,16 +66,16 @@ async def upload_file(file: UploadFile = File(...)):
     # Get file path for background review
     file_path = file_service.get_file_path(file_info.id)
 
-    # Trigger background review
-    if file_path:
+    # Trigger background review only if auto_review is True
+    if auto_review and file_path:
         asyncio.create_task(_trigger_review(file_info.id, file_path))
 
     return FileUploadResponse(
         id=file_info.id,
         filename=file_info.filename,
         size=file_info.size,
-        status=FileStatus.PROCESSING,
-        message="文件上传成功，正在审查中",
+        status=FileStatus.PROCESSING if auto_review else FileStatus.UPLOADING,
+        message="文件上传成功，正在审查中" if auto_review else "文件上传成功，请选择审查模板",
     )
 
 

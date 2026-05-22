@@ -1,0 +1,748 @@
+{
+  "id": "review_8ad0364f",
+  "file_id": "8ad0364f-1fbd-4fbf-8c34-43b55663bbde",
+  "risk_score": 63.8,
+  "risk_level": "high",
+  "contract_type": "服务合同",
+  "issues": [
+    {
+      "id": "issue_1",
+      "title": "语言效力条款中英文直接冲突",
+      "clause_reference": "第十三条 语言效力",
+      "severity": "high",
+      "risk_description": "中英文版本对语言优先级的约定完全相反，一旦发生争议，双方会各自依据对自己有利的版本主张权利，导致合同效力不确定，大幅增加诉讼或仲裁的成本和败诉风险。",
+      "legal_basis": "依据《民法典》第四百六十六条，合同文本采用两种以上文字订立并约定具有同等效力的，各文本使用的词句不一致的，应当根据合同的目的予以解释。",
+      "modification_example": {
+        "original": "If there is any inconsistency, the English version shall prevail. 如中英文存在不一致，以中文版本为准。",
+        "suggested": "如中英文版本存在歧义或冲突，以中文版本为准；若因语言差异导致条款解释争议，应结合合同目的、交易习惯及诚信原则进行解释。"
+      },
+      "clause": null,
+      "risk_type": null,
+      "description": null,
+      "suggestion": null,
+      "status": "pending"
+    },
+    {
+      "id": "issue_2",
+      "title": "责任限制条款显失公平权利义务失衡",
+      "clause_reference": "第九条 责任限制",
+      "severity": "high",
+      "risk_description": "服务商的责任上限被限定为前3个月已付费用，而客户的责任没有任何上限，一旦服务商违约、侵权给客户造成重大损失，客户可能无法获得足额赔偿；该条款属于限制对方主要权利的格式条款，可能被认定为无效。",
+      "legal_basis": "依据《民法典》第五百零六条，提供格式条款一方不合理地免除或者减轻其责任、加重对方责任、限制对方主要权利的，该格式条款无效；同时违反《民法典》第六条公平原则。",
+      "modification_example": {
+        "original": "Provider's aggregate liability shall not exceed fees paid in the preceding three months; however, Client's payment obligations are uncapped.",
+        "suggested": "双方就本合同项下的违约责任累计赔偿上限均为合同总金额的100%；因一方故意或重大过失造成对方人身伤害、数据泄露、业务中断等财产损失的，不适用上述责任限制。"
+      },
+      "clause": null,
+      "risk_type": null,
+      "description": null,
+      "suggestion": null,
+      "status": "pending"
+    },
+    {
+      "id": "issue_3",
+      "title": "合同解除权严重失衡显失公平",
+      "clause_reference": "第十条 终止",
+      "severity": "high",
+      "risk_description": "客户仅需提前10天通知即可无理由终止合同，服务商却只能在客户重大违约且30天未补救的情况下才能终止，权利义务严重不对等，服务商投入的研发、部署成本可能无法收回，显失公平。",
+      "legal_basis": "依据《民法典》第六条公平原则，以及《民法典》第五百零六条关于格式条款无效的规定，限制对方主要权利的解除权约定无效。",
+      "modification_example": {
+        "original": "Client may terminate for convenience with ten days' notice. Provider may terminate only for material breach not cured within thirty days.",
+        "suggested": "任何一方均有权提前30天书面通知对方无理由终止合同，终止后双方根据已完成的工作量结算费用；若一方发生重大违约，守约方有权提前10天书面通知解除合同，违约方应在30天内补救，未补救的守约方有权立即解除合同并主张损失赔偿。"
+      },
+      "clause": null,
+      "risk_type": null,
+      "description": null,
+      "suggestion": null,
+      "status": "pending"
+    },
+    {
+      "id": "issue_4",
+      "title": "数据保护条款约定不明存在合规风险",
+      "clause_reference": "第六条 数据保护",
+      "severity": "high",
+      "risk_description": "仅约定服务商可在批准区域处理个人数据、可使用分包商，但未明确个人数据处理范围、安全措施、分包商数据保护义务，也未约定个人信息出境的合规要求，若涉及中国用户个人信息，可能违反《个人信息保护法》的强制性规定，面临行政处罚。",
+      "legal_basis": "依据《个人信息保护法》第三十八条，向境外提供个人信息需依法完成安全评估、认证或订立标准合同等合规手续；依据《个人信息保护法》第五十五条，个人信息处理者需制定数据安全事件应急预案并定期合规审计。",
+      "modification_example": {
+        "original": "Provider may process personal data in approved regions and may use subcontractors for support, provided that it remains responsible for their acts.",
+        "suggested": "服务商处理客户个人数据应严格遵守《中华人民共和国个人信息保护法》等适用法律，仅可在合同约定的中国境内区域处理中国用户的个人信息；确需向境外传输个人信息的，应依法完成安全评估、认证或订立标准合同等合规手续。服务商使用分包商处理个人数据的，应与分包商签订数据保护协议明确其数据安全责任，若分包商违反义务的，服务商承担连带责任。"
+      },
+      "clause": null,
+      "risk_type": null,
+      "description": null,
+      "suggestion": null,
+      "status": "pending"
+    },
+    {
+      "id": "issue_5",
+      "title": "付款账期过长且无逾期违约责任",
+      "clause_reference": "第四条 费用与付款",
+      "severity": "medium",
+      "risk_description": "客户按季度后付，账期长达75天，且未约定逾期付款的违约金标准，若客户逾期付款，服务商仅能主张法定利息，维权成本高，资金压力大。",
+      "legal_basis": "依据《民法典》第五百七十七条，当事人一方不履行合同义务或者履行合同义务不符合约定的，应当承担继续履行、赔偿损失等违约责任；依据《民法典》第五百八十四条，损失赔偿额应相当于因违约所造成的损失。",
+      "modification_example": {
+        "original": "Client shall pay quarterly in arrears within seventy-five (75) days after receiving a valid invoice.",
+        "suggested": "客户应按季度预付服务费用，于每季度开始前10个工作日向服务商支付当期费用；若客户逾期付款，每逾期一日按应付未付金额的0.05%向服务商支付违约金，逾期超过15日的，服务商有权暂停服务直至款项付清，且不承担违约责任。"
+      },
+      "clause": null,
+      "risk_type": null,
+      "description": null,
+      "suggestion": null,
+      "status": "pending"
+    },
+    {
+      "id": "issue_6",
+      "title": "知识产权归属约定不明权益保障不足",
+      "clause_reference": "第七条 知识产权",
+      "severity": "medium",
+      "risk_description": "仅约定定制成果全额付款后转让给客户，未明确服务商自有技术、既有材料的授权使用范围，也未约定客户不得超范围使用成果，可能导致服务商后续使用自有技术面临侵权风险，或客户滥用成果损害服务商权益。",
+      "legal_basis": "依据《民法典》第五百零九条，当事人应按照约定全面履行合同义务，遵循诚信原则履行协助、保密等义务；依据《计算机软件保护条例》相关规定，软件著作权归属按合同约定执行。",
+      "modification_example": {
+        "original": "Pre-existing materials remain owned by the original owner. Work product specifically developed for Client shall be assigned to Client upon full payment.",
+        "suggested": "服务商签订本合同前已拥有的知识产权（包括源代码、算法模型、工具组件等既有材料）仍归服务商所有，服务商授予客户非独占、不可转让的许可，仅可在合同约定期限内为履行合同目的使用上述既有材料。专为客户开发的定制成果，在客户付清全部合同款项后转让给客户，客户不得擅自将定制成果转让、许可第三方使用或用于超出合同约定的范围。"
+      },
+      "clause": null,
+      "risk_type": null,
+      "description": null,
+      "suggestion": null,
+      "status": "pending"
+    },
+    {
+      "id": "issue_7",
+      "title": "保密期限过短不符合商业秘密保护要求",
+      "clause_reference": "第八条 保密",
+      "severity": "medium",
+      "risk_description": "双方保密义务仅约定为披露后2年，但商业秘密的保护期限应为直至秘密公开为止，2年期限过短，可能导致服务商掌握的核心技术、客户数据等商业秘密在期限届满后失去保护，泄露后难以追责。",
+      "legal_basis": "依据《反不正当竞争法》第九条，经营者不得违反保密义务披露、使用其掌握的商业秘密；商业秘密的保护期限直至该信息进入公有领域为止，无固定法定期限。",
+      "modification_example": {
+        "original": "Each party shall protect confidential information for two (2) years after disclosure.",
+        "suggested": "双方应对在合同履行过程中获知的对方商业秘密、保密信息承担永久保密义务，直至该等信息进入公有领域为止；若为普通保密信息，保密期限为披露后3年。"
+      },
+      "clause": null,
+      "risk_type": null,
+      "description": null,
+      "suggestion": null,
+      "status": "pending"
+    },
+    {
+      "id": "issue_8",
+      "title": "服务水平约定模糊无违约追责机制",
+      "clause_reference": "第三条 服务水平",
+      "severity": "medium",
+      "risk_description": "仅约定99.5%的月可用性目标，未明确可用性计算方式、统计周期，也未约定重大故障的明确响应时限和未达标的违约金标准，若服务商未达标，客户难以主张违约责任。",
+      "legal_basis": "依据《民法典》第五百七十七条，当事人履行合同义务不符合约定的，应承担违约责任；依据《民法典》第五百一十条，合同约定不明确的，可按照交易习惯确定。",
+      "modification_example": {
+        "original": "Provider will use commercially reasonable efforts to maintain 99.5% monthly availability. Critical incidents should be responded to within a reasonable time.",
+        "suggested": "服务商应保证平台月可用性不低于99.5%，可用性=（当月总时长-当月非计划停机时长）/当月总时长×100%，非计划停机指因服务商原因导致的平台无法正常服务的时间。重大故障（平台完全无法访问、核心功能失效）的响应时间不超过1小时，修复时间不超过4小时；若月可用性未达约定标准，每低0.1%服务商应向客户支付当月服务费的1%作为违约金，最高不超过当月服务费的10%。"
+      },
+      "clause": null,
+      "risk_type": null,
+      "description": null,
+      "suggestion": null,
+      "status": "pending"
+    },
+    {
+      "id": "issue_9",
+      "title": "变更请求条款对服务商无约束机制",
+      "clause_reference": "第五条 变更请求",
+      "severity": "medium",
+      "risk_description": "客户可随时提出变更，服务商必须先实施紧急变更再协商费用，未约定变更范围、费用上限、实施时限，可能导致服务商承担大量额外工作却无法获得合理报酬，投入成本无法收回。",
+      "legal_basis": "依据《民法典》第五百四十三条，当事人协商一致方可变更合同；依据《民法典》第六条公平原则，合同条款不得显失公平。",
+      "modification_example": {
+        "original": "Client may request changes at any time. Provider shall implement urgent changes first and discuss fee adjustments later.",
+        "suggested": "客户提出变更请求的，应向服务商提交书面变更申请，明确变更内容、需求及期望完成时间；服务商应在5个工作日内评估变更的工作量、费用及对原合同进度的影响，经双方书面确认后方可实施。紧急变更（影响平台核心功能运行需立即处理的事故）可先实施，但应在实施后3个工作日内提交变更确认书，双方协商确定费用调整方案；无法达成一致的，服务商有权拒绝实施该变更。"
+      },
+      "clause": null,
+      "risk_type": null,
+      "description": null,
+      "suggestion": null,
+      "status": "pending"
+    },
+    {
+      "id": "issue_10",
+      "title": "审计条款约定不明增加服务商合规成本",
+      "clause_reference": "第十一条 审计",
+      "severity": "low",
+      "risk_description": "仅约定客户每年可审计2次、提前5个工作日通知，未明确审计范围、费用承担、服务商配合义务及问题处理方式，可能导致审计范围无限扩大，增加服务商的合规成本。",
+      "legal_basis": "依据《民法典》第五百零九条，当事人应遵循诚信原则履行协助、保密等合同义务。",
+      "modification_example": {
+        "original": "Client may audit Provider's systems upon five business days' notice no more than twice per year.",
+        "suggested": "客户每年可对服务商履行合同义务的情况进行审计，每年不超过2次，每次审计提前5个工作日发出书面通知，明确审计范围、时间及参与人员。审计范围限于与合同履行相关的财务、系统安全、服务水平达标情况，不得涉及服务商其他商业秘密。审计费用由提出审计的一方承担，服务商应配合提供相关资料，但审计不得影响服务商正常业务运营。"
+      },
+      "clause": null,
+      "risk_type": null,
+      "description": null,
+      "suggestion": null,
+      "status": "pending"
+    },
+    {
+      "id": "issue_11",
+      "title": "争议解决条款对客户不利且约定不明",
+      "clause_reference": "争议解决条款（合同首部约定）",
+      "severity": "medium",
+      "risk_description": "约定适用新加坡法律、在新加坡国际仲裁中心仲裁，客户作为中国公司需承担较高的跨境仲裁成本，且对中国法律不熟悉维权难度大；同时未明确适用的仲裁规则，可能导致仲裁程序存在争议。",
+      "legal_basis": "依据《民事诉讼法》第二百七十六条，涉外民事纠纷可书面协议选择外国仲裁机构仲裁，但不得违反中国专属管辖规定；依据《仲裁法》第十六条，仲裁协议应明确选定仲裁委员会。",
+      "modification_example": {
+        "original": "Governing Law / 法律：Laws of Singapore；Dispute / 争议：SIAC arbitration in Singapore",
+        "suggested": "因本合同产生的争议，双方首先友好协商解决；协商不成的，任何一方有权提交中国国际经济贸易仲裁委员会（CIETAC）按照申请仲裁时该会现行有效规则在北京仲裁，仲裁裁决为终局，对双方均有约束力。本合同订立、效力、解释、履行及争议解决均适用中华人民共和国法律。"
+      },
+      "clause": null,
+      "risk_type": null,
+      "description": null,
+      "suggestion": null,
+      "status": "pending"
+    },
+    {
+      "id": "issue_12",
+      "title": "合同变更未约定书面形式易引发争议",
+      "clause_reference": "第十五条 其他",
+      "severity": "low",
+      "risk_description": "合同未约定变更必须采用书面形式，口头达成的变更协议可能因证据不足引发争议，增加维权难度。",
+      "legal_basis": "依据《民法典》第一百三十六条，民事法律行为可以采用书面、口头或其他形式，当事人约定采用特定形式的应当采用特定形式；依据《民法典》第五百四十三条，当事人协商一致可以变更合同。",
+      "modification_example": {
+        "original": "This Agreement constitutes the entire agreement and supersedes prior discussions.",
+        "suggested": "本合同构成双方完整协议，取代此前所有讨论。本合同的任何修改、补充均须经双方书面签署方为有效；双方往来邮件、口头承诺等非书面形式的内容，不构成对本合同的变更，除非双方明确书面约定。"
+      },
+      "clause": null,
+      "risk_type": null,
+      "description": null,
+      "suggestion": null,
+      "status": "pending"
+    },
+    {
+      "id": "issue_13",
+      "title": "通知送达条款约定不合理易引发争议",
+      "clause_reference": "第十四条 通知",
+      "severity": "low",
+      "risk_description": "仅约定电子邮件发送确认时视为送达，未考虑邮件被拦截、拒收等情形，可能导致通知实际未到达对方但被认定为有效送达，损害当事人的程序权利。",
+      "legal_basis": "依据《民法典》第一百三十七条，以数据电文形式作出的意思表示，相对人指定特定系统接收的，进入该特定系统时生效；未指定的，相对人知道或应当知道进入其系统时生效。",
+      "modification_example": {
+        "original": "Notices shall be sent to the addresses stated in the order form and are deemed received upon email delivery confirmation.",
+        "suggested": "通知应通过专人送达、挂号邮寄或双方约定的电子邮箱发送至合同首部列明的地址。通过电子邮件发送的通知，以对方在3个工作日内未提出异议视为送达；若邮件被系统拦截、退回或对方明确拒收的，应当重新发送或采用其他方式送达，自实际送达时生效。"
+      },
+      "clause": null,
+      "risk_type": null,
+      "description": null,
+      "suggestion": null,
+      "status": "pending"
+    }
+  ],
+  "summary": "本合同为中英双语云平台开发维护IT服务合同，核心风险包括：第13条语言效力条款中英文直接冲突致合同效力不确定；责任限制、解除权等条款权利义务严重失衡显失公平；数据保护、知识产权等核心条款约定不明存在合规风险；付款账期过长、服务水平无违约标准，整体风险较高，需大幅修订。",
+  "filename": "02_中英双语IT服务合同_双栏对照.docx",
+  "upload_time": "2026-05-22T01:05:07.323951+00:00",
+  "review_time": "2026-05-22T01:06:41.892844+00:00",
+  "ocr_used": false,
+  "rule_hits": [
+    {
+      "rule_name": "违约金比例上限",
+      "severity": "high",
+      "matched": false,
+      "evidence": "[语义检查待LLM分析]",
+      "legal_basis": "《中华人民共和国民法典》第585条：约定的违约金超过造成损失的百分之三十的，一般可以认定为过分高于造成的损失。",
+      "risk_description": ""
+    },
+    {
+      "rule_name": "付款周期超过60天",
+      "severity": "medium",
+      "matched": true,
+      "evidence": "关键词命中: 付款, 支付; [语义检查待LLM分析]",
+      "legal_basis": "《保障中小企业款项支付条例》第8条：机关、事业单位从中小企业采购货物、工程、服务，应当自货物、工程、服务交付之日起30日内支付款项；合同另有约定的，付款期限最长不得超过60日。",
+      "risk_description": "合同第 {section} 条约定的付款周期（{days}天）超过60天，存在资金占用风险。根据《保障中小企业款项支付条例》，建议将付款周期控制在60天以内。"
+    },
+    {
+      "rule_name": "保密期限缺失或过短",
+      "severity": "medium",
+      "matched": true,
+      "evidence": "关键词命中: 保密; [语义检查待LLM分析]",
+      "legal_basis": "《中华人民共和国反不正当竞争法》第9条及相关司法解释：商业秘密的保护应当有合理的保密措施和期限约定。",
+      "risk_description": "合同{section} {issue_type}。保密期限（{duration}）{risk_detail}，可能导致商业秘密保护不充分。建议设定不少于2年的保密期限。"
+    },
+    {
+      "rule_name": "争议解决条款不明确",
+      "severity": "high",
+      "matched": false,
+      "evidence": "[语义检查待LLM分析]",
+      "legal_basis": "《中华人民共和国民事诉讼法》第34条及《中华人民共和国仲裁法》第16条：仲裁协议应当具备请求仲裁的意思表示、仲裁事项和选定的仲裁委员会。协议管辖应当约定具体的管辖法院。",
+      "risk_description": ""
+    },
+    {
+      "rule_name": "知识产权工作成果范围不清晰",
+      "severity": "high",
+      "matched": true,
+      "evidence": "关键词命中: 知识产权, 工作成果, 交付物; 正则匹配: 工作成果在客户全额付款后转让; [语义检查待LLM分析]",
+      "legal_basis": "《中华人民共和国著作权法》第19条及《中华人民共和国专利法》第8条：委托创作或合作发明完成的成果，权属由合同约定；合同未约定的，相关权利归属于创作者或合作方共有。",
+      "risk_description": "合同第 {section} 条对知识产权/工作成果的约定{issue_detail}，可能导致后续权属争议。建议明确约定各类工作成果的知识产权归属、使用范围及转让条件。"
+    },
+    {
+      "rule_name": "免责条款单方面不对等保护",
+      "severity": "high",
+      "matched": false,
+      "evidence": "[语义检查待LLM分析]",
+      "legal_basis": "《中华人民共和国民法典》第497条：提供格式条款一方不合理地免除或者减轻其责任、加重对方责任、限制对方主要权利的，该条款无效。第506条：合同中的下列免责条款无效——造成对方人身损害的，因故意或者重大过失造成对方财产损失的。",
+      "risk_description": ""
+    },
+    {
+      "rule_name": "终止条款赋予一方无条件单方解除权",
+      "severity": "high",
+      "matched": true,
+      "evidence": "关键词命中: 终止; [语义检查待LLM分析]",
+      "legal_basis": "《中华人民共和国民法典》第562条：当事人协商一致，可以解除合同。当事人可以约定一方解除合同的事由。第563条：有下列情形之一的，当事人可以解除合同——因不可抗力致使不能实现合同目的等。单方解除权的赋予应当遵循公平原则。",
+      "risk_description": "合同第 {section} 条{issue_detail}，该等条款赋予一方无条件的单方解除权，违反了合同法的公平原则。建议为双方设定对等的解除条件和合理的通知期限。"
+    }
+  ],
+  "structured_info": {
+    "contract_type": "服务合同",
+    "parties": [
+      {
+        "name": "北京海衡数据科技有限公司",
+        "address": null,
+        "legal_representative": null,
+        "role": "甲方"
+      },
+      {
+        "name": "NovaCloud Solutions Pte. Ltd.",
+        "address": null,
+        "legal_representative": null,
+        "role": "乙方"
+      }
+    ],
+    "contract_period": {
+      "start_date": "2026-06-01",
+      "end_date": "2027-05-31",
+      "duration_description": "2026年6月1日至2027年5月31日"
+    },
+    "payment_terms": [
+      {
+        "amount": 420000,
+        "currency": "USD",
+        "payment_cycle": "按季度后付",
+        "payment_method": null,
+        "description": "客户应在收到有效发票后七十五日内按季度后付，合同总费用为USD 420,000"
+      }
+    ],
+    "breach_liability": [
+      {
+        "clause_title": "责任限制",
+        "content": "服务商累计责任不超过合同履行前三个月已支付的费用，客户的付款义务不受上限限制"
+      },
+      {
+        "clause_title": "终止违约责任",
+        "content": "客户可提前十日无理由终止合同，服务商仅可在对方发生重大违约且三十日内未予补救时终止合同"
+      }
+    ],
+    "dispute_resolution": [
+      {
+        "clause_title": "争议解决",
+        "content": "争议提交新加坡国际仲裁中心（SIAC）仲裁，适用新加坡法律",
+        "arbitration_institution": "新加坡国际仲裁中心（SIAC）",
+        "jurisdiction": "新加坡"
+      }
+    ],
+    "confidentiality": [
+      {
+        "clause_title": "保密",
+        "content": "双方应自保密信息披露之日起两年内承担保密义务",
+        "duration": "2年"
+      }
+    ],
+    "intellectual_property": [
+      {
+        "clause_title": "知识产权",
+        "content": "既有材料归原权利人所有，专为客户开发的工作成果在客户全额付款后转让给客户",
+        "scope": "合同项下的既有材料及专为客户端开发的工作成果"
+      }
+    ],
+    "termination": [
+      {
+        "clause_title": "终止",
+        "content": "客户可提前十日无理由终止合同，服务商仅可在对方发生重大违约且三十日内未予补救时终止合同",
+        "notice_period": "客户提前10天，服务商终止需满足重大违约且30日补救期届满的条件",
+        "conditions": "客户可无理由提前10天通知终止；服务商仅可在对方发生重大违约且30日内未予补救时终止"
+      }
+    ]
+  },
+  "entities": {
+    "entities": [
+      {
+        "type": "COMPANY",
+        "value": "北京海衡数据科技有限公司",
+        "context": "Client / 客户 | 北京海衡数据科技有限公司 | Provider / 服务商 | NovaCloud",
+        "position_hint": "合同首部/当事人信息栏",
+        "color": "purple"
+      },
+      {
+        "type": "COMPANY",
+        "value": "NovaCloud Solutions Pte. Ltd.",
+        "context": "Provider / 服务商 | NovaCloud Solutions Pte. Ltd. | Term / 期限 | 2026",
+        "position_hint": "合同首部/当事人信息栏",
+        "color": "purple"
+      },
+      {
+        "type": "MONEY",
+        "value": "USD 420,000",
+        "context": "Term / 期限 | 2026-06-01 to 2027-05-31 | Fee / 费用 | USD 420,000",
+        "position_hint": "费用条款字段表",
+        "color": "green"
+      },
+      {
+        "type": "LOCATION",
+        "value": "Singapore",
+        "context": "Governing Law / 法律 | Laws of Singapore | Dispute / 争议 | SIAC",
+        "position_hint": "法律适用/争议解决条款",
+        "color": "orange"
+      },
+      {
+        "type": "DATE",
+        "value": "2026-06-01 to 2027-05-31",
+        "context": "Term / 期限 | 2026-06-01 to 2027-05-31 | Fee / 费用 | USD 420,000",
+        "position_hint": "合同期限条款",
+        "color": "blue"
+      },
+      {
+        "type": "DATE",
+        "value": "seventy-five (75) days",
+        "context": "within seventy-five (75) days after receiving a valid invoice. | 客户应在",
+        "position_hint": "费用与付款条款",
+        "color": "blue"
+      },
+      {
+        "type": "DATE",
+        "value": "七十五（75）日",
+        "context": "收到有效发票后七十五（75）日内按季度后付。 | 客户可随时提出变更",
+        "position_hint": "费用与付款条款",
+        "color": "blue"
+      },
+      {
+        "type": "DATE",
+        "value": "ten days' notice",
+        "context": "for convenience with ten days' notice. | 客户可提前十日无理由终",
+        "position_hint": "终止条款",
+        "color": "blue"
+      },
+      {
+        "type": "DATE",
+        "value": "十日",
+        "context": "客户可提前十日无理由终止。 | 服务商仅可在重大违约且三十",
+        "position_hint": "终止条款",
+        "color": "blue"
+      },
+      {
+        "type": "DATE",
+        "value": "thirty days",
+        "context": "not cured within thirty days. | 服务商仅可在重大违约且三十",
+        "position_hint": "终止条款",
+        "color": "blue"
+      },
+      {
+        "type": "DATE",
+        "value": "三十日",
+        "context": "且三十日内未补救时终止。 | 客户可审计服务商系统",
+        "position_hint": "终止条款",
+        "color": "blue"
+      },
+      {
+        "type": "DATE",
+        "value": "two (2) years",
+        "context": "confidential information for two (2) years after disclosure. | 双方应自",
+        "position_hint": "保密条款",
+        "color": "blue"
+      },
+      {
+        "type": "DATE",
+        "value": "两（2）年",
+        "context": "自披露之日起两（2）年内保护保密信息。 | 服务商累计责任",
+        "position_hint": "保密条款",
+        "color": "blue"
+      },
+      {
+        "type": "DATE",
+        "value": "five business days",
+        "context": "upon five business days' notice no more than twice per year. | 客户",
+        "position_hint": "审计条款",
+        "color": "blue"
+      },
+      {
+        "type": "DATE",
+        "value": "五个工作日",
+        "context": "提前五个工作日通知审计服务商系统，每年不超过两次。 | 双方应",
+        "position_hint": "审计条款",
+        "color": "blue"
+      }
+    ],
+    "total": 15,
+    "type_counts": {
+      "COMPANY": 2,
+      "MONEY": 1,
+      "LOCATION": 1,
+      "DATE": 11
+    }
+  },
+  "bilingual_analysis": {
+    "chinese_section": {
+      "contract_type": "服务合同",
+      "parties": [],
+      "contract_period": {
+        "start_date": null,
+        "end_date": null,
+        "duration_description": "None"
+      },
+      "payment_terms": [],
+      "breach_liability": [],
+      "dispute_resolution": [],
+      "confidentiality": [],
+      "intellectual_property": [],
+      "termination": []
+    },
+    "english_section": {
+      "contract_type": "服务合同",
+      "parties": [
+        {
+          "name": "北京海衡数据科技有限公司",
+          "address": null,
+          "legal_representative": null,
+          "role": "甲方"
+        },
+        {
+          "name": "NovaCloud Solutions Pte. Ltd.",
+          "address": null,
+          "legal_representative": null,
+          "role": "乙方"
+        }
+      ],
+      "contract_period": {
+        "start_date": "2026-06-01",
+        "end_date": "2027-05-31",
+        "duration_description": "2026年6月1日至2027年5月31日"
+      },
+      "payment_terms": [
+        {
+          "amount": "420000",
+          "currency": "USD",
+          "payment_cycle": "按季度后付",
+          "payment_method": null,
+          "description": "客户应在收到有效发票后七十五（75）日内按季度后付"
+        }
+      ],
+      "breach_liability": [
+        {
+          "clause_title": "责任限制",
+          "content": "服务商累计责任不超过前三个月已支付费用；客户付款义务不受限制"
+        }
+      ],
+      "dispute_resolution": [
+        {
+          "clause_title": "争议解决",
+          "content": "争议提交新加坡国际仲裁中心（SIAC）仲裁",
+          "arbitration_institution": "SIAC（新加坡国际仲裁中心）",
+          "jurisdiction": "新加坡"
+        }
+      ],
+      "confidentiality": [
+        {
+          "clause_title": "保密",
+          "content": "双方应自披露之日起两（2）年内保护保密信息",
+          "duration": "自披露之日起2年"
+        }
+      ],
+      "intellectual_property": [
+        {
+          "clause_title": "知识产权",
+          "content": "既有材料归原权利人所有；专为客户开发的工作成果在客户全额付款后转让给客户",
+          "scope": "既有材料及专为客户开发的工作成果"
+        }
+      ],
+      "termination": [
+        {
+          "clause_title": "终止",
+          "content": "客户可提前十日无理由终止；服务商仅可在对方重大违约且三十日内未补救时终止",
+          "notice_period": "客户提前10日通知，服务商终止需对方重大违约且30日内未补救",
+          "conditions": "客户可无理由提前10日通知终止；服务商仅可在对方发生重大违约且30日内未予补救时终止"
+        }
+      ]
+    },
+    "consistency": [
+      {
+        "field": "contract_type",
+        "status": "consistent",
+        "detail": "一致",
+        "chinese_value": "服务合同",
+        "english_value": "服务合同"
+      },
+      {
+        "field": "parties",
+        "status": "missing",
+        "detail": "中文侧有 0 条, 英文侧有 2 条",
+        "chinese_value": [],
+        "english_value": [
+          {
+            "name": "北京海衡数据科技有限公司",
+            "address": null,
+            "legal_representative": null,
+            "role": "甲方"
+          },
+          {
+            "name": "NovaCloud Solutions Pte. Ltd.",
+            "address": null,
+            "legal_representative": null,
+            "role": "乙方"
+          }
+        ]
+      },
+      {
+        "field": "contract_period.start_date",
+        "status": "missing",
+        "detail": "中文侧缺失",
+        "chinese_value": null,
+        "english_value": "2026-06-01"
+      },
+      {
+        "field": "contract_period.end_date",
+        "status": "missing",
+        "detail": "中文侧缺失",
+        "chinese_value": null,
+        "english_value": "2027-05-31"
+      },
+      {
+        "field": "contract_period.duration_description",
+        "status": "inconsistent",
+        "detail": "不一致: 中文='None' vs 英文='2026年6月1日至2027年5月31日'",
+        "chinese_value": "None",
+        "english_value": "2026年6月1日至2027年5月31日"
+      },
+      {
+        "field": "payment_terms",
+        "status": "missing",
+        "detail": "中文侧有 0 条, 英文侧有 1 条",
+        "chinese_value": [],
+        "english_value": [
+          {
+            "amount": "420000",
+            "currency": "USD",
+            "payment_cycle": "按季度后付",
+            "payment_method": null,
+            "description": "客户应在收到有效发票后七十五（75）日内按季度后付"
+          }
+        ]
+      },
+      {
+        "field": "breach_liability",
+        "status": "missing",
+        "detail": "中文侧有 0 条, 英文侧有 1 条",
+        "chinese_value": [],
+        "english_value": [
+          {
+            "clause_title": "责任限制",
+            "content": "服务商累计责任不超过前三个月已支付费用；客户付款义务不受限制"
+          }
+        ]
+      },
+      {
+        "field": "dispute_resolution",
+        "status": "missing",
+        "detail": "中文侧有 0 条, 英文侧有 1 条",
+        "chinese_value": [],
+        "english_value": [
+          {
+            "clause_title": "争议解决",
+            "content": "争议提交新加坡国际仲裁中心（SIAC）仲裁",
+            "arbitration_institution": "SIAC（新加坡国际仲裁中心）",
+            "jurisdiction": "新加坡"
+          }
+        ]
+      },
+      {
+        "field": "confidentiality",
+        "status": "missing",
+        "detail": "中文侧有 0 条, 英文侧有 1 条",
+        "chinese_value": [],
+        "english_value": [
+          {
+            "clause_title": "保密",
+            "content": "双方应自披露之日起两（2）年内保护保密信息",
+            "duration": "自披露之日起2年"
+          }
+        ]
+      },
+      {
+        "field": "intellectual_property",
+        "status": "missing",
+        "detail": "中文侧有 0 条, 英文侧有 1 条",
+        "chinese_value": [],
+        "english_value": [
+          {
+            "clause_title": "知识产权",
+            "content": "既有材料归原权利人所有；专为客户开发的工作成果在客户全额付款后转让给客户",
+            "scope": "既有材料及专为客户开发的工作成果"
+          }
+        ]
+      },
+      {
+        "field": "termination",
+        "status": "missing",
+        "detail": "中文侧有 0 条, 英文侧有 1 条",
+        "chinese_value": [],
+        "english_value": [
+          {
+            "clause_title": "终止",
+            "content": "客户可提前十日无理由终止；服务商仅可在对方重大违约且三十日内未补救时终止",
+            "notice_period": "客户提前10日通知，服务商终止需对方重大违约且30日内未补救",
+            "conditions": "客户可无理由提前10日通知终止；服务商仅可在对方发生重大违约且30日内未予补救时终止"
+          }
+        ]
+      }
+    ],
+    "consistency_score": 13
+  },
+  "scoring_dimensions": [
+    {
+      "name": "争议解决",
+      "score": 50.0,
+      "weight": 0.1,
+      "issues_count": 4
+    },
+    {
+      "name": "付款条款",
+      "score": 70.0,
+      "weight": 0.15,
+      "issues_count": 2
+    },
+    {
+      "name": "保密义务",
+      "score": 70.0,
+      "weight": 0.15,
+      "issues_count": 2
+    },
+    {
+      "name": "免责条款",
+      "score": 100.0,
+      "weight": 0.15,
+      "issues_count": 0
+    },
+    {
+      "name": "其他",
+      "score": 55.0,
+      "weight": 0.0,
+      "issues_count": 3
+    },
+    {
+      "name": "知识产权",
+      "score": 75.0,
+      "weight": 0.15,
+      "issues_count": 1
+    },
+    {
+      "name": "终止条款",
+      "score": 75.0,
+      "weight": 0.1,
+      "issues_count": 1
+    },
+    {
+      "name": "违约责任",
+      "score": 20.0,
+      "weight": 0.2,
+      "issues_count": 4
+    }
+  ],
+  "scoring_explanation": "综合评分 63.8 分（满分100），共发现 17 个问题（高风险 6，中风险 8，低风险 3）。风险等级：high。重点关注维度：违约责任（20.0分，4个问题）、争议解决（50.0分，4个问题）、其他（55.0分，3个问题）。",
+  "file_hash": "228567b597126ad808326a7e9b45fca272aeb6f26b5021de2a0fd803221bd615"
+}

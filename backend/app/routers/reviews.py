@@ -5,6 +5,7 @@
 import os
 import json
 import logging
+import asyncio
 from datetime import datetime, timezone
 from typing import Optional
 
@@ -27,6 +28,62 @@ from ..core.config import UPLOAD_DIR
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/reviews", tags=["reviews"])
+
+# ---------------------------------------------------------------------------
+# POST /api/reviews/{file_id}/start — 手动触发审查（支持模板参数）
+# ---------------------------------------------------------------------------
+
+@router.post(
+    "/{file_id}/start",
+    summary="Start review with template",
+    description="Manually trigger a compliance review for an uploaded file with a specified review template. Use this after uploading with auto_review=false.",
+)
+async def start_review(file_id: str, body: dict = {}):
+    template = body.get("template", "general")
+
+    # Verify file exists
+    file_info = _file_service.get_file(file_id)
+    if file_info is None:
+        raise HTTPException(status_code=404, detail="文件未找到")
+
+    file_path = _file_service.get_file_path(file_id)
+    if file_path is None:
+        raise HTTPException(status_code=404, detail="文件内容未找到")
+
+    # Check if review already exists
+    existing = review_service.get_review_result(file_id)
+    if existing is not None:
+        raise HTTPException(status_code=409, detail="该文件已有审查结果")
+
+    # Trigger background review with template info
+    async def _review_with_template():
+        try:
+            result = await review_service.review_file(file_id, file_path)
+            # Append template metadata to the saved result
+            if result:
+                result["template"] = template
+                review_service.save_review_result(file_id, result)
+        except Exception as e:
+            logger.error(f"Background review with template failed: {e}")
+
+    asyncio.create_task(_review_with_template())
+
+    return {
+        "file_id": file_id,
+        "template": template,
+        "status": "processing",
+        "message": f"已使用「{_template_label(template)}」模板开始审查",
+    }
+
+
+def _template_label(template: str) -> str:
+    labels = {
+        "general": "通用合同审查",
+        "procurement": "采购合同审查",
+        "labor": "劳动合同审查",
+    }
+    return labels.get(template, template)
+
 
 # ---------------------------------------------------------------------------
 # Helper: load / save review JSON, find issue by id

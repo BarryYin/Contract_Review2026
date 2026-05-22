@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 # API 配置（同 compliance_engine.py）
 LLM_API_KEY = os.environ.get(
     "DEEPSEEK_API_KEY",
-    os.environ.get("OPENAI_API_KEY", "3tTXOQXTjY42d3wFEk9OTd6J3EmmgFX0akj0doTWcRtw1U92VjkGmPWKWnInvBpts"),
+    os.environ.get("OPENAI_API_KEY", ""),
 )
 LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "https://api.stepfun.com")
 LLM_MODEL = os.environ.get("LLM_MODEL", "step-3.5-flash")

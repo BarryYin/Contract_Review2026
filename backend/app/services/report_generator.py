@@ -45,6 +45,50 @@ def _make_styles() -> Dict[str, ParagraphStyle]:
     """创建所有 PDF 段落样式。"""
     font = "STSong-Light"
     return {
+        "cover_title": ParagraphStyle(
+            "CoverTitle",
+            fontName=font,
+            fontSize=28,
+            leading=40,
+            alignment=TA_CENTER,
+            textColor=COLOR_PRIMARY,
+            spaceAfter=8 * mm,
+        ),
+        "cover_subtitle": ParagraphStyle(
+            "CoverSubtitle",
+            fontName=font,
+            fontSize=14,
+            leading=22,
+            alignment=TA_CENTER,
+            textColor=COLOR_GRAY,
+            spaceAfter=6 * mm,
+        ),
+        "cover_date": ParagraphStyle(
+            "CoverDate",
+            fontName=font,
+            fontSize=11,
+            leading=16,
+            alignment=TA_CENTER,
+            textColor=COLOR_GRAY,
+            spaceAfter=10 * mm,
+        ),
+        "cover_score": ParagraphStyle(
+            "CoverScore",
+            fontName=font,
+            fontSize=36,
+            leading=44,
+            alignment=TA_CENTER,
+            textColor=COLOR_PRIMARY,
+        ),
+        "cover_score_label": ParagraphStyle(
+            "CoverScoreLabel",
+            fontName=font,
+            fontSize=16,
+            leading=22,
+            alignment=TA_CENTER,
+            textColor=COLOR_GRAY,
+            spaceAfter=4 * mm,
+        ),
         "title": ParagraphStyle(
             "Title",
             fontName=font,
@@ -159,21 +203,21 @@ def _severity_label(severity: str) -> str:
 
 
 def _score_color(score: int) -> HexColor:
-    """根据分数返回颜色。"""
-    if score >= 70:
-        return COLOR_HIGH
-    if score >= 40:
+    """根据分数返回颜色。高分=低风险(绿), 低分=高风险(红)。"""
+    if score >= 80:
+        return COLOR_LOW
+    if score >= 50:
         return COLOR_MEDIUM
-    return COLOR_LOW
+    return COLOR_HIGH
 
 
 def _score_label(score: int) -> str:
-    """根据分数返回标签。"""
-    if score >= 70:
-        return "高风险"
-    if score >= 40:
+    """根据分数返回标签。高分=低风险, 低分=高风险。"""
+    if score >= 80:
+        return "低风险"
+    if score >= 50:
         return "中风险"
-    return "低风险"
+    return "高风险"
 
 
 # ── 主生成函数 ────────────────────────────────────────────
@@ -197,12 +241,14 @@ def generate_pdf_report(
     timestamp_str = now.strftime("%Y-%m-%d %H:%M:%S")
 
     def _footer(canvas, doc):
-        """页脚回调。"""
+        """页脚回调。封面页（第1页）不显示页脚。"""
+        page_num = canvas.getPageNumber()
+        if page_num == 1:
+            return
         canvas.saveState()
         canvas.setFont("STSong-Light", 8)
         canvas.setFillColor(COLOR_GRAY)
-        page_num = canvas.getPageNumber()
-        text = f"合同合规审查报告 | 第 {page_num} 页 | 生成时间: {timestamp_str}"
+        text = f"合同合规审查报告 | 第 {page_num - 1} 页 | 生成时间: {timestamp_str}"
         canvas.drawCentredString(A4[0] / 2, 12 * mm, text)
         canvas.restoreState()
 
@@ -217,17 +263,55 @@ def generate_pdf_report(
 
     elements: List[Any] = []
 
-    # ── 标题 ────────────────────────────────────────────
-    elements.append(Spacer(1, 10 * mm))
-    elements.append(Paragraph("合同合规审查报告", styles["title"]))
+    # ── 封面页 ────────────────────────────────────────────
+    # 提前获取评分数据用于封面
+    risk_score = review_data.get("risk_score", 0)
+    risk_level = review_data.get("risk_level", "low")
+    score_color = _score_color(risk_score)
+    score_label = _score_label(risk_score)
+    review_time = review_data.get("review_time", timestamp_str)
+    contract_name = filename or review_data.get("file_id", "未命名合同")
+
+    # 顶部留白，将内容推到页面中部偏上
+    elements.append(Spacer(1, 55 * mm))
+
+    # 大标题
+    elements.append(Paragraph("合同合规审查报告", styles["cover_title"]))
+
+    # 副标题：合同名称
+    elements.append(Paragraph(contract_name, styles["cover_subtitle"]))
+
+    # 审查日期
     elements.append(
-        Paragraph(
-            "ContractAI - 智能合同合规审查工具",
-            styles["subtitle"],
-        )
+        Paragraph(f"审查日期: {review_time}", styles["cover_date"])
     )
-    elements.append(HRFlowable(width="100%", thickness=0.5, color=COLOR_LIGHT_GRAY))
-    elements.append(Spacer(1, 4 * mm))
+
+    # 装饰分割线
+    elements.append(HRFlowable(width="60%", thickness=1, color=COLOR_ACCENT))
+    elements.append(Spacer(1, 12 * mm))
+
+    # 综合评分 - 大字体分数
+    cover_score_style = ParagraphStyle(
+        "CoverScoreDynamic",
+        parent=styles["cover_score"],
+        textColor=score_color,
+    )
+    elements.append(Paragraph(f"<b>{risk_score}</b>", cover_score_style))
+    elements.append(Spacer(1, 2 * mm))
+
+    # 风险等级标签
+    cover_label_style = ParagraphStyle(
+        "CoverLabelDynamic",
+        parent=styles["cover_score_label"],
+        textColor=score_color,
+    )
+    elements.append(Paragraph(f"<b>{score_label}</b>", cover_label_style))
+
+    # 用 Spacer 撑满剩余空间到页面底部
+    elements.append(Spacer(1, 60 * mm))
+
+    # 封面页结束，分页到正文
+    elements.append(PageBreak())
 
     # ── 1. 基本信息 ────────────────────────────────────
     elements.append(Paragraph("一、基本信息", styles["h2"]))
@@ -390,6 +474,13 @@ def generate_pdf_report(
                     Paragraph(f"风险类型: {risk_type}", styles["body"])
                 )
 
+            # 页码定位
+            page_location = issue.get("page_location", "")
+            if page_location:
+                elements.append(
+                    Paragraph(f"原文位置: {page_location}", styles["body"])
+                )
+
             # 问题描述
             elements.append(Paragraph("问题描述:", styles["body_bold"]))
             elements.append(Paragraph(description, styles["body"]))
@@ -438,6 +529,9 @@ def generate_pdf_report(
     else:
         for idx, issue in enumerate(issues_with_original, start=1):
             clause_ref = issue.get("clause_reference", "未标注条款")
+            page_loc = issue.get("page_location", "")
+            if page_loc:
+                clause_ref = f"{clause_ref}（{page_loc}）"
             mod_example = issue.get("modification_example", {})
             original_text = mod_example.get("original", "")
             severity = issue.get("severity", "low")

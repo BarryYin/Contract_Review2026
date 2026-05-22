@@ -33,14 +33,15 @@ export async function fetchReviewResult(
 
 export async function uploadFile(
   file: File,
-  onProgress: (progress: number) => void
+  onProgress: (progress: number) => void,
+  autoReview: boolean = false
 ): Promise<FileInfo> {
   const formData = new FormData();
   formData.append('file', file);
 
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', `${API_BASE}/files/upload`);
+    xhr.open('POST', `${API_BASE}/files/upload?auto_review=${autoReview}`);
 
     xhr.upload.onprogress = (e) => {
       if (e.lengthComputable) {
@@ -56,7 +57,7 @@ export async function uploadFile(
           filename: data.filename,
           size: data.size,
           upload_time: new Date().toISOString().replace('T', ' ').slice(0, 19),
-          status: 'processing',
+          status: autoReview ? 'processing' : 'uploading',
           contract_type: '',
           review_progress: 0,
         });
@@ -233,5 +234,23 @@ export async function compareReviews(fileIdA: string, fileIdB: string): Promise<
     body: JSON.stringify({ file_id_a: fileIdA, file_id_b: fileIdB }),
   });
   if (!res.ok) throw new Error('对比分析失败');
+  return await res.json();
+}
+
+// ── Start Review with Template ─────────────────────────
+
+export async function startReview(
+  fileId: string,
+  template: string
+): Promise<{ file_id: string; template: string; status: string; message: string }> {
+  const res = await fetch(`${API_BASE}/reviews/${fileId}/start`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ template }),
+  });
+  if (!res.ok) {
+    const data = await res.json().catch(() => null);
+    throw new Error(data?.detail || `启动审查失败 (${res.status})`);
+  }
   return await res.json();
 }
