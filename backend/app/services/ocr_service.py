@@ -1,6 +1,6 @@
 """
-OCR 服务：基于 Step step-1v-8k 视觉模型，支持图片和扫描件文字识别。
-使用与 compliance_engine 相同的 Step API key，无需额外配置。
+OCR 服务：基于视觉模型（MiMo-V2-Omni / Step-1v-8k），支持图片和扫描件文字识别。
+使用环境变量 LLM_API_KEY / VISION_MODEL 配置。
 """
 
 import os
@@ -11,13 +11,24 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
-# 使用 Step API（与 compliance_engine 共享同一 key）
-STEP_API_KEY = os.environ.get(
-    "DEEPSEEK_API_KEY",
-    os.environ.get("OPENAI_API_KEY", "")
-)
-STEP_BASE_URL = "https://api.stepfun.com/v1"
-OCR_MODEL = "step-1v-8k"
+# 支持多视觉模型：MiMo-V2-Omni / Step-1v-8k
+# 运行时读取环境变量（load_dotenv 在 main.py 中调用）
+
+def _get_api_key():
+    return (
+        os.environ.get("LLM_API_KEY", "") or
+        os.environ.get("DEEPSEEK_API_KEY", "") or
+        os.environ.get("OPENAI_API_KEY", "")
+    )
+
+def _get_base_url():
+    base = os.environ.get("LLM_API_BASE_URL", "") or os.environ.get("LLM_BASE_URL", "")
+    if base.endswith("/v1"):
+        base = base[:-3]
+    return base or "https://api.stepfun.com"
+
+def _get_vision_model():
+    return os.environ.get("VISION_MODEL", "mimo-v2-omni")
 
 
 def image_to_base64(image_path: str) -> str:
@@ -40,7 +51,7 @@ def get_image_mime(image_path: str) -> str:
 
 async def ocr_image(image_path: str, language: str = "auto") -> str:
     """
-    使用 Step step-1v-8k 视觉模型对图片进行 OCR 文字识别。
+    使用视觉模型对图片进行 OCR 文字识别。
     
     Args:
         image_path: 图片文件路径
@@ -49,8 +60,8 @@ async def ocr_image(image_path: str, language: str = "auto") -> str:
     Returns:
         识别出的文本内容
     """
-    if not STEP_API_KEY:
-        raise RuntimeError("Step API key 未配置，无法使用 OCR 功能")
+    if not _get_api_key():
+        raise RuntimeError("API key 未配置，无法使用 OCR 功能")
 
     img_b64 = image_to_base64(image_path)
     mime = get_image_mime(image_path)
@@ -68,10 +79,10 @@ async def ocr_image(image_path: str, language: str = "auto") -> str:
 
     async with httpx.AsyncClient(timeout=120.0) as client:
         resp = await client.post(
-            f"{STEP_BASE_URL}/chat/completions",
-            headers={"Authorization": f"Bearer {STEP_API_KEY}"},
+            f"{_get_base_url()}/v1/chat/completions",
+            headers={"Authorization": f"Bearer {_get_api_key()}"},
             json={
-                "model": OCR_MODEL,
+                "model": _get_vision_model(),
                 "messages": [
                     {
                         "role": "user",

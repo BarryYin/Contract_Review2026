@@ -14,7 +14,11 @@ logger = logging.getLogger(__name__)
 
 # API 配置（同 compliance_engine.py）
 LLM_API_KEY = os.environ.get("LLM_API_KEY") or os.environ.get("DEEPSEEK_API_KEY") or os.environ.get("OPENAI_API_KEY") or ""
-LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "https://api.stepfun.com")
+def _get_base_url():
+    base = os.environ.get("LLM_API_BASE_URL", "") or os.environ.get("LLM_BASE_URL", "")
+    if base.endswith("/v1"):
+        base = base[:-3]
+    return base or "https://api.stepfun.com"
 LLM_MODEL = os.environ.get("LLM_MODEL", "step-3.5-flash")
 
 NER_SYSTEM_PROMPT = """你是一位专业的命名实体识别（NER）专家。你的任务是从合同文本中提取关键命名实体。
@@ -231,7 +235,7 @@ async def extract_entities(raw_text: str) -> Dict[str, Any]:
         try:
             async with httpx.AsyncClient(timeout=120.0) as client:
                 resp = await client.post(
-                    f"{LLM_BASE_URL}/v1/chat/completions",
+                    f"{_get_base_url()}/v1/chat/completions",
                     headers={"Authorization": f"Bearer {LLM_API_KEY}"},
                     json={
                         "model": LLM_MODEL,

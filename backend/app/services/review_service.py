@@ -92,8 +92,12 @@ def _build_final_result(
         "upload_time": upload_time,
         "review_time": datetime.now(timezone.utc).isoformat(),
 
+        # 原文（含OCR合并内容）
+        "raw_text": raw_text,
+
         # OCR 标记
         "ocr_used": ocr_flag,
+        "ocr_images_count": parsed.get("ocr_images_count", 0),
         "total_clauses": parsed.get("total_clauses", 0),
 
         # 合同类型（优先使用 structured_parser 的结果，回退到 LLM 的结果）

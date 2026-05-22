@@ -14,7 +14,11 @@ logger = logging.getLogger(__name__)
 
 # API 配置（同 compliance_engine.py）
 LLM_API_KEY = os.environ.get("LLM_API_KEY") or os.environ.get("DEEPSEEK_API_KEY") or os.environ.get("OPENAI_API_KEY") or ""
-LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "https://api.stepfun.com")
+def _get_base_url():
+    base = os.environ.get("LLM_API_BASE_URL", "") or os.environ.get("LLM_BASE_URL", "")
+    if base.endswith("/v1"):
+        base = base[:-3]
+    return base or "https://api.stepfun.com"
 LLM_MODEL = os.environ.get("LLM_MODEL", "step-3.5-flash")
 
 EXTRACTION_SYSTEM_PROMPT = """你是一位专业的合同信息提取专家。你的任务是从合同文本中精确提取结构化信息。
@@ -104,11 +108,11 @@ def _fallback_structured_result(error: Optional[str] = None) -> Dict[str, Any]:
             "duration_description": "",
         },
         "payment_terms": [],
-        "breach_liability": [],
+        "liability_terms": [],
         "dispute_resolution": [],
-        "confidentiality": [],
-        "intellectual_property": [],
-        "termination": [],
+        "confidentiality_terms": [],
+        "ip_terms": [],
+        "termination_terms": [],
         "_meta": {
             "source": "fallback",
             "error": error or "LLM service unavailable",
@@ -232,9 +236,9 @@ def _normalize_structured(data: Dict[str, Any]) -> Dict[str, Any]:
             pt.setdefault("payment_method", "")
             pt.setdefault("description", "")
 
-    # breach_liability
-    result["breach_liability"] = _ensure_list(data.get("breach_liability"))
-    for bl in result["breach_liability"]:
+    # liability_terms (LLM may return breach_liability or liability_terms)
+    result["liability_terms"] = _ensure_list(data.get("breach_liability") or data.get("liability_terms"))
+    for bl in result["liability_terms"]:
         if isinstance(bl, dict):
             bl.setdefault("clause_title", "")
             bl.setdefault("content", "")
@@ -248,25 +252,25 @@ def _normalize_structured(data: Dict[str, Any]) -> Dict[str, Any]:
             dr.setdefault("arbitration_institution", None)
             dr.setdefault("jurisdiction", None)
 
-    # confidentiality
-    result["confidentiality"] = _ensure_list(data.get("confidentiality"))
-    for cf in result["confidentiality"]:
+    # confidentiality_terms
+    result["confidentiality_terms"] = _ensure_list(data.get("confidentiality") or data.get("confidentiality_terms"))
+    for cf in result["confidentiality_terms"]:
         if isinstance(cf, dict):
             cf.setdefault("clause_title", "")
             cf.setdefault("content", "")
             cf.setdefault("duration", "")
 
-    # intellectual_property
-    result["intellectual_property"] = _ensure_list(data.get("intellectual_property"))
-    for ip in result["intellectual_property"]:
+    # ip_terms
+    result["ip_terms"] = _ensure_list(data.get("intellectual_property") or data.get("ip_terms"))
+    for ip in result["ip_terms"]:
         if isinstance(ip, dict):
             ip.setdefault("clause_title", "")
             ip.setdefault("content", "")
             ip.setdefault("scope", "")
 
-    # termination
-    result["termination"] = _ensure_list(data.get("termination"))
-    for tm in result["termination"]:
+    # termination_terms
+    result["termination_terms"] = _ensure_list(data.get("termination") or data.get("termination_terms"))
+    for tm in result["termination_terms"]:
         if isinstance(tm, dict):
             tm.setdefault("clause_title", "")
             tm.setdefault("content", "")
@@ -310,7 +314,7 @@ async def extract_structured_info(raw_text: str) -> Dict[str, Any]:
         try:
             async with httpx.AsyncClient(timeout=120.0) as client:
                 resp = await client.post(
-                    f"{LLM_BASE_URL}/v1/chat/completions",
+                    f"{_get_base_url()}/v1/chat/completions",
                     headers={"Authorization": f"Bearer {LLM_API_KEY}"},
                     json={
                         "model": LLM_MODEL,

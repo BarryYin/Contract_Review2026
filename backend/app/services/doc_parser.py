@@ -1,18 +1,68 @@
 """
 文档解析服务：提取 DOCX/PDF 文本，结构化为条款列表。
+支持 DOCX 内嵌图片自动 OCR（混合文档场景）。
 """
 
 import os
 import re
 import logging
+import zipfile
+import tempfile
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 
 logger = logging.getLogger(__name__)
 
 
+def _extract_images_from_docx(file_path: str) -> List[str]:
+    """
+    从 DOCX 中提取所有内嵌图片，保存为临时文件。
+    返回图片路径列表。
+    """
+    image_paths = []
+    try:
+        with zipfile.ZipFile(file_path) as z:
+            media_files = [f for f in z.namelist() if f.startswith('word/media/')]
+            for mf in media_files:
+                data = z.read(mf)
+                ext = Path(mf).suffix or '.png'
+                tmp = tempfile.NamedTemporaryFile(suffix=ext, delete=False)
+                tmp.write(data)
+                tmp.close()
+                image_paths.append(tmp.name)
+                logger.info(f"Extracted image: {mf} -> {tmp.name} ({len(data)}B)")
+    except Exception as e:
+        logger.warning(f"Failed to extract images from DOCX: {e}")
+    return image_paths
+
+
+async def _ocr_images(image_paths: List[str]) -> str:
+    """
+    对图片列表进行 OCR，返回合并后的文本。
+    """
+    from .ocr_service import ocr_image
+    
+    texts = []
+    for img_path in image_paths:
+        try:
+            text = await ocr_image(img_path)
+            if text and text.strip():
+                texts.append(text.strip())
+                logger.info(f"OCR image {img_path}: {len(text)} chars")
+        except Exception as e:
+            logger.warning(f"OCR failed for {img_path}: {e}")
+        finally:
+            # 清理临时文件
+            try:
+                os.unlink(img_path)
+            except:
+                pass
+    
+    return "\n\n".join(texts)
+
+
 def extract_text_from_docx(file_path: str) -> str:
-    """从 DOCX 文件提取纯文本。"""
+    """从 DOCX 文件提取纯文本（不含图片内容）。"""
     from docx import Document
 
     doc = Document(file_path)
@@ -127,11 +177,12 @@ def parse_document(file_path: str) -> dict:
     }
 
 
-
 async def smart_parse_document(file_path: str) -> dict:
     """
     智能文档解析：自动选择文本提取或OCR。
-    支持 DOCX/PDF（含扫描件）/图片。
+    - DOCX：提取文字 + 提取内嵌图片并 OCR，合并结果
+    - PDF：文字提取，不足则 OCR
+    - 图片：直接 OCR
     """
     from .ocr_service import smart_extract
 
@@ -153,26 +204,42 @@ async def smart_parse_document(file_path: str) -> dict:
     # PDF - 检查是否需要 OCR
     if ext == ".pdf":
         raw_text = extract_text(file_path)
+        ocr_used = False
         if len(raw_text.strip()) < 100:
             # 扫描件，走 OCR
             raw_text = await smart_extract(file_path)
-            logger.info(f"OCR parsed PDF: {len(raw_text)} chars")
+            ocr_used = True
         clauses = split_into_clauses(raw_text)
         return {
             "raw_text": raw_text,
             "clauses": clauses,
             "total_clauses": len(clauses),
             "file_type": ext,
-            "ocr_used": len(raw_text.strip()) < 100,
+            "ocr_used": ocr_used,
         }
 
-    # DOCX - 直接解析
+    # DOCX - 提取文字 + 提取内嵌图片 OCR
     raw_text = extract_text(file_path)
+    
+    # 提取内嵌图片并 OCR
+    image_paths = _extract_images_from_docx(file_path)
+    ocr_text = ""
+    ocr_used = False
+    if image_paths:
+        logger.info(f"Found {len(image_paths)} embedded images in DOCX, running OCR...")
+        ocr_text = await _ocr_images(image_paths)
+        if ocr_text:
+            ocr_used = True
+            # 合并：文字在前，OCR内容在后
+            raw_text = raw_text + "\n\n--- 手写补充/扫描区域 OCR 识别内容 ---\n\n" + ocr_text
+            logger.info(f"DOCX with OCR: text={len(raw_text)} chars (ocr added {len(ocr_text)} chars)")
+    
     clauses = split_into_clauses(raw_text)
     return {
         "raw_text": raw_text,
         "clauses": clauses,
         "total_clauses": len(clauses),
         "file_type": ext,
-        "ocr_used": False,
+        "ocr_used": ocr_used,
+        "ocr_images_count": len(image_paths),
     }
